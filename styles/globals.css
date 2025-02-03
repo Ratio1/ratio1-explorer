@@ -19,6 +19,14 @@ body {
     @apply row justify-center;
 }
 
+.layout-max-width {
+    max-width: 1280px;
+}
+
+.layout {
+    @apply layout-max-width mx-auto px-4 sm:px-8;
+}
+
 /* Scrollbar */
 *::-webkit-scrollbar {
     width: 8px;

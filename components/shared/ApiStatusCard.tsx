@@ -13,7 +13,7 @@ function ApiStatus() {
     });
 
     return (
-        <div className="row mx-auto gap-2 rounded-lg bg-slate-100 px-3.5 py-2.5">
+        <div className="row mx-auto gap-2 rounded-lg bg-[#e8ebf6] px-3.5 py-2.5">
             <div className="center-all">
                 {isLoading ? (
                     <Spinner size="sm" className="scale-75" />

@@ -1,4 +1,5 @@
-import { geistMono, geistSans } from '@/styles/fonts';
+import { Wrappers } from '@/lib/wrappers';
+import { monaSans, robotoMono } from '@/styles/fonts';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
 
@@ -15,7 +16,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+            <body className={`${monaSans.variable} ${robotoMono.variable} antialiased`}>
+                <Wrappers>{children}</Wrappers>
+            </body>
         </html>
     );
 }

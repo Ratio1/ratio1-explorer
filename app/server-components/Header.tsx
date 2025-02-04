@@ -1,3 +1,4 @@
+import { Card } from '@/components/shared/Card';
 import Image from 'next/image';
 
 export default async function Header() {
@@ -10,10 +11,12 @@ export default async function Header() {
                 </div>
             </div>
 
-            <div className="row gap-1.5 rounded-full bg-lightBlue px-3 py-2">
-                <Image className="h-6 w-auto" src="/base_sepolia.webp" width={32} height={32} alt="Blockchain" />
-                <div className="font-medium">Base Sepolia</div>
-            </div>
+            <Card>
+                <div className="row gap-1.5">
+                    <Image className="h-6 w-auto" src="/base_sepolia.webp" width={32} height={32} alt="Blockchain" />
+                    <div className="font-medium">Base Sepolia</div>
+                </div>
+            </Card>
         </div>
     );
 }

@@ -4,6 +4,7 @@ import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import Footer from './server-components/Footer';
 import Header from './server-components/Header';
+import TopBar from './server-components/TopBar';
 
 export const metadata: Metadata = {
     title: 'Ratio1 - Explorer',
@@ -20,10 +21,11 @@ export default function RootLayout({
         <html lang="en">
             <body className={`${monaSans.variable} ${robotoMono.variable} antialiased`}>
                 <Wrappers>
-                    <div className="col layout min-h-screen py-6">
+                    <div className="col layout min-h-screen gap-8 py-6">
                         <Header />
+                        <TopBar />
 
-                        <div className="flex-1 col">{children}</div>
+                        <div className="col flex-1">{children}</div>
 
                         <Footer />
                     </div>

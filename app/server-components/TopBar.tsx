@@ -7,7 +7,12 @@ import { formatDistanceToNow } from 'date-fns';
 import { RiCpuLine, RiTimeLine } from 'react-icons/ri';
 
 export default function TopBar({ oraclesInfo }: { oraclesInfo: OraclesDefaultResult }) {
-    console.log('TopBar', oraclesInfo);
+    const activeNodes = Object.values(oraclesInfo.result.nodes)
+        .slice(1)
+        .filter((node) => {
+            const [hours, _minutes, _seconds] = node.last_seen_ago.split(':').map(Number);
+            return hours === 0;
+        });
 
     return (
         <div className="row w-full justify-between gap-12">
@@ -26,9 +31,7 @@ export default function TopBar({ oraclesInfo }: { oraclesInfo: OraclesDefaultRes
                     <PriceCard />
 
                     <SmallCardWithIcon icon={<RiCpuLine />} label="Active Nodes">
-                        <div className="font-semibold leading-none text-primary">
-                            {Object.keys(oraclesInfo.result.nodes).length - 1}
-                        </div>
+                        <div className="font-semibold leading-none text-primary">{activeNodes.length}</div>
                     </SmallCardWithIcon>
                 </div>
             </div>

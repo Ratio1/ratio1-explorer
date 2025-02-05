@@ -1,7 +1,9 @@
 import { PriceCard } from '@/components/PriceCard';
 import { Search } from '@/components/Search';
+import { SmallCardWithIcon } from '@/components/shared/SmallCardWithIcon';
 import { getCurrentEpoch, getNextEpochTimestamp } from '@/config';
 import { formatDistanceToNow } from 'date-fns';
+import { RiCpuLine, RiTimeLine } from 'react-icons/ri';
 
 export default function TopBar() {
     return (
@@ -12,22 +14,17 @@ export default function TopBar() {
 
             <div className="flex-1">
                 <div className="row justify-end gap-3">
-                    <div className="col h-[52px] justify-center rounded-2xl bg-lightBlue px-4 py-1.5">
-                        <div className="font-medium">
+                    <SmallCardWithIcon icon={<RiTimeLine />} label={`${formatDistanceToNow(getNextEpochTimestamp())} left`}>
+                        <div className="pr-0.5 font-medium leading-none">
                             Epoch <span className="font-semibold text-primary">{getCurrentEpoch()}</span>
                         </div>
-
-                        <div className="text-xs leading-none text-slate-500">
-                            {formatDistanceToNow(getNextEpochTimestamp())} left
-                        </div>
-                    </div>
+                    </SmallCardWithIcon>
 
                     <PriceCard />
 
-                    <div className="col h-[52px] justify-center rounded-2xl bg-lightBlue px-3.5 py-1.5">
-                        <div className="font-semibold text-primary">32</div>
-                        <div className="text-xs leading-none text-slate-500">Active Nodes</div>
-                    </div>
+                    <SmallCardWithIcon icon={<RiCpuLine />} label="Active Nodes">
+                        <div className="font-semibold leading-none text-primary">32</div>
+                    </SmallCardWithIcon>
                 </div>
             </div>
         </div>

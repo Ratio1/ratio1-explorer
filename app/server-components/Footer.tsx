@@ -1,4 +1,5 @@
 import ApiStatus from '@/components/shared/ApiStatusCard';
+import { getNodesList } from '@/lib/api/oracles';
 import Image from 'next/image';
 import Link from 'next/link';
 import { RiDiscordLine, RiLinkedinBoxLine, RiTwitterXLine, RiYoutubeLine } from 'react-icons/ri';
@@ -11,6 +12,9 @@ const socialLinks = [
 ];
 
 export default async function Footer() {
+    const nodesList = await getNodesList();
+    console.log(nodesList);
+
     return (
         <div className="col center-all w-full gap-10 rounded-3xl bg-lightBlue px-8 py-12">
             <div className="col gap-4">

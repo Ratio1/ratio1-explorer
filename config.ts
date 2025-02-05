@@ -1,11 +1,12 @@
 import { addSeconds, differenceInSeconds } from 'date-fns';
+import { EthAddress } from './typedefs/blockchain';
 
 export type Config = {
-    r1ContractAddress: `0x${string}`;
-    ndContractAddress: `0x${string}`;
-    mndContractAddress: `0x${string}`;
-    liquidityManagerContractAddress: `0x${string}`;
-    safeAddress: `0x${string}`;
+    r1ContractAddress: EthAddress;
+    ndContractAddress: EthAddress;
+    mndContractAddress: EthAddress;
+    liquidityManagerContractAddress: EthAddress;
+    safeAddress: EthAddress;
     explorerUrl: string;
     genesisTimestamp: Date;
     epochDurationInSeconds: number;
@@ -17,11 +18,11 @@ export type Config = {
 };
 
 export const config = {
-    r1ContractAddress: process.env.NEXT_PUBLIC_R1_CONTRACT_ADDRESS as `0x${string}`,
-    ndContractAddress: process.env.NEXT_PUBLIC_ND_CONTRACT_ADDRESS as `0x${string}`,
-    mndContractAddress: process.env.NEXT_PUBLIC_MND_CONTRACT_ADDRESS as `0x${string}`,
-    liquidityManagerContractAddress: process.env.NEXT_PUBLIC_LIQUIDITY_MANAGER_CONTRACT_ADDRESS as `0x${string}`,
-    safeAddress: process.env.NEXT_PUBLIC_SAFE_ADDRESS as `0x${string}`,
+    r1ContractAddress: process.env.NEXT_PUBLIC_R1_CONTRACT_ADDRESS as EthAddress,
+    ndContractAddress: process.env.NEXT_PUBLIC_ND_CONTRACT_ADDRESS as EthAddress,
+    mndContractAddress: process.env.NEXT_PUBLIC_MND_CONTRACT_ADDRESS as EthAddress,
+    liquidityManagerContractAddress: process.env.NEXT_PUBLIC_LIQUIDITY_MANAGER_CONTRACT_ADDRESS as EthAddress,
+    safeAddress: process.env.NEXT_PUBLIC_SAFE_ADDRESS as EthAddress,
     explorerUrl: process.env.NEXT_PUBLIC_EXPLORER_URL as string,
     genesisTimestamp: new Date(process.env.NEXT_PUBLIC_GENESIS_DATE as string),
     epochDurationInSeconds: parseInt(process.env.NEXT_PUBLIC_EPOCH_DURATION_SECONDS as string),

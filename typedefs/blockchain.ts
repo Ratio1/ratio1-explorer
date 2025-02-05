@@ -36,17 +36,44 @@ type BuyLicenseRequest = {
     country: string;
 };
 
+type NodeState = {
+    eth_addr: EthAddress;
+    alias: string;
+    last_state: string;
+    last_seen_ago: string;
+    non_zero: number;
+    overall_availability: number;
+    score: number;
+    first_check: string;
+    last_check: string;
+    recent_history: {
+        last_10_ep: string;
+        certainty: string;
+        last_epoch_id: number;
+        last_epoch_nr_hb: number;
+        last_epoch_1st_hb: string;
+        last_epoch_last_hb: string;
+        last_epoch_avail: number;
+    };
+};
+
 type OraclesDefaultResult = {
-    server_alias: string;
-    server_version: string;
-    server_time: string;
-    server_current_epoch: number;
-    server_uptime: string;
-    EE_SIGN: string;
-    EE_SENDER: R1Address;
-    EE_ETH_SENDER: EthAddress;
-    EE_ETH_SIGN: string;
-    EE_HASH: string;
+    result: {
+        nodes: {
+            [key: R1Address | string]: NodeState;
+        };
+        server_alias: string;
+        server_version: string;
+        server_time: string;
+        server_current_epoch: number;
+        server_uptime: string;
+        EE_SIGN: string;
+        EE_SENDER: R1Address;
+        EE_ETH_SENDER: EthAddress;
+        EE_ETH_SIGN: string;
+        EE_HASH: string;
+    };
+    server_node_addr: R1Address;
 };
 
 export type { BuyLicenseRequest, ComputeParam, EthAddress, OraclesAvailabilityResult, OraclesDefaultResult, R1Address };

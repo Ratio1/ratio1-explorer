@@ -1,4 +1,4 @@
-import { Card } from '@/components/shared/Card';
+import { RoundedCard } from '@/components/shared/RoundedCard';
 import Image from 'next/image';
 
 export default async function Header() {
@@ -11,12 +11,12 @@ export default async function Header() {
                 </div>
             </div>
 
-            <Card>
-                <div className="row gap-1.5">
+            <RoundedCard>
+                <div className="row gap-1.5 px-4 py-3">
                     <Image className="h-6 w-auto" src="/base_sepolia.webp" width={32} height={32} alt="Blockchain" />
                     <div className="font-medium">Base Sepolia</div>
                 </div>
-            </Card>
+            </RoundedCard>
         </div>
     );
 }

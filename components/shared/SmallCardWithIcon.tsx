@@ -13,7 +13,7 @@ export const SmallCardWithIcon: FunctionComponent<PropsWithChildren<Props>> = ({
                 <div className="row gap-1.5">
                     <div className="center-all rounded-full bg-blue-100 p-2 text-2xl text-primary">{icon}</div>
 
-                    <div className="col gap-0.5">
+                    <div className="col gap-[3px]">
                         {children}
                         <div className="text-xs leading-none text-slate-500">{label}</div>
                     </div>

@@ -1,7 +1,8 @@
 import ApiStatus from '@/components/shared/ApiStatusCard';
-import { getNodesList } from '@/lib/api/oracles';
+import { ServerInfo } from '@/typedefs/blockchain';
 import Image from 'next/image';
 import Link from 'next/link';
+import { JSX } from 'react';
 import { RiDiscordLine, RiLinkedinBoxLine, RiTwitterXLine, RiYoutubeLine } from 'react-icons/ri';
 
 const socialLinks = [
@@ -11,12 +12,16 @@ const socialLinks = [
     { url: 'https://www.youtube.com/@ratio1AI', icon: <RiYoutubeLine /> },
 ];
 
-export default async function Footer() {
-    const nodesList = await getNodesList();
-    console.log(nodesList);
+export default async function Footer({ serverInfo }: { serverInfo?: ServerInfo }) {
+    const getServerDataRow = (key: string, value: string | number): JSX.Element => (
+        <div className="text-sm font-medium">
+            <span className="w-40 capitalize text-slate-500">{key.replaceAll('_', ' ')}:</span>{' '}
+            <span className="text-primary">{value}</span>
+        </div>
+    );
 
     return (
-        <div className="col center-all w-full gap-10 rounded-3xl bg-lightBlue px-8 py-12">
+        <div className="col center-all w-full gap-8 rounded-3xl bg-lightBlue px-8 py-10">
             <div className="col gap-4">
                 <Image className="h-8 w-auto" src="/logo.svg" width={0} height={0} alt="Logo" priority />
 
@@ -40,6 +45,14 @@ export default async function Footer() {
                     ))}
                 </div>
             </div>
+
+            {serverInfo && (
+                <div className="col -mt-2 text-center">
+                    {Object.entries(serverInfo).map(([key, value], index) => (
+                        <div key={index}>{getServerDataRow(key, value)}</div>
+                    ))}
+                </div>
+            )}
 
             <ApiStatus />
         </div>

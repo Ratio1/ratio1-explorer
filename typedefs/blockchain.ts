@@ -57,6 +57,14 @@ type NodeState = {
     };
 };
 
+type ServerInfo = {
+    server_alias: string;
+    server_version: string;
+    server_time: string;
+    server_current_epoch: number;
+    server_uptime: string;
+};
+
 type OraclesDefaultResult = {
     result: {
         nodes: {
@@ -76,4 +84,12 @@ type OraclesDefaultResult = {
     server_node_addr: R1Address;
 };
 
-export type { BuyLicenseRequest, ComputeParam, EthAddress, OraclesAvailabilityResult, OraclesDefaultResult, R1Address };
+export type {
+    BuyLicenseRequest,
+    ComputeParam,
+    EthAddress,
+    OraclesAvailabilityResult,
+    OraclesDefaultResult,
+    R1Address,
+    ServerInfo,
+};

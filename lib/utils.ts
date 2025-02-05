@@ -57,3 +57,5 @@ export const generateMetadata = (
     },
     metadataBase: new URL(process.env.NEXT_PUBLIC_ORIGIN_URL as string),
 });
+
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

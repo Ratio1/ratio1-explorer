@@ -2,7 +2,7 @@
 
 import * as types from '@/typedefs/blockchain';
 
-const apiUrl = process.env.NEXT_PUBLIC_ORACLE_API_URL;
+const apiUrl = 'https://oracle-test.ratio1.ai'; // TODO:
 
 export const getOraclesInfo = async (): Promise<types.OraclesDefaultResult> => {
     const response: Response = await fetch(`${apiUrl}/nodes_list`);

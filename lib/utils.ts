@@ -24,7 +24,7 @@ export const generateMetadata = (
     openGraph: {
         title,
         description,
-        url: process.env.NEXT_PUBLIC_ORIGIN_URL as string,
+        url: 'https://explorer.ratio1.ai', // TODO:
         siteName: title,
         images: [
             {
@@ -55,7 +55,7 @@ export const generateMetadata = (
         creator: '@nextjs',
         images: [imageUrl],
     },
-    metadataBase: new URL(process.env.NEXT_PUBLIC_ORIGIN_URL as string),
+    metadataBase: new URL('https://explorer.ratio1.ai'),
 });
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

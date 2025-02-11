@@ -11,6 +11,7 @@
     "dependencies": {
         "@heroui/button": "^2.2.10",
         "@heroui/input": "^2.4.10",
+        "@heroui/select": "^2.4.10",
         "@heroui/spinner": "^2.2.7",
         "@heroui/system": "^2.4.7",
         "@heroui/theme": "^2.4.6",

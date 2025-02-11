@@ -5,14 +5,13 @@ export default {
     content: [
         './components/**/*.{js,ts,jsx,tsx,mdx}',
         './app/**/*.{js,ts,jsx,tsx,mdx}',
-        './node_modules/@heroui/theme/dist/components/(button|input|spinner|ripple|form).js',
+        './node_modules/@heroui/theme/dist/components/(button|input|select|spinner|ripple|form|listbox|divider|popover|scroll-shadow).js',
     ],
     theme: {
         extend: {
             colors: {
                 body: '#0b0b47',
                 light: '#fcfcfd',
-                lightBlue: '#F4F5FA',
                 primary: '#1b47f7',
             },
             flex: {

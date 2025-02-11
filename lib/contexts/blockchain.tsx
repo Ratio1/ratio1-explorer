@@ -19,7 +19,7 @@ export const BlockchainProvider = ({ children }) => {
     const publicClient = usePublicClient();
 
     const fetchR1Price = async () => {
-        if (publicClient) {
+        if (publicClient && config.liquidityManagerContractAddress.length === 42) {
             const price = await publicClient.readContract({
                 address: config.liquidityManagerContractAddress,
                 abi: LiquidityManagerAbi,

@@ -1,3 +1,4 @@
+import { NetworkSelector } from '@/components/NetworkSelector';
 import { RoundedCard } from '@/components/shared/RoundedCard';
 import Image from 'next/image';
 
@@ -11,12 +12,20 @@ export default async function Header() {
                 </div>
             </div>
 
-            <RoundedCard>
-                <div className="row gap-1.5 px-4 py-3">
-                    <Image className="h-6 w-auto" src="/base_sepolia.webp" width={32} height={32} alt="Blockchain" />
-                    <div className="font-medium">Base Sepolia</div>
+            <div className="row gap-2">
+                <div className="flex">
+                    <RoundedCard>
+                        <div className="row gap-1.5 px-4 py-3">
+                            <Image className="h-6 w-auto" src="/base_sepolia.webp" width={32} height={32} alt="Blockchain" />
+                            <div className="text-sm font-medium">Base Sepolia</div>
+                        </div>
+                    </RoundedCard>
                 </div>
-            </RoundedCard>
+
+                <div className="flex">
+                    <NetworkSelector />
+                </div>
+            </div>
         </div>
     );
 }

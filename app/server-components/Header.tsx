@@ -1,5 +1,5 @@
+import { RoundedCard } from '@/app/server-components/shared/RoundedCard';
 import { NetworkSelector } from '@/components/NetworkSelector';
-import { RoundedCard } from '@/components/shared/RoundedCard';
 import Image from 'next/image';
 
 export default async function Header() {

@@ -88,6 +88,7 @@ export type {
     BuyLicenseRequest,
     ComputeParam,
     EthAddress,
+    NodeState,
     OraclesAvailabilityResult,
     OraclesDefaultResult,
     R1Address,

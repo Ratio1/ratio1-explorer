@@ -1,6 +1,6 @@
+import { SmallCardWithIcon } from '@/app/server-components/shared/SmallCardWithIcon';
 import { PriceCard } from '@/components/PriceCard';
 import { Search } from '@/components/Search';
-import { SmallCardWithIcon } from '@/components/shared/SmallCardWithIcon';
 import { getNextEpochTimestamp } from '@/config';
 import { OraclesDefaultResult } from '@/typedefs/blockchain';
 import { formatDistanceToNow } from 'date-fns';

@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 
+export const getShortAddress = (address: string, size = 4) => `${address.slice(0, size)}...${address.slice(-size)}`;
+
 export const generateMetadata = (
     title: string,
     description: string,
@@ -24,7 +26,7 @@ export const generateMetadata = (
     openGraph: {
         title,
         description,
-        url: 'https://explorer.ratio1.ai', // TODO:
+        url: 'https://explorer.ratio1.ai', // TODO: Replace
         siteName: title,
         images: [
             {
@@ -55,7 +57,7 @@ export const generateMetadata = (
         creator: '@nextjs',
         images: [imageUrl],
     },
-    metadataBase: new URL('https://explorer.ratio1.ai'),
+    metadataBase: new URL('https://explorer.ratio1.ai'), // TODO: Replace
 });
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

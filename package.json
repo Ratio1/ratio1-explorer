@@ -5,8 +5,8 @@
     "scripts": {
         "dev:mainnet": "dotenv -e .env.production.mainnet next dev --turbopack",
         "dev:testnet": "dotenv -e .env.production.testnet next dev --turbopack",
-        "build:mainnet": "mainnet next build",
-        "build:testnet": "testnet next build",
+        "build:mainnet": "dotenv -e .env.production.mainnet next build",
+        "build:testnet": "dotenv -e .env.production.testnet next build",
         "start": "next start",
         "lint": "next lint"
     },

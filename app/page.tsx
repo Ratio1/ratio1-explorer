@@ -1,3 +1,4 @@
+import config from '@/config';
 import { getOraclesInfo } from '@/lib/api/oracles';
 import { OraclesDefaultResult } from '@/typedefs/blockchain';
 import Footer from './server-components/Footer';
@@ -6,6 +7,8 @@ import TopBar from './server-components/TopBar';
 
 export default async function Home() {
     const oraclesInfo: OraclesDefaultResult = await getOraclesInfo();
+
+    console.log(config);
 
     return (
         <>

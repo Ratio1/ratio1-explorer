@@ -3,8 +3,10 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev --turbopack",
-        "build": "next build",
+        "dev:mainnet": "dotenv -e .env.production.mainnet next dev --turbopack",
+        "dev:testnet": "dotenv -e .env.production.testnet next dev --turbopack",
+        "build:mainnet": "mainnet next build",
+        "build:testnet": "testnet next build",
         "start": "next start",
         "lint": "next lint"
     },
@@ -34,6 +36,7 @@
         "@types/node": "^20",
         "@types/react": "^19",
         "@types/react-dom": "^19",
+        "dotenv-cli": "^8.0.0",
         "eslint": "^9",
         "eslint-config-next": "15.1.6",
         "postcss": "^8",

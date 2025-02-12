@@ -1,5 +1,5 @@
 import { LiquidityManagerAbi } from '@/blockchain/LiquidityManager';
-import { config } from '@/config';
+import config from '@/config';
 import { createContext, useContext, useState } from 'react';
 import { usePublicClient } from 'wagmi';
 

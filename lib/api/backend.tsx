@@ -1,6 +1,7 @@
+import config from '@/config';
 import axios from 'axios';
 
-const backendUrl = 'https://ratio1-backend.ngrok.app';
+const backendUrl = config.backendUrl;
 
 export const ping = async () => _doGet<any>('/auth/nodeData');
 

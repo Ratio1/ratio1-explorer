@@ -42,9 +42,8 @@ export const Search = () => {
                 inputWrapper: 'h-[52px] bg-slate-100 hover:!bg-[#eceef6] group-data-[focus=true]:bg-slate-100 px-6 rounded-2xl',
             }}
             variant="flat"
-            // radius="lg"
             labelPlacement="outside"
-            placeholder="Search for a node"
+            placeholder="Search by Node ETH Address / Node Internal Address / Alias"
             endContent={
                 <div className="center-all -mr-2.5 cursor-pointer p-2 text-[22px]">
                     {isLoading ? (

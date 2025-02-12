@@ -1,11 +1,11 @@
 import { Wrappers } from '@/lib/wrappers';
 import { monaSans, robotoMono } from '@/styles/fonts';
 import '@/styles/globals.css';
-import { Spinner } from '@heroui/spinner';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import Footer from './server-components/Footer';
 import Header from './server-components/Header';
+import Loading from './server-components/Loading';
 
 export const metadata: Metadata = {
     title: 'Ratio1 - Explorer',
@@ -29,13 +29,21 @@ export default async function RootLayout({
                             fallback={
                                 <>
                                     <div className="center-all flex-1">
-                                        <Spinner />
+                                        <Loading />
                                     </div>
 
                                     <Footer />
                                 </>
                             }
                         >
+                            {/* <>
+                                <div className="center-all flex-1">
+                                    <Loading />
+                                </div>
+
+                                <Footer />
+                            </> */}
+
                             {children}
                         </Suspense>
                     </div>

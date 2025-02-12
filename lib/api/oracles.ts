@@ -1,8 +1,9 @@
 'use server';
 
+import config from '@/config';
 import * as types from '@/typedefs/blockchain';
 
-const apiUrl = 'https://oracle-test.ratio1.ai'; // TODO:
+const apiUrl = config.oraclesUrl;
 
 export const getOraclesInfo = async (): Promise<types.OraclesDefaultResult> => {
     const response: Response = await fetch(`${apiUrl}/nodes_list`);

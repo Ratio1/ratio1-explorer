@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 
 function ApiStatus() {
+    // TODO: Request only one time and cache the result, maybe using Zustand
     const { data, error, isLoading } = useQuery({
         queryKey: ['ping'],
         queryFn: ping,

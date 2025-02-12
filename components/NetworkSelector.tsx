@@ -1,5 +1,6 @@
 'use client';
 
+import config from '@/config';
 import { Select, SelectItem } from '@heroui/select';
 import { SharedSelection } from '@heroui/system';
 import { useState } from 'react';
@@ -7,29 +8,28 @@ import { useState } from 'react';
 const networks = [
     {
         key: 'mainnet',
-        label: 'Mainnet',
     },
     {
         key: 'testnet',
-        label: 'Testnet',
     },
 ];
 
 export const NetworkSelector = () => {
-    const [keys, setKeys] = useState(new Set([networks[1].key]));
+    const [keys, setKeys] = useState(new Set<'mainnet' | 'testnet'>([config.environment]));
 
     return (
         <Select
-            className="min-w-[118px]"
+            className="min-w-[112px]"
             classNames={{
-                trigger: 'min-h-12 bg-slate-100 data-[hover=true]:bg-slate-200 rounded-full ',
+                trigger: 'min-h-12 bg-primary data-[hover=true]:bg-primary/85 rounded-full ',
                 label: 'group-data-[filled=true]:-translate-y-5',
-                value: 'font-medium pl-1.5',
+                value: 'font-medium !text-white pl-1.5',
+                selectorIcon: '!text-white',
             }}
             items={networks}
             selectedKeys={keys}
             onSelectionChange={(value: SharedSelection) => {
-                setKeys(new Set([value.anchorKey as string]));
+                setKeys(new Set([value.anchorKey as 'mainnet' | 'testnet']));
             }}
             aria-label="network-selector"
             label=""
@@ -58,9 +58,9 @@ export const NetworkSelector = () => {
             variant="flat"
         >
             {(network) => (
-                <SelectItem key={network.key} textValue={network.label}>
+                <SelectItem key={network.key} textValue={`${network.key.charAt(0).toUpperCase() + network.key.slice(1)}`}>
                     <div className="row gap-2 py-1">
-                        <div className="font-medium">{network.label}</div>
+                        <div className="te font-medium capitalize">{network.key}</div>
                     </div>
                 </SelectItem>
             )}

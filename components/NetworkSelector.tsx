@@ -1,10 +1,8 @@
 'use client';
 
-import config from '@/config';
-import { ping } from '@/lib/api/backend';
+import config, { urls } from '@/config';
 import { Select, SelectItem } from '@heroui/select';
 import { SharedSelection } from '@heroui/system';
-import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useState } from 'react';
 
@@ -20,13 +18,6 @@ const networks = [
 export const NetworkSelector = () => {
     const [keys, setKeys] = useState(new Set<'mainnet' | 'testnet'>([config.environment]));
 
-    // TODO: Request only one time and cache the result, maybe using Zustand
-    const { data, error, isLoading } = useQuery({
-        queryKey: ['ping'],
-        queryFn: ping,
-        retry: false,
-    });
-
     return (
         <Select
             className="min-w-[126px]"
@@ -40,7 +31,12 @@ export const NetworkSelector = () => {
             items={networks}
             selectedKeys={keys}
             onSelectionChange={(value: SharedSelection) => {
-                setKeys(new Set([value.anchorKey as 'mainnet' | 'testnet']));
+                const network = value.anchorKey as 'mainnet' | 'testnet';
+
+                if (network) {
+                    window.location.href = urls[network];
+                    setKeys(new Set([network]));
+                }
             }}
             aria-label="network-selector"
             label=""
@@ -68,13 +64,14 @@ export const NetworkSelector = () => {
             }}
             variant="flat"
             startContent={
-                isLoading ? (
+                // TODO: Use data from the API
+                false ? (
                     <></>
                 ) : (
                     <div
                         className={clsx('ml-1 mt-0.5 h-2 min-h-2 w-2 min-w-2 rounded-full', {
-                            'bg-green-500': !error,
-                            'bg-red-500': data?.status === 'error' || !!error,
+                            'bg-green-500': true,
+                            'bg-red-500': false,
                         })}
                     ></div>
                 )

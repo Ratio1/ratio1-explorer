@@ -2,6 +2,7 @@ import { EthAddress } from '@/typedefs/blockchain';
 
 export type Config = {
     environment: 'mainnet' | 'testnet';
+    url: string;
     backendUrl: string;
     oraclesUrl: string;
     liquidityManagerContractAddress: EthAddress;

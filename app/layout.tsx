@@ -28,22 +28,11 @@ export default async function RootLayout({
                         <Suspense
                             fallback={
                                 <>
-                                    <div className="center-all flex-1">
-                                        <Loading />
-                                    </div>
-
+                                    <Loading />
                                     <Footer />
                                 </>
                             }
                         >
-                            {/* <>
-                                <div className="center-all flex-1">
-                                    <Loading />
-                                </div>
-
-                                <Footer />
-                            </> */}
-
                             {children}
                         </Suspense>
                     </div>

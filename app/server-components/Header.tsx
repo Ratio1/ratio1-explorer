@@ -1,5 +1,6 @@
 import { RoundedCard } from '@/app/server-components/shared/RoundedCard';
 import { NetworkSelector } from '@/components/NetworkSelector';
+import config from '@/config';
 import Image from 'next/image';
 
 export default async function Header() {
@@ -17,7 +18,7 @@ export default async function Header() {
                     <RoundedCard>
                         <div className="row gap-1.5 px-4 py-3">
                             <Image className="h-6 w-auto" src="/base_sepolia.webp" width={32} height={32} alt="Blockchain" />
-                            <div className="text-sm font-medium">Base Sepolia</div>
+                            <div className="text-sm font-medium">Base {config.environment === 'testnet' ? 'Sepolia' : ''}</div>
                         </div>
                     </RoundedCard>
                 </div>

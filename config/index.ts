@@ -10,10 +10,16 @@ export const getCurrentEpoch = () =>
 export const getNextEpochTimestamp = (): Date =>
     addSeconds(config.genesisDate, (getCurrentEpoch() + 1) * config.epochDurationInSeconds);
 
+export const urls = {
+    mainnet: 'https://ratio1-explorer.vercel.app',
+    testnet: 'https://ratio1-testnet-explorer.vercel.app',
+};
+
 const environment = process.env.NEXT_PUBLIC_ENVIRONMENT as 'mainnet' | 'testnet';
 
 const config: Config = {
     environment,
+    url: process.env.NEXT_PUBLIC_URL as string,
     backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL as string,
     oraclesUrl: process.env.NEXT_PUBLIC_ORACLES_URL as string,
     liquidityManagerContractAddress: process.env.NEXT_PUBLIC_LIQUIDITY_MANAGER_CA as EthAddress,

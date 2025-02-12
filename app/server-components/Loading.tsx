@@ -22,7 +22,7 @@ export default function Loading() {
             </div>
 
             <div className="col w-full gap-2">
-                {Array(4)
+                {Array(6)
                     .fill(null)
                     .map((_, index) => (
                         <div key={index}>

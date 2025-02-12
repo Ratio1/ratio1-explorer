@@ -12,9 +12,8 @@ export default async function Home(props: {
     const searchParams = await props.searchParams;
     const currentPage = Number(searchParams?.page) || 1;
 
-    console.log('Calling getOraclesInfo');
+    console.log('Calling getOraclesInfo for page', currentPage);
     const oraclesInfo: OraclesDefaultResult = await getOraclesInfo();
-    console.log('Finish getOraclesInfo');
 
     return (
         <>
@@ -26,7 +25,7 @@ export default async function Home(props: {
                 serverInfo={{
                     server_alias: oraclesInfo.result.server_alias,
                     server_version: oraclesInfo.result.server_version,
-                    server_time: new Date(oraclesInfo.result.server_time).toLocaleString('ro-RO'),
+                    server_time: new Date(oraclesInfo.result.server_time).toLocaleString(),
                     server_current_epoch: oraclesInfo.result.server_current_epoch,
                     server_uptime: oraclesInfo.result.server_uptime,
                 }}

@@ -53,7 +53,7 @@ export default async function List({
     };
 
     return (
-        <div className="center-all col flex-1">
+        <div className="center-all col flex-1 gap-8">
             <div className="col w-full gap-2">
                 {getPaginatedEntries().map(([ratio1Addr, node]) => (
                     <div

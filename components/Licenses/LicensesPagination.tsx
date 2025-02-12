@@ -19,7 +19,7 @@ export default function LicensesPagination({ nodesCount }: { nodesCount: number 
     };
 
     return (
-        <div className="mx-auto pt-8">
+        <div className="mx-auto">
             <Pagination
                 page={currentPage}
                 onChange={(value) => {

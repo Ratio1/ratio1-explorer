@@ -6,7 +6,6 @@ import * as types from '@/typedefs/blockchain';
 const apiUrl = config.oraclesUrl;
 
 export const getOraclesInfo = async (): Promise<types.OraclesDefaultResult> => {
-    console.log('getOraclesInfo');
     const response: Response = await fetch(`${apiUrl}/nodes_list`);
 
     if (!response.ok) {

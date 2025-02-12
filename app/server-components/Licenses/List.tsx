@@ -1,3 +1,4 @@
+import LicensesPagination from '@/components/Licenses/LicensesPagination';
 import { CopyableValue } from '@/components/shared/CopyableValue';
 import { getShortAddress } from '@/lib/utils';
 import { NodeState } from '@/typedefs/blockchain';
@@ -6,10 +7,12 @@ import { FunctionComponent, PropsWithChildren } from 'react';
 
 export default async function List({
     nodes,
+    currentPage,
 }: {
     nodes: {
         [key: string]: NodeState;
     };
+    currentPage: number;
 }) {
     console.log(nodes);
 
@@ -40,22 +43,29 @@ export default async function List({
         </div>
     );
 
+    const getPaginatedEntries = () => {
+        const array: [string, NodeState][] = Object.entries(nodes).slice(1);
+
+        const start = (currentPage - 1) * 10;
+        const end = start + 10;
+
+        return array.slice(start, end);
+    };
+
     return (
-        <div className="center-all flex-1">
+        <div className="center-all col flex-1">
             <div className="col w-full gap-2">
-                {Object.entries(nodes)
-                    .slice(1)
-                    .map(([ratio1Addr, node]) => (
-                        <div
-                            key={ratio1Addr}
-                            className="flex w-full overflow-hidden rounded-2xl border-3 border-slate-100 bg-slate-100"
-                        >
-                            <div className="row w-full gap-4 bg-white px-5 py-4 md:gap-6">
-                                {getNodeMainInfo(ratio1Addr, node)}
-                            </div>
-                        </div>
-                    ))}
+                {getPaginatedEntries().map(([ratio1Addr, node]) => (
+                    <div
+                        key={ratio1Addr}
+                        className="flex w-full overflow-hidden rounded-2xl border-3 border-slate-100 bg-slate-100"
+                    >
+                        <div className="row w-full gap-4 bg-white px-5 py-4 md:gap-6">{getNodeMainInfo(ratio1Addr, node)}</div>
+                    </div>
+                ))}
             </div>
+
+            <LicensesPagination nodesCount={Object.keys(nodes).length - 1} />
         </div>
     );
 }

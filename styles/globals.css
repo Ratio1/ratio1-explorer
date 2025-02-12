@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-    @apply h-screen w-screen overflow-x-hidden text-body font-[family-name:var(--font-mona-sans)];
+    @apply h-screen w-screen overflow-x-hidden font-[family-name:var(--font-mona-sans)] text-body;
 }
 
 /* Utilities */
@@ -20,7 +20,7 @@ body {
 }
 
 .layout-max-width {
-    max-width: 1280px;
+    max-width: 1180px;
 }
 
 .layout {

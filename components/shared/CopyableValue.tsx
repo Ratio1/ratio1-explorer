@@ -17,8 +17,7 @@ export const CopyableAddress = ({ value }) => {
 
     return (
         <div className="row gap-1 text-slate-400">
-            <div className="text-sm leading-5">{getShortAddress(value)}</div>
-
+            <div className="text-sm">{getShortAddress(value)}</div>
             {!copied ? <RiFileCopyLine onClick={handleCopy} className="cursor-pointer hover:opacity-50" /> : <RiCheckLine />}
         </div>
     );

@@ -8,11 +8,9 @@ import { JSX } from 'react';
 export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address; node: NodeState }) {
     const getNodeMainInfo = () => (
         <div className="row relative min-w-[140px]">
-            <div className="absolute inset-y-0 my-0.5 w-1 rounded-full bg-teal-500"></div>
+            <div className="absolute inset-y-0 my-0.5 w-1 rounded-full bg-primary"></div>
 
-            <div className="col pl-3.5 font-medium">
-                <div className="max-w-[176px] overflow-hidden text-ellipsis whitespace-nowrap leading-5">{node.alias}</div>
-
+            <div className="col pl-3 font-medium">
                 <CopyableAddress value={node.eth_addr} />
                 <CopyableAddress value={ratio1Addr} />
             </div>
@@ -21,8 +19,10 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
 
     return (
         <Link href={`${routePath.node}/${node.eth_addr}`}>
-            <div className="flex w-full overflow-hidden rounded-2xl border-3 border-slate-100 bg-slate-100 transition-all hover:border-[#e9ebf1]">
-                <div className="flex w-full justify-between gap-6 bg-white px-5 py-4 md:gap-6">
+            <div className="flex w-full overflow-hidden rounded-2xl border-2 border-slate-100 bg-slate-100 transition-all hover:border-[#e9ebf1]">
+                <div className="row w-full justify-between gap-6 bg-white px-6 py-3">
+                    <div className="w-[176px] overflow-hidden text-ellipsis whitespace-nowrap font-medium">{node.alias}</div>
+
                     {getNodeMainInfo()}
 
                     <Item
@@ -41,9 +41,13 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
                         }
                     />
 
-                    <Item label="Score" value={<>{node.score}</>} />
+                    <div className="min-w-[50px]">
+                        <Item label="Score" value={<>{node.score}</>} />
+                    </div>
 
-                    <Item label="First Check" value={<>{new Date(node.first_check).toLocaleString()}</>} />
+                    <div className="min-w-[150px]">
+                        <Item label="First Check" value={<>{new Date(node.first_check).toLocaleString()}</>} />
+                    </div>
 
                     <Item
                         label="Last Epoch Availability"
@@ -57,9 +61,9 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
 
 function Item({ label, value }: { label: string; value: JSX.Element }) {
     return (
-        <div className="col font-medium">
+        <div className="col text-sm font-medium">
             <div className="leading-5">{label}</div>
-            <div className="text-sm leading-5 text-slate-400">{value}</div>
+            <div className="leading-5 text-slate-400">{value}</div>
         </div>
     );
 }

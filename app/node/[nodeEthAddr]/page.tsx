@@ -25,9 +25,9 @@ export async function generateMetadata({ params }: Props) {
     }
 
     return {
-        title: response.node_alias,
+        title: `${response.node_alias} | Ratio1 Explorer`,
         openGraph: {
-            title: response.node_alias,
+            title: `${response.node_alias} | Ratio1 Explorer`,
         },
     };
 }

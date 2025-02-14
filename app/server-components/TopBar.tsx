@@ -2,12 +2,22 @@ import { SmallCardWithIcon } from '@/app/server-components/shared/SmallCardWithI
 import { PriceCard } from '@/components/PriceCard';
 import { Search } from '@/components/Search';
 import { getNextEpochTimestamp } from '@/config';
-import { OraclesDefaultResult } from '@/typedefs/blockchain';
+import { cachedGetActiveNodes } from '@/lib/api';
+import * as types from '@/typedefs/blockchain';
 import { formatDistanceToNow } from 'date-fns';
+import { notFound } from 'next/navigation';
 import { RiCpuLine, RiTimeLine } from 'react-icons/ri';
 
-export default function TopBar({ oraclesInfo }: { oraclesInfo: OraclesDefaultResult }) {
-    const activeNodes = Object.values(oraclesInfo.result.nodes)
+export default async function TopBar() {
+    let response: types.OraclesDefaultResult;
+
+    try {
+        response = await cachedGetActiveNodes();
+    } catch (error) {
+        notFound();
+    }
+
+    const activeNodes = Object.values(response.result.nodes)
         .slice(1)
         .filter((node) => {
             const [hours, _minutes, _seconds] = node.last_seen_ago.split(':').map(Number);
@@ -24,7 +34,7 @@ export default function TopBar({ oraclesInfo }: { oraclesInfo: OraclesDefaultRes
                 <div className="row justify-end gap-3">
                     <SmallCardWithIcon icon={<RiTimeLine />} label={`${formatDistanceToNow(getNextEpochTimestamp())} left`}>
                         <div className="pr-0.5 font-medium leading-none">
-                            Epoch <span className="font-semibold text-primary">{oraclesInfo.result.server_current_epoch}</span>
+                            Epoch <span className="font-semibold text-primary">{response.result.server_current_epoch}</span>
                         </div>
                     </SmallCardWithIcon>
 

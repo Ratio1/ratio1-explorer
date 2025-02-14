@@ -19,7 +19,6 @@ export async function generateMetadata({ params }: Props) {
 
     try {
         response = await getLastEpoch(nodeEthAddr);
-        console.log('response', response);
     } catch (error) {
         notFound();
     }
@@ -44,7 +43,7 @@ export default async function NodePage({ params }: Props) {
 
     try {
         response = await getLastEpoch(nodeEthAddr);
-        console.log('response', response);
+        console.log('NodePage', response);
     } catch (error) {
         notFound();
     }
@@ -56,9 +55,9 @@ export default async function NodePage({ params }: Props) {
                 <div className="text-lg font-medium text-slate-500">{response.node_alias}</div>
             </div>
 
-            <div className="col gap-2">
+            {/* <div className="col gap-2">
                 <div>{nodeEthAddr}</div>
-            </div>
+            </div> */}
         </div>
     );
 }

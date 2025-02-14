@@ -4,10 +4,10 @@ import config from '@/config';
 import * as types from '@/typedefs/blockchain';
 import axios from 'axios';
 
-const apiUrl = config.oraclesUrl;
+const oraclesApiURL = config.oraclesUrl;
 
 export const getActiveNodes = async (): Promise<types.OraclesDefaultResult> => {
-    const response: Response = await fetch(`${apiUrl}/active_nodes_list`);
+    const response: Response = await fetch(`${oraclesApiURL}/active_nodes_list`);
 
     if (!response.ok) {
         throw new Error('Failed to fetch data.');
@@ -41,7 +41,7 @@ async function _doGet<T>(endpoint: string) {
 }
 
 const axiosOracles = axios.create({
-    baseURL: apiUrl,
+    baseURL: oraclesApiURL,
     headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',

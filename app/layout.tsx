@@ -5,7 +5,8 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import Footer from './server-components/Footer';
 import Header from './server-components/Header';
-import Loading from './server-components/Loading';
+import TopBarSkeleton from './server-components/Skeletons/TopBarSkeleton';
+import TopBar from './server-components/TopBar';
 
 export const metadata: Metadata = {
     title: 'Ratio1 - Explorer',
@@ -25,7 +26,11 @@ export default async function RootLayout({
                     <div className="col layout min-h-screen gap-8 py-6">
                         <Header />
 
-                        <Suspense fallback={<Loading />}>{children}</Suspense>
+                        <Suspense fallback={<TopBarSkeleton />}>
+                            <TopBar />
+                        </Suspense>
+
+                        {children}
 
                         <Footer />
                     </div>

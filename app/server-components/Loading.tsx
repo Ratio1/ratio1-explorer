@@ -10,11 +10,11 @@ export default function Loading() {
 
                 <div className="flex-1">
                     <div className="row justify-end gap-3">
-                        {Array(3)
+                        {Array(7)
                             .fill(null)
                             .map((_, index) => (
                                 <div key={index}>
-                                    <Skeleton className="h-[52px] w-40 rounded-full" />
+                                    <Skeleton className="h-16 w-40 rounded-full" />
                                 </div>
                             ))}
                     </div>

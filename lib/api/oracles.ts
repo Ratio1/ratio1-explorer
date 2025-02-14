@@ -19,6 +19,8 @@ export const getActiveNodes = async (): Promise<types.OraclesDefaultResult> => {
 export const getNodeLastEpoch = async (nodeEthAddr: types.EthAddress) =>
     _doGet<types.OraclesAvailabilityResult>(`/node_last_epoch?eth_node_addr=${nodeEthAddr}`);
 
+export const getCurrentEpoch = async () => _doGet<types.OraclesAvailabilityResult>('/current_epoch');
+
 async function _doGet<T>(endpoint: string) {
     const { data } = await axiosOracles.get<{
         result: (

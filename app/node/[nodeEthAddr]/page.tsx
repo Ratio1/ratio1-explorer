@@ -50,7 +50,7 @@ export default async function NodePage({ params }: Props) {
     }
 
     return (
-        <div className="col gap-6">
+        <div className="col flex-1 gap-6">
             <div className="col">
                 <div className="text-[28px] font-bold">Node</div>
                 <div className="text-lg font-medium text-slate-500">{response.node_alias}</div>

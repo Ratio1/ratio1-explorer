@@ -25,16 +25,9 @@ export default async function RootLayout({
                     <div className="col layout min-h-screen gap-8 py-6">
                         <Header />
 
-                        <Suspense
-                            fallback={
-                                <>
-                                    <Loading />
-                                    <Footer />
-                                </>
-                            }
-                        >
-                            {children}
-                        </Suspense>
+                        <Suspense fallback={<Loading />}>{children}</Suspense>
+
+                        <Footer />
                     </div>
                 </Wrappers>
             </body>

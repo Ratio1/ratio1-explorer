@@ -39,7 +39,8 @@ export const Search = () => {
             isDisabled={isLoading}
             size="lg"
             classNames={{
-                inputWrapper: 'h-[52px] bg-slate-100 hover:!bg-[#eceef6] group-data-[focus=true]:bg-slate-100 px-6 rounded-2xl',
+                inputWrapper:
+                    'h-[52px] bg-slate-100 hover:!bg-[#eceef6] group-data-[focus=true]:bg-slate-100 px-6 rounded-2xl shadow-none',
             }}
             variant="flat"
             labelPlacement="outside"

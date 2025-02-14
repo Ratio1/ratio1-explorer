@@ -1,7 +1,7 @@
-import { getOraclesInfo } from '@/lib/api/oracles';
+import { getActiveNodes } from '@/lib/api/oracles';
 import { OraclesDefaultResult } from '@/typedefs/blockchain';
 import Footer from './server-components/Footer';
-import List from './server-components/Licenses/List';
+import List from './server-components/Nodes/List';
 import TopBar from './server-components/TopBar';
 
 export default async function Home(props: {
@@ -12,8 +12,8 @@ export default async function Home(props: {
     const searchParams = await props.searchParams;
     const currentPage = Number(searchParams?.page) || 1;
 
-    console.log('Calling getOraclesInfo for page', currentPage);
-    const oraclesInfo: OraclesDefaultResult = await getOraclesInfo();
+    console.log('Calling getActiveNodes for page', currentPage);
+    const oraclesInfo: OraclesDefaultResult = await getActiveNodes();
 
     return (
         <>

@@ -1,9 +1,10 @@
 'use client';
 
+import { getShortAddress } from '@/lib/utils';
 import { useState } from 'react';
 import { RiCheckLine, RiFileCopyLine } from 'react-icons/ri';
 
-export const CopyableValue = ({ value }) => {
+export const CopyableAddress = ({ value }) => {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
@@ -16,7 +17,7 @@ export const CopyableValue = ({ value }) => {
 
     return (
         <div className="row gap-1 text-slate-400">
-            <div className="text-sm leading-5">{value}</div>
+            <div className="text-sm leading-5">{getShortAddress(value)}</div>
 
             {!copied ? <RiFileCopyLine onClick={handleCopy} className="cursor-pointer hover:opacity-50" /> : <RiCheckLine />}
         </div>

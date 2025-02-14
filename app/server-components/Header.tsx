@@ -2,15 +2,18 @@ import { RoundedCard } from '@/app/server-components/shared/RoundedCard';
 import { NetworkSelector } from '@/components/NetworkSelector';
 import config from '@/config';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default async function Header() {
     return (
         <div className="flex w-full justify-between">
             <div className="row">
-                <div className="flex items-end gap-2.5">
-                    <Image className="h-7 w-auto" src="/logo.svg" width={0} height={0} alt="Logo" priority />
-                    <div className="-mt-1 text-2xl font-semibold leading-none text-primary">Explorer</div>
-                </div>
+                <Link href="/">
+                    <div className="flex items-end gap-2.5">
+                        <Image className="h-7 w-auto" src="/logo.svg" width={0} height={0} alt="Logo" priority />
+                        <div className="-mt-1 text-2xl font-semibold leading-none text-primary">Explorer</div>
+                    </div>
+                </Link>
             </div>
 
             <div className="row gap-2">

@@ -4,7 +4,7 @@ import Footer from './server-components/Footer';
 import List from './server-components/Nodes/List';
 import TopBar from './server-components/TopBar';
 
-export default async function Home(props: {
+export default async function HomePage(props: {
     searchParams?: Promise<{
         page?: string;
     }>;

@@ -36,7 +36,7 @@ export const Search = () => {
             onValueChange={(value) => {
                 setValue(value);
             }}
-            isDisabled={isLoading}
+            isDisabled={isLoading || true} // TODO: Remove
             size="lg"
             classNames={{
                 inputWrapper:

@@ -55,6 +55,7 @@ type NodeState = {
         last_epoch_last_hb: string;
         last_epoch_avail: number;
     };
+    ver: string;
 };
 
 type ServerInfo = {

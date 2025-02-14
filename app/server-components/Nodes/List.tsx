@@ -15,6 +15,8 @@ export default async function List({ currentPage }: { currentPage: number }) {
         [key: string]: NodeState;
     } = response.result.nodes;
 
+    console.log('Nodes', nodes);
+
     const getPaginatedEntries = () => {
         const array: [string, NodeState][] = Object.entries(nodes).slice(1);
 

@@ -4,11 +4,7 @@ import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { isAddress } from 'viem';
 
-type Props = {
-    params: { nodeEthAddr: string };
-};
-
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }) {
     const { nodeEthAddr } = await params;
 
     if (!nodeEthAddr || !isAddress(nodeEthAddr)) {
@@ -36,7 +32,7 @@ const getLastEpoch = cache(async (nodeEthAddr: string) => {
     return response;
 });
 
-export default async function NodePage({ params }: Props) {
+export default async function NodePage({ params }) {
     const { nodeEthAddr } = await params;
 
     let response: types.OraclesAvailabilityResult & types.OraclesDefaultResult;

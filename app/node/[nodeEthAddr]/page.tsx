@@ -64,7 +64,7 @@ export default async function NodePage({ params }) {
     }
 
     return (
-        <div className="w-full">
+        <div className="w-full flex-1">
             <CardBordered>
                 <div className="col w-full gap-5 bg-white px-6 py-6">
                     <div className="col w-full gap-5">

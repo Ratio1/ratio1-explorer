@@ -5,7 +5,6 @@ import { getNextEpochTimestamp } from '@/config';
 import { cachedGetActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
 import { formatDistanceToNow } from 'date-fns';
-import { notFound } from 'next/navigation';
 import { RiCpuLine, RiTimeLine } from 'react-icons/ri';
 
 export default async function TopBar() {
@@ -14,7 +13,7 @@ export default async function TopBar() {
     try {
         response = await cachedGetActiveNodes();
     } catch (error) {
-        notFound();
+        return;
     }
 
     const activeNodes = Object.values(response.result.nodes)

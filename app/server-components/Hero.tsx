@@ -3,7 +3,6 @@ import { cachedGetActiveNodes } from '@/lib/api';
 import { getNodes } from '@/lib/api/oracles';
 import * as types from '@/typedefs/blockchain';
 import { sum, sumBy } from 'lodash';
-import { notFound } from 'next/navigation';
 import { RiTimeLine } from 'react-icons/ri';
 import { CardBordered } from './shared/cards/CardBordered';
 import { CardHorizontal } from './shared/cards/CardHorizontal';
@@ -19,7 +18,7 @@ export default async function Hero() {
         activeNodesResponse = await cachedGetActiveNodes();
         console.log('[Hero.tsx] Active Nodes', activeNodesResponse);
     } catch (error) {
-        notFound();
+        return null;
     }
 
     const last7EpochAvailabilities: number[][] = Object.values(activeNodesResponse.result.nodes)

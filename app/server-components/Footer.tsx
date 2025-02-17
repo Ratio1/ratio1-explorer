@@ -21,7 +21,7 @@ export default async function Footer() {
     try {
         response = await getCurrentEpoch();
     } catch (error) {
-        console.error(error);
+        console.log(error);
     }
 
     const getServerDataRow = (key: string, value: string | number): JSX.Element => (

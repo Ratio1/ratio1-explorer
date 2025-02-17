@@ -3,7 +3,7 @@
 import { BlockchainContextType, useBlockchainContext } from '@/lib/contexts/blockchain';
 import { useEffect, useState } from 'react';
 import { RiMoneyDollarCircleLine } from 'react-icons/ri';
-import { SmallCardWithIcon } from '../app/server-components/shared/SmallCardWithIcon';
+import { CardWithIcon } from '../app/server-components/shared/cards/CardWithIcon';
 
 export const PriceCard = () => {
     const { r1Price, fetchR1Price } = useBlockchainContext() as BlockchainContextType;
@@ -23,10 +23,10 @@ export const PriceCard = () => {
     }, [r1Price]);
 
     return (
-        <SmallCardWithIcon icon={<RiMoneyDollarCircleLine />} label="Current Price">
+        <CardWithIcon icon={<RiMoneyDollarCircleLine />} label="Current Price">
             <div className="font-semibold leading-none text-primary">
                 {r1PriceUsd ? `$${parseFloat(r1PriceUsd.toFixed(2))}` : '...'}
             </div>
-        </SmallCardWithIcon>
+        </CardWithIcon>
     );
 };

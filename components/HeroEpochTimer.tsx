@@ -9,7 +9,7 @@ export const HeroEpochTimer = () => {
     const [timestamp, setTimestamp] = useState<Date>(getNextEpochTimestamp());
 
     return (
-        <div className="text-xl font-semibold text-primary">
+        <div className="text-xl text-primary">
             {!timestamp ? (
                 <Spinner size="sm" />
             ) : (

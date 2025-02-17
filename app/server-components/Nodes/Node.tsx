@@ -3,7 +3,7 @@ import { routePath } from '@/lib/routes';
 import { EthAddress, NodeState, R1Address } from '@/typedefs/blockchain';
 import { formatDistanceToNow, sub } from 'date-fns';
 import Link from 'next/link';
-import { BorderedCard } from '../shared/BorderedCard';
+import { CardBordered } from '../shared/cards/CardBordered';
 import { Item } from '../shared/Item';
 
 export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address; node: NodeState }) {
@@ -20,7 +20,7 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
 
     return (
         <Link href={`${routePath.node}/${node.eth_addr}`}>
-            <BorderedCard isHoverable>
+            <CardBordered isHoverable>
                 <div className="row w-full justify-between gap-6 bg-white px-6 py-3">
                     <div className="w-[176px] overflow-hidden text-ellipsis whitespace-nowrap font-medium">{node.alias}</div>
 
@@ -55,7 +55,7 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
                         value={<>{parseFloat((node.recent_history.last_epoch_avail * 100).toFixed(2))}%</>}
                     />
                 </div>
-            </BorderedCard>
+            </CardBordered>
         </Link>
     );
 }

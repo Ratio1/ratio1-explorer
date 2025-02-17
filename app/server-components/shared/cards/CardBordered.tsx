@@ -5,7 +5,7 @@ interface Props {
     isHoverable?: boolean;
 }
 
-export const BorderedCard: FunctionComponent<PropsWithChildren<Props>> = ({ children, isHoverable = false }) => {
+export const CardBordered: FunctionComponent<PropsWithChildren<Props>> = ({ children, isHoverable = false }) => {
     return (
         <div
             className={clsx('flex w-full overflow-hidden rounded-2xl border-2 border-slate-100 bg-slate-100', {

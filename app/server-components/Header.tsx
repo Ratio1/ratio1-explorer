@@ -1,4 +1,4 @@
-import { RoundedCard } from '@/app/server-components/shared/RoundedCard';
+import { CardRounded } from '@/app/server-components/shared/cards/CardRounded';
 import { NetworkSelector } from '@/components/NetworkSelector';
 import config from '@/config';
 import Image from 'next/image';
@@ -17,14 +17,14 @@ export default async function Header() {
 
             <div className="row gap-2">
                 <div className="flex">
-                    <RoundedCard>
+                    <CardRounded>
                         <div className="row gap-1.5 px-4 py-3">
                             <Image className="h-6 w-auto" src="/base.webp" width={32} height={32} alt="Blockchain" />
                             <div className="text-sm font-medium">
                                 {config.environment === 'mainnet' ? 'Base' : 'Base Sepolia'}
                             </div>
                         </div>
-                    </RoundedCard>
+                    </CardRounded>
                 </div>
 
                 <div className="flex">

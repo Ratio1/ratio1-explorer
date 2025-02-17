@@ -1,5 +1,6 @@
-import { BigCard } from '@/app/server-components/shared/BigCard';
-import { Item } from '@/app/server-components/shared/Item';
+import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
+import { CardFlexible } from '@/app/server-components/shared/cards/CardFlexible';
+import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { cachedGetActiveNodes } from '@/lib/api';
 import { getNodeLastEpoch } from '@/lib/api/oracles';
@@ -62,64 +63,73 @@ export default async function NodePage({ params }) {
         notFound();
     }
 
-    const getNodeMainInfo = (ethAddr: types.EthAddress, ratio1Addr: types.R1Address) => (
-        <div className="row relative min-w-[140px]">
-            <div className="absolute inset-y-0 my-0.5 w-1 rounded-full bg-primary"></div>
-
-            <div className="col pl-3 font-medium">
-                <CopyableAddress value={ethAddr} />
-                <CopyableAddress value={ratio1Addr} />
-            </div>
-        </div>
-    );
-
     return (
-        <div className="col flex-1 gap-6">
-            <BigCard
-                label={
-                    <div className="row w-full justify-between gap-6">
-                        <div className="text-[26px] font-bold">Node</div>
-                        <div className="text-xl font-semibold text-slate-500">{lastEpochResponse.node_alias}</div>
-                    </div>
-                }
-            >
-                <div className="col w-full gap-6 text-sm">
-                    <div className="row justify-between gap-6">
-                        {getNodeMainInfo(node.eth_addr, lastEpochResponse.node as types.R1Address)}
+        <div className="w-full">
+            <CardBordered>
+                <div className="col w-full gap-5 bg-white px-6 py-6">
+                    <div className="col w-full gap-5">
+                        <div className="text-[26px] font-bold">{node.alias}</div>
 
-                        <Item
-                            label="Last Seen"
-                            value={
-                                <>
-                                    {formatDistanceToNow(
-                                        sub(new Date(), {
-                                            hours: parseInt(node.last_seen_ago.split(':')[0]),
-                                            minutes: parseInt(node.last_seen_ago.split(':')[1]),
-                                            seconds: parseInt(node.last_seen_ago.split(':')[2]),
-                                        }),
-                                        { addSuffix: true },
-                                    )}
-                                </>
-                            }
-                        />
+                        <div className="col gap-3">
+                            <div className="flex flex-wrap items-stretch gap-3">
+                                <CardFlexible hasFlex>
+                                    <div className="col w-full gap-0.5 px-6 py-6">
+                                        <div className="row justify-between gap-12 font-medium leading-none">
+                                            <div className="text-[15px] text-slate-500">ETH Address</div>
+                                            <CopyableAddress value={node.eth_addr} size={8} isLarge />
+                                        </div>
 
-                        <div className="min-w-[50px]">
-                            <Item label="Score" value={<>{node.score}</>} />
+                                        <div className="row justify-between gap-12 font-medium leading-none">
+                                            <div className="text-[15px] text-slate-500">Internal Address</div>
+                                            <CopyableAddress
+                                                value={lastEpochResponse.node as types.R1Address}
+                                                size={8}
+                                                isLarge
+                                            />
+                                        </div>
+                                    </div>
+                                </CardFlexible>
+
+                                <CardHorizontal label="Score" value={node.score} isSmall />
+
+                                <CardHorizontal
+                                    label="Last Epoch Availability"
+                                    value={`${parseFloat((node.recent_history.last_epoch_avail * 100).toFixed(2))}%`}
+                                    hasFlex
+                                    isSmall
+                                />
+                            </div>
+
+                            <div className="flex flex-wrap items-stretch gap-3">
+                                <CardHorizontal
+                                    label="Last Seen"
+                                    value={
+                                        <div className="text-lg">
+                                            {formatDistanceToNow(
+                                                sub(new Date(), {
+                                                    hours: parseInt(node.last_seen_ago.split(':')[0]),
+                                                    minutes: parseInt(node.last_seen_ago.split(':')[1]),
+                                                    seconds: parseInt(node.last_seen_ago.split(':')[2]),
+                                                }),
+                                                { addSuffix: true },
+                                            )}
+                                        </div>
+                                    }
+                                    isSmall
+                                />
+
+                                <CardHorizontal
+                                    label="First Check"
+                                    value={new Date(node.first_check).toLocaleString()}
+                                    isSmall
+                                />
+                            </div>
                         </div>
-
-                        <div className="min-w-[150px]">
-                            <Item label="First Check" value={<>{new Date(node.first_check).toLocaleString()}</>} />
-                        </div>
-
-                        <Item
-                            label="Last Epoch Availability"
-                            value={<>{parseFloat((node.recent_history.last_epoch_avail * 100).toFixed(2))}%</>}
-                        />
                     </div>
 
-                    <div className="text-right font-medium text-slate-400">{node.ver}</div>
+                    <div className="w-full text-sm font-medium text-slate-400">{node.ver}</div>
                 </div>
-            </BigCard>
+            </CardBordered>
         </div>
     );
 }

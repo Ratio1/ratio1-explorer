@@ -2,12 +2,11 @@ import { HeroEpochTimer } from '@/components/HeroEpochTimer';
 import { cachedGetActiveNodes } from '@/lib/api';
 import { getNodes } from '@/lib/api/oracles';
 import * as types from '@/typedefs/blockchain';
-import clsx from 'clsx';
 import { sum, sumBy } from 'lodash';
 import { notFound } from 'next/navigation';
-import { FunctionComponent, JSX, PropsWithChildren } from 'react';
 import { RiTimeLine } from 'react-icons/ri';
-import { BorderedCard } from './shared/BorderedCard';
+import { CardBordered } from './shared/cards/CardBordered';
+import { CardHorizontal } from './shared/cards/CardHorizontal';
 
 export default async function Hero() {
     let nodesResponse: types.OraclesDefaultResult;
@@ -51,7 +50,7 @@ export default async function Hero() {
 
     return (
         <div className="w-full">
-            <BorderedCard>
+            <CardBordered>
                 <div className="w-full bg-white px-6 py-6">
                     <div className="col w-full gap-5">
                         <div className="text-[26px] font-bold">Nodes</div>
@@ -106,38 +105,7 @@ export default async function Hero() {
                         </div>
                     </div>
                 </div>
-            </BorderedCard>
+            </CardBordered>
         </div>
     );
 }
-
-const CardHorizontal = ({
-    label,
-    value,
-    hasFlex,
-}: {
-    label: string | JSX.Element;
-    value: number | string | JSX.Element;
-    hasFlex?: boolean;
-}) => {
-    return (
-        <Card hasFlex={hasFlex}>
-            <div className="row justify-between gap-12 px-6 py-6">
-                <div className="text-[15px] font-medium text-slate-500">{label}</div>
-                <div className="text-2xl font-semibold">{value}</div>
-            </div>
-        </Card>
-    );
-};
-
-const Card: FunctionComponent<PropsWithChildren<{ hasFlex?: boolean }>> = ({ children, hasFlex }) => {
-    return (
-        <div
-            className={clsx('min-w-48 rounded-xl bg-slate-100', {
-                'flex-1': hasFlex,
-            })}
-        >
-            {children}
-        </div>
-    );
-};

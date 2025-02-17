@@ -6,8 +6,10 @@
         "dev": "dotenv -e .env.production.testnet next dev --turbopack",
         "dev:mainnet": "dotenv -e .env.production.mainnet next dev --turbopack",
         "dev:testnet": "dotenv -e .env.production.testnet next dev --turbopack",
+        "dev:devnet": "dotenv -e .env.production.devnet next dev --turbopack",
         "build:mainnet": "dotenv -e .env.production.mainnet next build",
         "build:testnet": "dotenv -e .env.production.testnet next build",
+        "build:devnet": "dotenv -e .env.production.devnet next build",
         "start": "next start",
         "lint": "next lint"
     },

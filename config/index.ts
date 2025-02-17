@@ -10,12 +10,13 @@ export const getCurrentEpoch = () =>
 export const getNextEpochTimestamp = (): Date =>
     addSeconds(config.genesisDate, (getCurrentEpoch() + 1) * config.epochDurationInSeconds);
 
-export const urls = {
-    mainnet: 'https://ratio1-explorer.vercel.app',
-    testnet: 'https://ratio1-testnet-explorer.vercel.app',
+export const domains = {
+    mainnet: 'ratio1-explorer.vercel.app',
+    testnet: 'ratio1-testnet-explorer.vercel.app',
+    devnet: 'ratio1-devnet-explorer.vercel.app',
 };
 
-const environment = process.env.NEXT_PUBLIC_ENVIRONMENT as 'mainnet' | 'testnet';
+const environment = process.env.NEXT_PUBLIC_ENVIRONMENT as 'mainnet' | 'testnet' | 'devnet';
 
 const config: Config = {
     environment,

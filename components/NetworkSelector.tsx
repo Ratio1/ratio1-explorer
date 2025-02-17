@@ -1,22 +1,22 @@
 'use client';
 
-import config, { urls } from '@/config';
+import config, { domains } from '@/config';
+import { ApiContextType, useApiContext } from '@/lib/contexts/apiContext';
 import { Select, SelectItem } from '@heroui/select';
 import { SharedSelection } from '@heroui/system';
 import clsx from 'clsx';
 import { useState } from 'react';
 
-const networks = [
-    {
-        key: 'mainnet',
-    },
-    {
-        key: 'testnet',
-    },
-];
+const networks = ['mainnet', 'testnet', 'devnet'];
 
 export const NetworkSelector = () => {
-    const [keys, setKeys] = useState(new Set<'mainnet' | 'testnet'>([config.environment]));
+    const { pingData, pingError, isPingLoading } = useApiContext() as ApiContextType;
+
+    // useEffect(() => {
+    //     console.log({ pingData, pingError, isPingLoading });
+    // }, [pingData, pingError, isPingLoading]);
+
+    const [keys, setKeys] = useState(new Set<'mainnet' | 'testnet' | 'devnet'>([config.environment]));
 
     return (
         <Select
@@ -28,13 +28,13 @@ export const NetworkSelector = () => {
                 selectorIcon: '!text-white mt-0.5 mr-0.5',
                 innerWrapper: 'gap-0.5',
             }}
-            items={networks}
+            items={networks.map((network) => ({ key: network }))}
             selectedKeys={keys}
             onSelectionChange={(value: SharedSelection) => {
-                const network = value.anchorKey as 'mainnet' | 'testnet';
+                const network = value.anchorKey as 'mainnet' | 'testnet' | 'devnet';
 
                 if (network) {
-                    window.location.href = urls[network];
+                    window.location.href = `https://${domains[network]}`;
                     setKeys(new Set([network]));
                 }
             }}
@@ -64,14 +64,13 @@ export const NetworkSelector = () => {
             }}
             variant="flat"
             startContent={
-                // TODO: Use data from the API
-                false ? (
+                isPingLoading ? (
                     <></>
                 ) : (
                     <div
                         className={clsx('ml-1 mt-0.5 h-2 min-h-2 w-2 min-w-2 rounded-full', {
-                            'bg-green-500': true,
-                            'bg-red-500': false,
+                            'bg-green-500': !pingError,
+                            'bg-red-500': pingData?.status === 'error' || !!pingError,
                         })}
                     ></div>
                 )

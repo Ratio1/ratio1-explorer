@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { createConfig, http, WagmiProvider } from 'wagmi';
 import { baseSepolia } from 'wagmi/chains';
+import { ApiProvider } from './contexts/apiContext';
 import { BlockchainProvider } from './contexts/blockchain';
 
 const wagmiConfig = createConfig({
@@ -22,7 +23,9 @@ export function Wrappers({ children }: { children: React.ReactNode }) {
         <HeroUIProvider>
             <WagmiProvider config={wagmiConfig}>
                 <QueryClientProvider client={queryClient}>
-                    <BlockchainProvider>{children}</BlockchainProvider>
+                    <BlockchainProvider>
+                        <ApiProvider>{children}</ApiProvider>
+                    </BlockchainProvider>
                 </QueryClientProvider>
             </WagmiProvider>
         </HeroUIProvider>

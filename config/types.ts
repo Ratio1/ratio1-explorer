@@ -1,7 +1,7 @@
 import { EthAddress } from '@/typedefs/blockchain';
 
 export type Config = {
-    environment: 'mainnet' | 'testnet';
+    environment: 'mainnet' | 'testnet' | 'devnet';
     url: string;
     backendUrl: string;
     oraclesUrl: string;

@@ -10,8 +10,7 @@ export default async function Header() {
             <div className="row">
                 <Link href="/">
                     <div className="flex items-end gap-2.5">
-                        <Image className="h-7 w-auto" src="/logo.svg" width={0} height={0} alt="Logo" priority />
-                        <div className="-mt-1 text-2xl font-semibold leading-none text-primary">Explorer</div>
+                        <Image className="h-8 w-auto" src="/logo_explorer.svg" width={0} height={0} alt="Logo" priority />
                     </div>
                 </Link>
             </div>
@@ -20,8 +19,10 @@ export default async function Header() {
                 <div className="flex">
                     <RoundedCard>
                         <div className="row gap-1.5 px-4 py-3">
-                            <Image className="h-6 w-auto" src="/base_sepolia.webp" width={32} height={32} alt="Blockchain" />
-                            <div className="text-sm font-medium">Base {config.environment === 'testnet' ? 'Sepolia' : ''}</div>
+                            <Image className="h-6 w-auto" src="/base.webp" width={32} height={32} alt="Blockchain" />
+                            <div className="text-sm font-medium">
+                                {config.environment === 'mainnet' ? 'Base' : 'Base Sepolia'}
+                            </div>
                         </div>
                     </RoundedCard>
                 </div>

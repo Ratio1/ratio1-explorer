@@ -1,3 +1,4 @@
+import { Alert } from '@/app/server-components/shared/Alert';
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
 import { CardFlexible } from '@/app/server-components/shared/cards/CardFlexible';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
@@ -6,9 +7,11 @@ import { cachedGetActiveNodes } from '@/lib/api';
 import { getNodeEpochsRange } from '@/lib/api/oracles';
 import { arrayAverage } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
+import clsx from 'clsx';
 import { formatDistanceToNow, sub } from 'date-fns';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
+import { RiCloseLine } from 'react-icons/ri';
 import { isAddress } from 'viem';
 
 export async function generateMetadata({ params }) {
@@ -29,11 +32,10 @@ export async function generateMetadata({ params }) {
             .find((node) => node.eth_addr == nodeEthAddr);
 
         if (!node) {
-            console.log('Not found 1');
             notFound();
         }
     } catch (error) {
-        console.log('Not found 2');
+        console.error(error);
         notFound();
     }
 
@@ -66,7 +68,6 @@ export default async function NodePage({ params }) {
             .find((node) => node.eth_addr == nodeEthAddr);
 
         if (!node) {
-            console.log('Not found 3');
             notFound();
         }
 
@@ -74,9 +75,21 @@ export default async function NodePage({ params }) {
 
         epochsResponse = await cachedGetEpochs(nodeEthAddr, 1, currentEpoch - 1);
         console.log('[NodePage] Epochs', epochsResponse);
-    } catch (error) {
-        console.log('Not found 4');
-        notFound();
+    } catch (error: any) {
+        console.error(error);
+        if (error.message.includes('Oracle state is not valid')) {
+            return (
+                <div className="center-all flex-1">
+                    <Alert
+                        icon={<RiCloseLine />}
+                        title="Unexpected Error"
+                        description={<div>Oracle state is not valid, please contact the development team.</div>}
+                    />
+                </div>
+            );
+        } else {
+            notFound();
+        }
     }
 
     return (
@@ -102,7 +115,24 @@ export default async function NodePage({ params }) {
                                     </div>
                                 </CardFlexible>
 
-                                <CardHorizontal label="Score" value={node.score} isSmall />
+                                <CardHorizontal
+                                    label="Status"
+                                    value={
+                                        <div className="row gap-1.5">
+                                            <div
+                                                className={clsx('h-3 w-3 rounded-full', {
+                                                    'bg-teal-500': epochsResponse.node_is_online,
+                                                    'bg-red-500': !epochsResponse.node_is_online,
+                                                })}
+                                            ></div>
+
+                                            <div className="text-lg">
+                                                {epochsResponse.node_is_online ? 'Online' : 'Offline'}
+                                            </div>
+                                        </div>
+                                    }
+                                    isSmall
+                                />
 
                                 <CardHorizontal
                                     label="Last Seen"
@@ -118,12 +148,14 @@ export default async function NodePage({ params }) {
                                             )}
                                         </div>
                                     }
-                                    isFlexible
                                     isSmall
+                                    isFlexible
                                 />
                             </div>
 
                             <div className="flex flex-wrap items-stretch gap-3">
+                                <CardHorizontal label="Score" value={node.score} isSmall />
+
                                 <CardHorizontal
                                     label="First Check"
                                     value={<div className="text-lg">{new Date(node.first_check).toLocaleString()}</div>}
@@ -133,7 +165,7 @@ export default async function NodePage({ params }) {
                         </div>
                     </div>
 
-                    <div className="w-full text-sm font-medium text-slate-400">{node.ver}</div>
+                    <div className="w-full text-sm font-medium text-slate-400">{node.ver?.replace(/\|(?=\S)/g, '| ')}</div>
                 </div>
             </CardBordered>
 
@@ -163,6 +195,29 @@ export default async function NodePage({ params }) {
                                     value={`${parseFloat(((arrayAverage(epochsResponse.epochs_vals) / 255) * 100).toFixed(2))}%`}
                                     isSmall
                                     isFlexible
+                                />
+                            </div>
+
+                            <div className="flex flex-wrap items-stretch gap-3">
+                                <CardHorizontal label="Active Epochs" value={node.non_zero} isSmall />
+
+                                <CardHorizontal
+                                    label="Last 10 Epochs Availability"
+                                    value={
+                                        <div className="row gap-1">
+                                            {epochsResponse.epochs_vals.slice(-10).map((val, index) => (
+                                                <div
+                                                    key={index}
+                                                    className={clsx('h-5 w-5 rounded-md', {
+                                                        'bg-green-500': val >= 200,
+                                                        'bg-yellow-500': val >= 100 && val < 200,
+                                                        'bg-red-500': val < 100,
+                                                    })}
+                                                ></div>
+                                            ))}
+                                        </div>
+                                    }
+                                    isSmall
                                 />
                             </div>
                         </div>

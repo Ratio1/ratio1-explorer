@@ -4,12 +4,13 @@ import * as types from '@/typedefs/blockchain';
 import { NodeState, R1Address } from '@/typedefs/blockchain';
 import Node from './Node';
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 
 export default async function List({ currentPage }: { currentPage: number }) {
     console.log('List received page', currentPage);
 
     const response: types.OraclesDefaultResult = await cachedGetActiveNodes();
+    console.log('Active Nodes', response);
 
     const nodes: {
         [key: string]: NodeState;

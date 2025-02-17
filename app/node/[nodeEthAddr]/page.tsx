@@ -2,6 +2,7 @@ import { Alert } from '@/app/server-components/shared/Alert';
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
 import { CardFlexible } from '@/app/server-components/shared/cards/CardFlexible';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
+import EpochsChart from '@/components/Nodes/EpochsChart';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { cachedGetActiveNodes } from '@/lib/api';
 import { getNodeEpochsRange } from '@/lib/api/oracles';
@@ -58,10 +59,11 @@ export default async function NodePage({ params }) {
     let epochsResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
     let nodeResponse: types.OraclesDefaultResult;
     let node: types.NodeState | undefined;
+    let currentEpoch: number;
 
     try {
         nodeResponse = await cachedGetActiveNodes(); // TODO: Replace with the getNode endpoint
-        const currentEpoch = nodeResponse.result.server_current_epoch;
+        currentEpoch = nodeResponse.result.server_current_epoch;
 
         node = Object.values(nodeResponse.result.nodes)
             .slice(1)
@@ -204,17 +206,28 @@ export default async function NodePage({ params }) {
                                 <CardHorizontal
                                     label="Last 10 Epochs Availability"
                                     value={
-                                        <div className="row gap-1">
-                                            {epochsResponse.epochs_vals.slice(-10).map((val, index) => (
-                                                <div
-                                                    key={index}
-                                                    className={clsx('h-5 w-5 rounded-md', {
-                                                        'bg-green-500': val >= 200,
-                                                        'bg-yellow-500': val >= 100 && val < 200,
-                                                        'bg-red-500': val < 100,
-                                                    })}
-                                                ></div>
-                                            ))}
+                                        <div className="row gap-6">
+                                            <div className="row gap-1">
+                                                {epochsResponse.epochs_vals.slice(-10).map((val, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className={clsx('h-5 w-5 rounded-md', {
+                                                            'bg-teal-500': val >= 200,
+                                                            'bg-yellow-500': val >= 100 && val < 200,
+                                                            'bg-red-500': val < 100,
+                                                        })}
+                                                    ></div>
+                                                ))}
+                                            </div>
+
+                                            <div className="h-[40px] w-[200px]">
+                                                <EpochsChart
+                                                    data={epochsResponse.epochs_vals.map((value, index, array) => ({
+                                                        Availability: (100 * value) / 255,
+                                                        Epoch: currentEpoch - array.length + index + 1,
+                                                    }))}
+                                                />
+                                            </div>
                                         </div>
                                     }
                                     isSmall

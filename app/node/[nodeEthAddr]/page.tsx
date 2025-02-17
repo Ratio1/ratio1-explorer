@@ -77,9 +77,9 @@ export default async function NodePage({ params }) {
         <div className="col flex-1 gap-6">
             <BigCard
                 label={
-                    <div className="col">
-                        <div className="text-[28px] font-bold">Node</div>
-                        <div className="text-xl font-medium text-slate-500">{lastEpochResponse.node_alias}</div>
+                    <div className="row w-full justify-between gap-6">
+                        <div className="text-[26px] font-bold">Node</div>
+                        <div className="text-xl font-semibold text-slate-500">{lastEpochResponse.node_alias}</div>
                     </div>
                 }
             >

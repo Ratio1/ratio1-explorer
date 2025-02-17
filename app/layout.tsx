@@ -23,8 +23,10 @@ export default async function RootLayout({
         <html lang="en">
             <body className={`${monaSans.variable} ${robotoMono.variable} antialiased`}>
                 <Wrappers>
-                    <div className="col layout min-h-screen gap-8 py-6">
-                        <Header />
+                    <div className="col layout min-h-screen gap-6 py-6">
+                        <div className="pb-4">
+                            <Header />
+                        </div>
 
                         <Suspense fallback={<TopBarSkeleton />}>
                             <TopBar />

@@ -23,7 +23,7 @@ export default function NodesPagination({ pageSize, nodesCount }: { pageSize: nu
     }
 
     return (
-        <div className="mx-auto">
+        <div className="mx-auto pt-2">
             <Pagination
                 page={currentPage}
                 onChange={(value) => {

@@ -1,3 +1,4 @@
+import { HeroEpochTimer } from '@/components/HeroEpochTimer';
 import { cachedGetActiveNodes } from '@/lib/api';
 import { getNodes } from '@/lib/api/oracles';
 import * as types from '@/typedefs/blockchain';
@@ -5,6 +6,7 @@ import clsx from 'clsx';
 import { sum, sumBy } from 'lodash';
 import { notFound } from 'next/navigation';
 import { FunctionComponent, JSX, PropsWithChildren } from 'react';
+import { RiTimeLine } from 'react-icons/ri';
 import { BorderedCard } from './shared/BorderedCard';
 
 export default async function Hero() {
@@ -50,7 +52,7 @@ export default async function Hero() {
     return (
         <div className="w-full">
             <BorderedCard>
-                <div className="w-full bg-white px-8 py-6">
+                <div className="w-full bg-white px-6 py-6">
                     <div className="col w-full gap-5">
                         <div className="text-[26px] font-bold">Nodes</div>
 
@@ -90,6 +92,16 @@ export default async function Hero() {
                                     label="Last 7 Epochs Avg. Availability"
                                     value={`${parseFloat(((getLast7EpochsAvgAvailability() / 255) * 100).toFixed(1))}%`}
                                 />
+
+                                <CardHorizontal
+                                    label={
+                                        <div className="row gap-1.5">
+                                            <RiTimeLine className="text-lg" />
+                                            <div>Epoch {nodesResponse.result.server_current_epoch} ends in</div>
+                                        </div>
+                                    }
+                                    value={<HeroEpochTimer />}
+                                />
                             </div>
                         </div>
                     </div>
@@ -104,7 +116,7 @@ const CardHorizontal = ({
     value,
     hasFlex,
 }: {
-    label: string;
+    label: string | JSX.Element;
     value: number | string | JSX.Element;
     hasFlex?: boolean;
 }) => {

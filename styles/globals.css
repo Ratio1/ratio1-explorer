@@ -27,6 +27,10 @@ body {
     @apply layout-max-width mx-auto px-4 sm:px-8;
 }
 
+.roboto {
+    @apply font-[family-name:var(--font-roboto-mono)];
+}
+
 /* Scrollbar */
 *::-webkit-scrollbar {
     width: 8px;

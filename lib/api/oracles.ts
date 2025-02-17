@@ -19,10 +19,15 @@ export const getNodes = async (): Promise<types.OraclesDefaultResult> => {
 export const getNodeLastEpoch = async (nodeEthAddr: types.EthAddress) =>
     _doGet<types.OraclesAvailabilityResult>(`/node_last_epoch?eth_node_addr=${nodeEthAddr}`);
 
+export const getNodeEpochsRange = async (nodeEthAddr: types.EthAddress, startEpoch: number, endEpoch: number) =>
+    _doGet<types.OraclesAvailabilityResult>(
+        `/node_epochs_range?eth_node_addr=${nodeEthAddr}&start_epoch=${startEpoch}&end_epoch=${endEpoch}`,
+    );
+
 export const getCurrentEpoch = async () => _doGet<types.OraclesAvailabilityResult>('/current_epoch');
 
 async function _doGet<T>(endpoint: string) {
-    const { data } = await axiosOracles.get<{
+    const response = await axiosOracles.get<{
         result: (
             | {
                   error: string;
@@ -32,6 +37,8 @@ async function _doGet<T>(endpoint: string) {
             types.OraclesDefaultResult;
         node_addr: types.R1Address;
     }>(endpoint);
+
+    const { data } = response;
 
     if ('error' in data.result) {
         throw new Error(data.result.error);

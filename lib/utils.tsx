@@ -1,3 +1,4 @@
+import config, { domains } from '@/config';
 import { Metadata } from 'next';
 
 export const getShortAddress = (address: string, size = 4) => `${address.slice(0, size)}...${address.slice(-size)}`;
@@ -26,7 +27,7 @@ export const generateMetadata = (
     openGraph: {
         title,
         description,
-        url: 'https://explorer.ratio1.ai', // TODO: Replace
+        url: `https://${domains[config.environment]}`,
         siteName: title,
         images: [
             {
@@ -57,7 +58,12 @@ export const generateMetadata = (
         creator: '@nextjs',
         images: [imageUrl],
     },
-    metadataBase: new URL('https://explorer.ratio1.ai'), // TODO: Replace
+    metadataBase: new URL(`https://${domains[config.environment]}`),
 });
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export const arrayAverage = (numbers: number[]): number => {
+    if (numbers.length === 0) return 0;
+    return numbers.reduce((sum, num) => sum + num, 0) / numbers.length;
+};

@@ -13,10 +13,10 @@ export default async function Hero() {
 
     try {
         nodesResponse = await getNodes();
-        console.log('[Hero.tsx] Nodes List', nodesResponse);
+        // console.log('[Hero.tsx] Nodes List', nodesResponse);
 
         activeNodesResponse = await cachedGetActiveNodes();
-        console.log('[Hero.tsx] Active Nodes', activeNodesResponse);
+        // console.log('[Hero.tsx] Active Nodes', activeNodesResponse);
     } catch (error) {
         return null;
     }
@@ -59,13 +59,13 @@ export default async function Hero() {
                                 <CardHorizontal
                                     label="Nodes"
                                     value={Object.keys(nodesResponse.result.nodes).length - 1}
-                                    hasFlex
+                                    isFlexible
                                 />
 
                                 <CardHorizontal
                                     label="Active Nodes"
                                     value={Object.keys(activeNodesResponse.result.nodes).length - 1}
-                                    hasFlex
+                                    isFlexible
                                 />
 
                                 <CardHorizontal

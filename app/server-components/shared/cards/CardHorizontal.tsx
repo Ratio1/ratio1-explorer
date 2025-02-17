@@ -5,16 +5,16 @@ import { CardFlexible } from './CardFlexible';
 export const CardHorizontal = ({
     label,
     value,
-    hasFlex,
+    isFlexible,
     isSmall,
 }: {
     label: string | JSX.Element;
     value: number | string | JSX.Element;
-    hasFlex?: boolean;
+    isFlexible?: boolean;
     isSmall?: boolean;
 }) => {
     return (
-        <CardFlexible hasFlex={hasFlex}>
+        <CardFlexible isFlexible={isFlexible}>
             <div className="row w-full justify-between gap-12 px-6 py-6">
                 <div className="text-[15px] font-medium text-slate-500">{label}</div>
                 <div

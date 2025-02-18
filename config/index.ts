@@ -1,6 +1,17 @@
 import { EthAddress } from '@/typedefs/blockchain';
 import { addSeconds } from 'date-fns';
-import { Config } from './types';
+
+export type Config = {
+    environment: 'mainnet' | 'testnet' | 'devnet';
+    url: string;
+    backendUrl: string;
+    oraclesUrl: string;
+    liquidityManagerContractAddress: EthAddress;
+    explorerUrl: string;
+    genesisDate: Date;
+    epochDurationInSeconds: number;
+    ndLicenseCap: bigint;
+};
 
 export const projectId = 'b0be1322e97542cc32eb568b37173a1c'; // Ratio1 Explorer
 
@@ -9,6 +20,9 @@ export const getCurrentEpoch = () =>
 
 export const getNextEpochTimestamp = (): Date =>
     addSeconds(config.genesisDate, (getCurrentEpoch() + 1) * config.epochDurationInSeconds);
+
+export const getLicenseFirstCheckEpoch = (firstCheck: Date) =>
+    Math.floor((firstCheck.getTime() / 1000 - config.genesisDate.getTime() / 1000) / config.epochDurationInSeconds);
 
 export const domains = {
     mainnet: 'ratio1-explorer.vercel.app',

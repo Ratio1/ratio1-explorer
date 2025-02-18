@@ -19,8 +19,8 @@ export const CardHorizontal = ({
                 <div className="text-[15px] font-medium text-slate-500">{label}</div>
                 <div
                     className={clsx('font-semibold', {
-                        'text-2xl': !isSmall,
-                        'text-xl': isSmall,
+                        'text-xl': !isSmall,
+                        'text-lg': isSmall,
                     })}
                 >
                     {value}

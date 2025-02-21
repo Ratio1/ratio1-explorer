@@ -1,5 +1,6 @@
 import config, { domains } from '@/config';
 import { Metadata } from 'next';
+import { usePublicClient } from 'wagmi';
 
 export const getShortAddress = (address: string, size = 4) => `${address.slice(0, size)}...${address.slice(-size)}`;
 
@@ -66,4 +67,29 @@ export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve
 export const arrayAverage = (numbers: number[]): number => {
     if (numbers.length === 0) return 0;
     return numbers.reduce((sum, num) => sum + num, 0) / numbers.length;
+};
+
+export const getBlockByTimestamp = async (targetTimestamp: number, publicClient: ReturnType<typeof usePublicClient>) => {
+    // Binary search for the block with the closest timestamp to the target timestamp
+    if (!publicClient) {
+        return;
+    }
+
+    let latestBlock = await publicClient.getBlock();
+    let earliestBlock = await publicClient.getBlock({ blockNumber: config.contractsGenesisBlock });
+
+    while (earliestBlock.number < latestBlock.number) {
+        const middleBlockNumber = earliestBlock.number + (latestBlock.number - earliestBlock.number) / 2n;
+        const middleBlock = await publicClient.getBlock({ blockNumber: middleBlockNumber });
+
+        if (middleBlock.timestamp === BigInt(targetTimestamp)) {
+            return middleBlock.number;
+        } else if (middleBlock.timestamp < BigInt(targetTimestamp)) {
+            earliestBlock = middleBlock;
+        } else {
+            latestBlock = middleBlock;
+        }
+    }
+
+    return earliestBlock.number;
 };

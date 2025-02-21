@@ -7,8 +7,10 @@ export type Config = {
     backendUrl: string;
     oraclesUrl: string;
     liquidityManagerContractAddress: EthAddress;
+    r1ContractAddress: EthAddress;
     explorerUrl: string;
     genesisDate: Date;
+    contractsGenesisBlock: bigint;
     epochDurationInSeconds: number;
     ndLicenseCap: bigint;
 };
@@ -20,6 +22,9 @@ export const getCurrentEpoch = () =>
 
 export const getNextEpochTimestamp = (): Date =>
     addSeconds(config.genesisDate, (getCurrentEpoch() + 1) * config.epochDurationInSeconds);
+
+export const getEpochStartTimestamp = (epoch: number): Date =>
+    addSeconds(config.genesisDate, epoch * config.epochDurationInSeconds);
 
 export const getLicenseFirstCheckEpoch = (firstCheck: Date) =>
     Math.floor((firstCheck.getTime() / 1000 - config.genesisDate.getTime() / 1000) / config.epochDurationInSeconds);
@@ -38,8 +43,10 @@ const config: Config = {
     backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL as string,
     oraclesUrl: process.env.NEXT_PUBLIC_ORACLES_URL as string,
     liquidityManagerContractAddress: process.env.NEXT_PUBLIC_LIQUIDITY_MANAGER_CA as EthAddress,
+    r1ContractAddress: process.env.NEXT_PUBLIC_R1_CA as EthAddress,
     explorerUrl: process.env.NEXT_PUBLIC_EXPLORER_URL as string,
     genesisDate: new Date(process.env.NEXT_PUBLIC_GENESIS_DATE as string),
+    contractsGenesisBlock: BigInt(process.env.NEXT_PUBLIC_CONTRACTS_GENESIS_BLOCK as string),
     epochDurationInSeconds: Number(process.env.NEXT_PUBLIC_EPOCH_DURATION_SECONDS),
     ndLicenseCap: BigInt(process.env.NEXT_PUBLIC_ND_LICENSE_CAP as string),
 };

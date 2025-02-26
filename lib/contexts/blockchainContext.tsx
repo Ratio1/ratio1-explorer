@@ -73,7 +73,7 @@ export const BlockchainProvider = ({ children }) => {
 
         try {
             const totalSupply = await publicClient.readContract({
-                address: config.liquidityManagerContractAddress,
+                address: config.r1ContractAddress,
                 abi: ERC20Abi,
                 functionName: 'totalSupply',
             });

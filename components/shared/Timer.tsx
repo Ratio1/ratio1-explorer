@@ -60,10 +60,8 @@ export const Timer: FunctionComponent<
 
     return (
         <div className="roboto">
-            <span>
-                {String(duration.hours || 0).padStart(2, '0')}h{String(duration.minutes || 0).padStart(2, '0')}m
-                {String(duration.seconds || 0).padStart(2, '0')}s
-            </span>
+            {!!duration.hours && <span>{String(duration.hours || 0).padStart(2, '0')}h</span>}
+            {String(duration.minutes || 0).padStart(2, '0')}m{String(duration.seconds || 0).padStart(2, '0')}s
         </div>
     );
 };

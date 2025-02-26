@@ -16,8 +16,10 @@ import {
 import { getNodeEpochsRange, getNodeLastEpoch } from '@/lib/api/oracles';
 import { arrayAverage, getShortAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
+import { Tooltip } from '@heroui/tooltip';
 import clsx from 'clsx';
 import { formatDistanceToNow, subSeconds } from 'date-fns';
+import { round } from 'lodash';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { RiCloseLine, RiEye2Line } from 'react-icons/ri';
@@ -276,14 +278,31 @@ export default async function NodePage({ params }) {
                                         <div className="row gap-6">
                                             <div className="row gap-1">
                                                 {nodeResponse.epochs_vals.slice(-10).map((val, index) => (
-                                                    <div
-                                                        key={index}
-                                                        className={clsx('h-5 w-5 rounded-md', {
-                                                            'bg-teal-500': val >= 200,
-                                                            'bg-yellow-500': val >= 100 && val < 200,
-                                                            'bg-red-500': val < 100,
-                                                        })}
-                                                    ></div>
+                                                    <div key={index}>
+                                                        <Tooltip
+                                                            content={
+                                                                <div className="px-1 py-1.5 text-small">
+                                                                    <div className="font-semibold">
+                                                                        {round((val * 100) / 255, 2)}%
+                                                                    </div>
+                                                                    <div className="text-slate-500">
+                                                                        Epoch {getCurrentEpoch() - 10 + index}
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        >
+                                                            <div
+                                                                className={clsx(
+                                                                    'h-5 w-5 cursor-pointer rounded-md hover:opacity-75',
+                                                                    {
+                                                                        'bg-teal-500': val >= 200,
+                                                                        'bg-yellow-500': val >= 100 && val < 200,
+                                                                        'bg-red-500': val < 100,
+                                                                    },
+                                                                )}
+                                                            ></div>
+                                                        </Tooltip>
+                                                    </div>
                                                 ))}
                                             </div>
 

@@ -1,6 +1,6 @@
 import { JSX } from 'react';
 
-export const Item = ({ label, value }: { label: string; value: JSX.Element }) => {
+export const Item = ({ label, value }: { label: string; value: JSX.Element | string | bigint | number }) => {
     return (
         <div className="col text-sm font-medium">
             <div className="leading-5">{label}</div>

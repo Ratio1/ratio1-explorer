@@ -28,7 +28,7 @@ export default async function Hero() {
 
                         <div className="col gap-3">
                             <div className="row flex-wrap gap-3">
-                                <CardHorizontal label="Active Nodes" value={activeNodes.result.nodes_total_items} />
+                                <CardHorizontal label="Active Nodes" value={activeNodes.result.nodes_total_items} isFlexible />
 
                                 <CardHorizontal
                                     label={
@@ -59,19 +59,19 @@ export default async function Hero() {
                                                 <RiTimeLine />
                                             </div>
 
-                                            <div className="col gap-1.5">
+                                            <div className="col gap-[5px]">
                                                 <div className="text-[15px] font-medium leading-none text-slate-500">Epoch</div>
-                                                <div className="text-lg font-semibold leading-none">
+                                                <div className="text-base font-semibold leading-none">
                                                     {activeNodes.result.server_current_epoch}
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="col gap-1.5">
+                                        <div className="col gap-[5px]">
                                             <div className="text-[15px] font-medium leading-none text-slate-500">
                                                 Started at
                                             </div>
-                                            <div className="text-lg font-semibold leading-none">
+                                            <div className="text-base font-semibold leading-none">
                                                 {format(
                                                     getEpochStartTimestamp(activeNodes.result.server_current_epoch),
                                                     'PP, kk:mm',
@@ -79,7 +79,7 @@ export default async function Hero() {
                                             </div>
                                         </div>
 
-                                        <div className="col gap-1.5">
+                                        <div className="col gap-[5px]">
                                             <div className="text-[15px] font-medium leading-none text-slate-500">Time left</div>
                                             <div className="font-semibold leading-none">
                                                 <EpochTimer />

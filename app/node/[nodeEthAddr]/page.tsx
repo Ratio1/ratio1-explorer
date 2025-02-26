@@ -6,13 +6,7 @@ import { Tag } from '@/app/server-components/shared/Tag';
 import EpochsChart from '@/components/Nodes/EpochsChart';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getCurrentEpoch, getLicenseFirstCheckEpoch } from '@/config';
-import {
-    getMNDLicense,
-    getNDLicense,
-    getNodeToMNDLicenseId,
-    getNodeToNDLicenseId,
-    getOwnerOfLicense,
-} from '@/lib/api/blockchain';
+import { getMNDLicense, getNDLicense, getNodeToLicense, getOwnerOfLicense } from '@/lib/api/blockchain';
 import { getNodeEpochsRange, getNodeLastEpoch } from '@/lib/api/oracles';
 import { arrayAverage, getShortAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
@@ -63,14 +57,7 @@ const getNodeAvailability = async (nodeEthAddr: types.EthAddress, firstCheckEpoc
 };
 
 const getCachedLicenseAndNode = cache(async (nodeEthAddr: types.EthAddress) => {
-    const [ndLicenseId, mndLicenseId] = await Promise.all([
-        getNodeToNDLicenseId(nodeEthAddr),
-        getNodeToMNDLicenseId(nodeEthAddr),
-    ]);
-
-    const licenseType: 'ND' | 'MND' | 'GND' = !mndLicenseId ? 'ND' : mndLicenseId === 1n ? 'GND' : 'MND';
-    const licenseId = mndLicenseId || ndLicenseId;
-
+    const { licenseId, licenseType } = await getNodeToLicense(nodeEthAddr);
     const owner = await getOwnerOfLicense(licenseId, licenseType);
 
     const licenseCall = licenseType === 'ND' ? getNDLicense : getMNDLicense;
@@ -290,6 +277,7 @@ export default async function NodePage({ params }) {
                                                                     </div>
                                                                 </div>
                                                             }
+                                                            closeDelay={0}
                                                         >
                                                             <div
                                                                 className={clsx(

@@ -31,6 +31,18 @@ export async function getNodeToMNDLicenseId(address: EthAddress) {
     return licenseId;
 }
 
+export async function getNodeToLicense(address: EthAddress): Promise<{
+    licenseId: bigint;
+    licenseType: 'ND' | 'MND' | 'GND';
+}> {
+    const [ndLicenseId, mndLicenseId] = await Promise.all([getNodeToNDLicenseId(address), getNodeToMNDLicenseId(address)]);
+
+    const licenseType: 'ND' | 'MND' | 'GND' = !mndLicenseId ? 'ND' : mndLicenseId === 1n ? 'GND' : 'MND';
+    const licenseId = mndLicenseId || ndLicenseId;
+
+    return { licenseId, licenseType };
+}
+
 export async function getOwnerOfLicense(licenseId: bigint, type: 'ND' | 'MND' | 'GND'): Promise<EthAddress> {
     const address = type === 'ND' ? config.ndContractAddress : config.mndContractAddress;
     const abi = type === 'ND' ? NDContractAbi : MNDContractAbi;

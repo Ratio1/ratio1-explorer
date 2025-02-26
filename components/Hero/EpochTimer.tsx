@@ -9,7 +9,7 @@ export const EpochTimer = () => {
     const [timestamp, setTimestamp] = useState<Date>(getNextEpochTimestamp());
 
     return (
-        <div className="text-lg leading-none text-primary">
+        <div className="text-base leading-none text-primary">
             {!timestamp ? (
                 <Spinner size="sm" />
             ) : (

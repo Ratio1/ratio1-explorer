@@ -1,18 +1,17 @@
 'use client';
 
 import { BlockchainContextType, useBlockchainContext } from '@/lib/contexts/blockchain';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { RiMoneyDollarCircleLine } from 'react-icons/ri';
 import { CardWithIcon } from '../app/server-components/shared/cards/CardWithIcon';
 
 export const PriceCard = () => {
-    const { r1Price, fetchR1Price, fetchMintedR1InLastEpoch } = useBlockchainContext() as BlockchainContextType;
+    const { r1Price, fetchR1Price } = useBlockchainContext() as BlockchainContextType;
     const [r1PriceUsd, setR1PriceUsd] = useState<number>();
 
     // Init
     useEffect(() => {
         fetchR1Price();
-        fetchMintedR1InLastEpoch();
     }, []);
 
     useEffect(() => {
@@ -24,7 +23,10 @@ export const PriceCard = () => {
     }, [r1Price]);
 
     return (
-        <CardWithIcon icon={<RiMoneyDollarCircleLine />} label="Current Price">
+        <CardWithIcon
+            icon={<Image className="h-[22px] w-auto" src="/token.svg" width={0} height={0} alt="Logo" priority />}
+            label="Current Price"
+        >
             <div className="font-semibold leading-none text-primary">
                 {r1PriceUsd ? `$${parseFloat(r1PriceUsd.toFixed(2))}` : '...'}
             </div>

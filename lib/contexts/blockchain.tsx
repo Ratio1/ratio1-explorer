@@ -1,19 +1,20 @@
+import { ERC20Abi } from '@/blockchain/ERC20';
 import { LiquidityManagerAbi } from '@/blockchain/LiquidityManager';
 import config, { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
 import { createContext, useContext, useState } from 'react';
 import { usePublicClient } from 'wagmi';
 import { getBlockByTimestamp } from '../utils';
-import { ERC20Abi } from '@/blockchain/ERC20';
 
 export interface BlockchainContextType {
     // R1 Price
     r1Price: bigint;
     fetchR1Price: () => void;
-    // Minted R1
-    mintedR1InLastEpoch: bigint;
-    fetchMintedR1InLastEpoch: () => Promise<void>;
-    totalR1Supply: bigint;
-    fetchTotalR1Supply: () => Promise<void>;
+    // R1 Minted last epoch
+    R1MintedLastEpoch: bigint | undefined;
+    fetchR1MintedLastEpoch: () => Promise<void>;
+    // R1 Total supply
+    R1TotalSupply: bigint | undefined;
+    fetchR1TotalSupply: () => Promise<void>;
 }
 
 const BlockchainContext = createContext<BlockchainContextType | null>(null);
@@ -22,8 +23,8 @@ export const useBlockchainContext = () => useContext(BlockchainContext);
 
 export const BlockchainProvider = ({ children }) => {
     const [r1Price, setR1Price] = useState<bigint>(0n);
-    const [mintedR1InLastEpoch, setMintedR1InLastEpoch] = useState<bigint>(0n);
-    const [totalR1Supply, setTotalR1Supply] = useState<bigint>(0n);
+    const [R1MintedLastEpoch, setR1MintedLastEpoch] = useState<bigint>();
+    const [R1TotalSupply, setR1TotalSupply] = useState<bigint>();
 
     const publicClient = usePublicClient();
 
@@ -39,7 +40,7 @@ export const BlockchainProvider = ({ children }) => {
         }
     };
 
-    const fetchMintedR1InLastEpoch = async () => {
+    const fetchR1MintedLastEpoch = async () => {
         if (!publicClient) {
             return;
         }
@@ -61,13 +62,11 @@ export const BlockchainProvider = ({ children }) => {
             },
         });
 
-        const mintedR1 = logs.reduce((acc, log) => acc + BigInt(log.args.value ?? 0), 0n);
-        setMintedR1InLastEpoch(mintedR1);
-
-        console.log({ mintedR1, logs });
+        const value = logs.reduce((acc, log) => acc + BigInt(log.args.value ?? 0), 0n);
+        setR1MintedLastEpoch(value);
     };
 
-    const fetchTotalR1Supply = async () => {
+    const fetchR1TotalSupply = async () => {
         if (!publicClient) {
             return;
         }
@@ -77,7 +76,7 @@ export const BlockchainProvider = ({ children }) => {
             abi: ERC20Abi,
             functionName: 'totalSupply',
         });
-        setTotalR1Supply(totalSupply);
+        setR1TotalSupply(totalSupply);
     };
 
     return (
@@ -86,11 +85,12 @@ export const BlockchainProvider = ({ children }) => {
                 // R1 Price
                 r1Price,
                 fetchR1Price,
-                // Minted R1
-                mintedR1InLastEpoch,
-                fetchMintedR1InLastEpoch,
-                totalR1Supply,
-                fetchTotalR1Supply,
+                // R1 Minted last epoch
+                R1MintedLastEpoch,
+                fetchR1MintedLastEpoch,
+                // R1 Total supply
+                R1TotalSupply,
+                fetchR1TotalSupply,
             }}
         >
             {children}

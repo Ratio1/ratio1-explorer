@@ -3,9 +3,9 @@
 import { getNextEpochTimestamp } from '@/config';
 import { Spinner } from '@heroui/spinner';
 import { useState } from 'react';
-import { Timer } from './shared/Timer';
+import { Timer } from '../shared/Timer';
 
-export const HeroEpochTimer = () => {
+export const EpochTimer = () => {
     const [timestamp, setTimestamp] = useState<Date>(getNextEpochTimestamp());
 
     return (

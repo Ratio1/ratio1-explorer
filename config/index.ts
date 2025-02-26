@@ -29,8 +29,8 @@ export const getNextEpochTimestamp = (): Date =>
 export const getEpochStartTimestamp = (epoch: number): Date =>
     addSeconds(config.genesisDate, epoch * config.epochDurationInSeconds);
 
-export const getLicenseFirstCheckEpoch = (firstCheck: Date) =>
-    Math.floor((firstCheck.getTime() / 1000 - config.genesisDate.getTime() / 1000) / config.epochDurationInSeconds);
+export const getLicenseFirstCheckEpoch = (assignTimestamp: bigint) =>
+    Math.floor((Number(assignTimestamp) - config.genesisDate.getTime() / 1000) / config.epochDurationInSeconds);
 
 export const domains = {
     mainnet: 'ratio1-explorer.vercel.app',

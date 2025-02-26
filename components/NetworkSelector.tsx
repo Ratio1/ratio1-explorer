@@ -12,10 +12,6 @@ const networks = ['mainnet', 'testnet', 'devnet'];
 export const NetworkSelector = () => {
     const { pingData, pingError, isPingLoading } = useApiContext() as ApiContextType;
 
-    // useEffect(() => {
-    //     console.log({ pingData, pingError, isPingLoading });
-    // }, [pingData, pingError, isPingLoading]);
-
     const [keys, setKeys] = useState(new Set<'mainnet' | 'testnet' | 'devnet'>([config.environment]));
 
     return (
@@ -24,7 +20,7 @@ export const NetworkSelector = () => {
             classNames={{
                 trigger: 'min-h-12 bg-primary data-[hover=true]:bg-primary/85 rounded-full ',
                 label: 'group-data-[filled=true]:-translate-y-5',
-                value: 'font-medium !text-white pl-1.5',
+                value: 'font-medium text-[15px] !text-white pl-1.5',
                 selectorIcon: '!text-white mt-0.5 mr-0.5',
                 innerWrapper: 'gap-0.5',
             }}

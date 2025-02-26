@@ -18,6 +18,7 @@ type OraclesAvailabilityResult = {
     eth_signatures: EthAddress[];
     eth_addresses: EthAddress[];
     node_is_online: boolean;
+    node_is_oracle: boolean;
     node_version: string;
     node_last_seen_sec: number;
 };

@@ -20,7 +20,7 @@ export default async function Header() {
                     <CardRounded>
                         <div className="row gap-1.5 px-4 py-3">
                             <Image className="h-6 w-auto" src="/base.webp" width={32} height={32} alt="Blockchain" />
-                            <div className="text-sm font-medium">
+                            <div className="text-[15px] font-medium">
                                 {config.environment === 'mainnet' ? 'Base' : 'Base Sepolia'}
                             </div>
                         </div>

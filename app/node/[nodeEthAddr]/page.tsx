@@ -2,6 +2,7 @@ import { Alert } from '@/app/server-components/shared/Alert';
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
 import { CardFlexible } from '@/app/server-components/shared/cards/CardFlexible';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
+import { Tag } from '@/app/server-components/shared/Tag';
 import EpochsChart from '@/components/Nodes/EpochsChart';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getCurrentEpoch, getLicenseFirstCheckEpoch } from '@/config';
@@ -18,7 +19,8 @@ import * as types from '@/typedefs/blockchain';
 import clsx from 'clsx';
 import { formatDistanceToNow, subSeconds } from 'date-fns';
 import { notFound } from 'next/navigation';
-import { RiCloseLine } from 'react-icons/ri';
+import { cache } from 'react';
+import { RiCloseLine, RiEye2Line } from 'react-icons/ri';
 import { isAddress } from 'viem';
 
 export async function generateMetadata({ params }) {
@@ -28,13 +30,12 @@ export async function generateMetadata({ params }) {
         notFound();
     }
 
-    let response: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined;
+    let nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
 
     try {
-        // TODO: Maybe find a more efficient way to get the node alias
-        response = await getNodeLastEpoch(nodeEthAddr);
+        ({ nodeResponse } = await getCachedLicenseAndNode(nodeEthAddr));
 
-        if (!response) {
+        if (!nodeResponse) {
             notFound();
         }
     } catch (error) {
@@ -43,9 +44,9 @@ export async function generateMetadata({ params }) {
     }
 
     return {
-        title: `Node • ${response.node_alias} | Ratio1 Explorer`,
+        title: `Node • ${nodeResponse.node_alias} | Ratio1 Explorer`,
         openGraph: {
-            title: `Node • ${response.node_alias} | Ratio1 Explorer`,
+            title: `Node • ${nodeResponse.node_alias} | Ratio1 Explorer`,
         },
     };
 }
@@ -59,23 +60,37 @@ const getNodeAvailability = async (nodeEthAddr: types.EthAddress, firstCheckEpoc
     return response;
 };
 
-// const cachedGetNodeAvailability = cache(
-//     async (nodeEthAddr: types.EthAddress, firstCheckEpoch: number, currentEpoch: number) => {
-//         const response =
-//             firstCheckEpoch === currentEpoch
-//                 ? await getNodeLastEpoch(nodeEthAddr)
-//                 : await getNodeEpochsRange(nodeEthAddr, firstCheckEpoch, currentEpoch - 1);
+const getCachedLicenseAndNode = cache(async (nodeEthAddr: types.EthAddress) => {
+    const [ndLicenseId, mndLicenseId] = await Promise.all([
+        getNodeToNDLicenseId(nodeEthAddr),
+        getNodeToMNDLicenseId(nodeEthAddr),
+    ]);
 
-//         return response;
-//     },
-// );
+    const licenseType: 'ND' | 'MND' | 'GND' = !mndLicenseId ? 'ND' : mndLicenseId === 1n ? 'GND' : 'MND';
+    const licenseId = mndLicenseId || ndLicenseId;
+
+    const owner = await getOwnerOfLicense(licenseId, licenseType);
+
+    const licenseCall = licenseType === 'ND' ? getNDLicense : getMNDLicense;
+    const { lastClaimEpoch, assignTimestamp } = await licenseCall(licenseId);
+
+    const nodeResponse = await getNodeAvailability(nodeEthAddr, getLicenseFirstCheckEpoch(assignTimestamp), getCurrentEpoch());
+    console.log('[NodePage]', nodeResponse);
+
+    return {
+        licenseType,
+        licenseId,
+        owner,
+        lastClaimEpoch,
+        assignTimestamp,
+        nodeResponse,
+    };
+});
 
 export default async function NodePage({ params }) {
     const { nodeEthAddr } = await params;
 
-    const currentEpoch: number = getCurrentEpoch();
-    let response: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
-
+    let nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
     let licenseType: 'ND' | 'MND' | 'GND' | undefined;
     let licenseId: bigint | undefined;
     let owner: types.EthAddress | undefined;
@@ -83,31 +98,8 @@ export default async function NodePage({ params }) {
     let assignTimestamp: bigint | undefined;
 
     try {
-        const [ndLicenseId, mndLicenseId] = await Promise.all([
-            getNodeToNDLicenseId(nodeEthAddr),
-            getNodeToMNDLicenseId(nodeEthAddr),
-        ]);
-
-        licenseType = !mndLicenseId ? 'ND' : mndLicenseId === 1n ? 'GND' : 'MND';
-        licenseId = mndLicenseId || ndLicenseId;
-
-        owner = await getOwnerOfLicense(licenseId, licenseType);
-
-        const licenseCall = licenseType === 'ND' ? getNDLicense : getMNDLicense;
-        const license = await licenseCall(licenseId);
-
-        console.log('[NodePage] License', license);
-
-        lastClaimEpoch = license.lastClaimEpoch;
-        assignTimestamp = license.assignTimestamp;
-
-        response = await getNodeAvailability(nodeEthAddr, getLicenseFirstCheckEpoch(assignTimestamp), currentEpoch);
-
-        if (!response) {
-            throw new Error('Unable to fetch node availability.');
-        }
-
-        console.log('[NodePage]', response);
+        ({ nodeResponse, licenseType, licenseId, owner, lastClaimEpoch, assignTimestamp } =
+            await getCachedLicenseAndNode(nodeEthAddr));
     } catch (error: any) {
         console.error(error);
 
@@ -131,7 +123,18 @@ export default async function NodePage({ params }) {
             <CardBordered>
                 <div className="col w-full gap-5 bg-white px-6 py-6">
                     <div className="col w-full gap-5">
-                        <div className="text-[26px] font-bold">Node • {response.node_alias}</div>
+                        <div className="row gap-3">
+                            <div className="text-[26px] font-bold">Node • {nodeResponse.node_alias}</div>
+
+                            {nodeResponse.node_is_oracle && (
+                                <Tag>
+                                    <div className="row gap-1">
+                                        <RiEye2Line className="text-lg" />
+                                        <div className="text-[15px] font-medium">Oracle</div>
+                                    </div>
+                                </Tag>
+                            )}
+                        </div>
 
                         <div className="col gap-3">
                             {/* Row 1 */}
@@ -140,12 +143,12 @@ export default async function NodePage({ params }) {
                                     <div className="col w-full gap-0.5 px-6 py-6">
                                         <div className="row justify-between gap-12 font-medium leading-none">
                                             <div className="text-[15px] text-slate-500">ETH Address</div>
-                                            <CopyableAddress value={response.node_eth_address} size={8} isLarge />
+                                            <CopyableAddress value={nodeResponse.node_eth_address} size={8} isLarge />
                                         </div>
 
                                         <div className="row justify-between gap-12 font-medium leading-none">
                                             <div className="text-[15px] text-slate-500">Internal Address</div>
-                                            <CopyableAddress value={response.node as types.R1Address} size={8} isLarge />
+                                            <CopyableAddress value={nodeResponse.node as types.R1Address} size={8} isLarge />
                                         </div>
                                     </div>
                                 </CardFlexible>
@@ -156,12 +159,12 @@ export default async function NodePage({ params }) {
                                         <div className="row gap-1.5">
                                             <div
                                                 className={clsx('h-3 w-3 rounded-full', {
-                                                    'bg-teal-500': response.node_is_online,
-                                                    'bg-red-500': !response.node_is_online,
+                                                    'bg-teal-500': nodeResponse.node_is_online,
+                                                    'bg-red-500': !nodeResponse.node_is_online,
                                                 })}
                                             ></div>
 
-                                            <div>{response.node_is_online ? 'Online' : 'Offline'}</div>
+                                            <div>{nodeResponse.node_is_online ? 'Online' : 'Offline'}</div>
                                         </div>
                                     }
                                     isSmall
@@ -171,7 +174,7 @@ export default async function NodePage({ params }) {
                                     label="Last Seen"
                                     value={
                                         <div>
-                                            {formatDistanceToNow(subSeconds(new Date(), response.node_last_seen_sec), {
+                                            {formatDistanceToNow(subSeconds(new Date(), nodeResponse.node_last_seen_sec), {
                                                 addSuffix: true,
                                             })}
                                         </div>
@@ -183,13 +186,13 @@ export default async function NodePage({ params }) {
 
                             {/* Row 2 */}
                             <div className="flex flex-wrap items-stretch gap-3">
-                                <CardHorizontal label="Version" value={response.node_version.split('|')[0]} isSmall />
+                                <CardHorizontal label="Version" value={nodeResponse.node_version.split('|')[0]} isSmall />
                             </div>
                         </div>
                     </div>
 
                     <div className="w-full text-sm font-medium text-slate-400">
-                        {response.node_version.replace(/\|(?=\S)/g, '| ')}
+                        {nodeResponse.node_version.replace(/\|(?=\S)/g, '| ')}
                     </div>
                 </div>
             </CardBordered>
@@ -240,21 +243,21 @@ export default async function NodePage({ params }) {
                             <div className="flex flex-wrap items-stretch gap-3">
                                 <CardHorizontal
                                     label="Last Epoch Availability"
-                                    value={`${parseFloat(((response.epochs_vals[response.epochs_vals.length - 1] * 100) / 255).toFixed(2))}%`}
+                                    value={`${parseFloat(((nodeResponse.epochs_vals[nodeResponse.epochs_vals.length - 1] * 100) / 255).toFixed(2))}%`}
                                     isSmall
                                     isFlexible
                                 />
 
                                 <CardHorizontal
                                     label="Last Week Avg. Availability"
-                                    value={`${parseFloat(((arrayAverage(response.epochs_vals.slice(-7)) / 255) * 100).toFixed(2))}%`}
+                                    value={`${parseFloat(((arrayAverage(nodeResponse.epochs_vals.slice(-7)) / 255) * 100).toFixed(2))}%`}
                                     isSmall
                                     isFlexible
                                 />
 
                                 <CardHorizontal
                                     label="All Time Avg. Availability"
-                                    value={`${parseFloat(((arrayAverage(response.epochs_vals) / 255) * 100).toFixed(2))}%`}
+                                    value={`${parseFloat(((arrayAverage(nodeResponse.epochs_vals) / 255) * 100).toFixed(2))}%`}
                                     isSmall
                                     isFlexible
                                 />
@@ -263,7 +266,7 @@ export default async function NodePage({ params }) {
                             <div className="flex flex-wrap items-stretch gap-3">
                                 <CardHorizontal
                                     label="Active Epochs"
-                                    value={response.epochs_vals.filter((value) => value > 0).length}
+                                    value={nodeResponse.epochs_vals.filter((value) => value > 0).length}
                                     isSmall
                                 />
 
@@ -272,7 +275,7 @@ export default async function NodePage({ params }) {
                                     value={
                                         <div className="row gap-6">
                                             <div className="row gap-1">
-                                                {response.epochs_vals.slice(-10).map((val, index) => (
+                                                {nodeResponse.epochs_vals.slice(-10).map((val, index) => (
                                                     <div
                                                         key={index}
                                                         className={clsx('h-5 w-5 rounded-md', {
@@ -286,9 +289,9 @@ export default async function NodePage({ params }) {
 
                                             <div className="h-[40px] w-[200px]">
                                                 <EpochsChart
-                                                    data={response.epochs_vals.slice(-10).map((value, index, array) => ({
+                                                    data={nodeResponse.epochs_vals.slice(-10).map((value, index, array) => ({
                                                         Availability: (100 * value) / 255,
-                                                        Epoch: currentEpoch - array.length + index + 1,
+                                                        Epoch: getCurrentEpoch() - array.length + index + 1,
                                                     }))}
                                                 />
                                             </div>

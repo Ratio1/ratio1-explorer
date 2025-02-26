@@ -1,17 +1,17 @@
 import { EpochTimer } from '@/components/Hero/EpochTimer';
 import { R1MintedLastEpoch } from '@/components/Hero/R1MintedLastEpoch';
 import { R1TotalSupply } from '@/components/Hero/R1TotalSupply';
-import { cachedGetActiveNodes } from '@/lib/api';
+import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
 import { RiTimeLine } from 'react-icons/ri';
 import { CardBordered } from './shared/cards/CardBordered';
 import { CardHorizontal } from './shared/cards/CardHorizontal';
 
 export default async function Hero() {
-    let activeNodesResponse: types.OraclesDefaultResult;
+    let activeNodes: types.OraclesDefaultResult;
 
     try {
-        activeNodesResponse = await cachedGetActiveNodes();
+        activeNodes = await getActiveNodes();
     } catch (error) {
         return null;
     }
@@ -25,17 +25,13 @@ export default async function Hero() {
 
                         <div className="col gap-3">
                             <div className="row flex-wrap gap-3">
-                                <CardHorizontal
-                                    label="Active Nodes"
-                                    value={Object.keys(activeNodesResponse.result.nodes).length - 1}
-                                    isFlexible
-                                />
+                                <CardHorizontal label="Active Nodes" value={activeNodes.result.nodes_total_items} isFlexible />
 
                                 <CardHorizontal
                                     label={
                                         <div className="row gap-1.5">
                                             <RiTimeLine className="text-lg" />
-                                            <div>Epoch {activeNodesResponse.result.server_current_epoch} ends in</div>
+                                            <div>Epoch {activeNodes.result.server_current_epoch} ends in</div>
                                         </div>
                                     }
                                     value={<EpochTimer />}

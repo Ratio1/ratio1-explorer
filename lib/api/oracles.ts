@@ -6,16 +6,6 @@ import axios from 'axios';
 
 const oraclesApiURL = config.oraclesUrl;
 
-export const getNodes = async (): Promise<types.OraclesDefaultResult> => {
-    const response: Response = await fetch(`${oraclesApiURL}/nodes_list`);
-
-    if (!response.ok) {
-        throw new Error('Failed to fetch data.');
-    }
-
-    return response.json();
-};
-
 export const getNodeLastEpoch = async (nodeEthAddr: types.EthAddress) =>
     _doGet<types.OraclesAvailabilityResult>(`/node_last_epoch?eth_node_addr=${nodeEthAddr}`);
 

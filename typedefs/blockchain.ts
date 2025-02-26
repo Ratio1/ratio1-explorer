@@ -68,6 +68,10 @@ type ServerInfo = {
 
 type OraclesDefaultResult = {
     result: {
+        nodes_total_items: number;
+        nodes_total_pages: number;
+        nodes_items_per_page: number;
+        nodes_page: number;
         nodes: {
             [key: R1Address | string]: NodeState;
         };

@@ -3,7 +3,7 @@
 import { Pagination } from '@heroui/pagination';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export default function NodesPagination({ pageSize, nodesCount }: { pageSize: number; nodesCount: number }) {
+export default function NodesPagination({ total }: { total: number }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const { replace } = useRouter();
@@ -16,9 +16,7 @@ export default function NodesPagination({ pageSize, nodesCount }: { pageSize: nu
         replace(`${pathname}?${params.toString()}`);
     };
 
-    const getTotalPagesCount = () => Math.ceil(nodesCount / pageSize);
-
-    if (getTotalPagesCount() === 1) {
+    if (total === 1) {
         return null;
     }
 
@@ -34,7 +32,7 @@ export default function NodesPagination({ pageSize, nodesCount }: { pageSize: nu
                     item: 'w-8 h-8 text-small rounded-none bg-transparent',
                     cursor: 'bg-gradient-to-b from-primary-500 to-primary-600 rounded-md text-white font-bold',
                 }}
-                total={getTotalPagesCount()}
+                total={total}
             />
         </div>
     );

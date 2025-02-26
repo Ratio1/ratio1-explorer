@@ -5,7 +5,7 @@ import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizon
 import EpochsChart from '@/components/Nodes/EpochsChart';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getLicenseFirstCheckEpoch } from '@/config';
-import { cachedGetActiveNodes } from '@/lib/api';
+import { getActiveNodes } from '@/lib/api';
 import { getNodeEpochsRange, getNodeLastEpoch } from '@/lib/api/oracles';
 import { arrayAverage } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
@@ -23,13 +23,13 @@ export async function generateMetadata({ params }) {
         notFound();
     }
 
-    let nodeResponse: types.OraclesDefaultResult;
+    let activeNodes: types.OraclesDefaultResult;
     let node: types.NodeState | undefined;
 
     try {
-        nodeResponse = await cachedGetActiveNodes(); // TODO: Replace with the getNode endpoint
+        activeNodes = await getActiveNodes(); // TODO: Replace with the getNode endpoint
 
-        node = Object.values(nodeResponse.result.nodes)
+        node = Object.values(activeNodes.result.nodes)
             .slice(1)
             .find((node) => node.eth_addr == nodeEthAddr);
 
@@ -67,7 +67,7 @@ export default async function NodePage({ params }) {
     let currentEpoch: number;
 
     try {
-        nodeResponse = await cachedGetActiveNodes(); // TODO: Replace with the getNode endpoint
+        nodeResponse = await getActiveNodes(); // TODO: Replace with the getNode endpoint
         currentEpoch = nodeResponse.result.server_current_epoch;
 
         node = Object.values(nodeResponse.result.nodes)

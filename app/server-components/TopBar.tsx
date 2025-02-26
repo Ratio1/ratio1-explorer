@@ -2,26 +2,19 @@ import { CardWithIcon } from '@/app/server-components/shared/cards/CardWithIcon'
 import { PriceCard } from '@/components/PriceCard';
 import { Search } from '@/components/Search';
 import { getNextEpochTimestamp } from '@/config';
-import { cachedGetActiveNodes } from '@/lib/api';
+import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
 import { formatDistanceToNow } from 'date-fns';
 import { RiCpuLine, RiTimeLine } from 'react-icons/ri';
 
 export default async function TopBar() {
-    let response: types.OraclesDefaultResult;
+    let activeNodes: types.OraclesDefaultResult;
 
     try {
-        response = await cachedGetActiveNodes();
+        activeNodes = await getActiveNodes();
     } catch (error) {
         return;
     }
-
-    const activeNodes = Object.values(response.result.nodes)
-        .slice(1)
-        .filter((node) => {
-            const [hours, _minutes, _seconds] = node.last_seen_ago.split(':').map(Number);
-            return hours === 0;
-        });
 
     return (
         <div className="row w-full justify-between gap-12">
@@ -33,14 +26,14 @@ export default async function TopBar() {
                 <div className="row justify-end gap-3">
                     <CardWithIcon icon={<RiTimeLine />} label={`${formatDistanceToNow(getNextEpochTimestamp())} left`}>
                         <div className="pr-0.5 font-medium leading-none">
-                            Epoch <span className="font-semibold text-primary">{response.result.server_current_epoch}</span>
+                            Epoch <span className="font-semibold text-primary">{activeNodes.result.server_current_epoch}</span>
                         </div>
                     </CardWithIcon>
 
                     <PriceCard />
 
                     <CardWithIcon icon={<RiCpuLine />} label="Active Nodes">
-                        <div className="font-semibold leading-none text-primary">{activeNodes.length}</div>
+                        <div className="font-semibold leading-none text-primary">{activeNodes.result.nodes_total_items}</div>
                     </CardWithIcon>
                 </div>
             </div>

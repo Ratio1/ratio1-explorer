@@ -6,6 +6,7 @@ import EpochsChart from '@/components/Nodes/EpochsChart';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getLicenseFirstCheckEpoch } from '@/config';
 import { getActiveNodes } from '@/lib/api';
+import { getNodeToMNDLicenseId, getNodeToNDLicenseId } from '@/lib/api/blockchain';
 import { getNodeEpochsRange, getNodeLastEpoch } from '@/lib/api/oracles';
 import { arrayAverage } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }) {
     let node: types.NodeState | undefined;
 
     try {
-        activeNodes = await getActiveNodes(); // TODO: Replace with the getNode endpoint
+        activeNodes = await getActiveNodes(); // TODO: Replace with the node_epochs_range endpoint
 
         node = Object.values(activeNodes.result.nodes)
             .slice(1)
@@ -103,6 +104,21 @@ export default async function NodePage({ params }) {
         }
     }
 
+    let licenseType: 'ND' | 'MND' | 'GND' | undefined;
+
+    try {
+        const [ndLicenseId, mndLicenseId] = await Promise.all([
+            getNodeToNDLicenseId(nodeEthAddr),
+            getNodeToMNDLicenseId(nodeEthAddr),
+        ]);
+
+        licenseType = !mndLicenseId ? 'ND' : mndLicenseId === 1n ? 'GND' : 'MND';
+        const licenseId = Number(mndLicenseId || ndLicenseId);
+        console.log(`[${licenseType}] Node • ${licenseId}`);
+    } catch (error) {
+        console.error(error);
+    }
+
     return (
         <div className="col w-full flex-1 gap-6">
             <CardBordered>
@@ -111,6 +127,7 @@ export default async function NodePage({ params }) {
                         <div className="text-[26px] font-bold">Node • {node.alias}</div>
 
                         <div className="col gap-3">
+                            {/* Row 1 */}
                             <div className="flex flex-wrap items-stretch gap-3">
                                 <CardFlexible isFlexible>
                                     <div className="col w-full gap-0.5 px-6 py-6">
@@ -166,6 +183,7 @@ export default async function NodePage({ params }) {
                                 />
                             </div>
 
+                            {/* Row 2 */}
                             <div className="flex flex-wrap items-stretch gap-3">
                                 <CardHorizontal label="Score" value={node.score} isSmall />
 
@@ -174,6 +192,10 @@ export default async function NodePage({ params }) {
                                     value={<div>{new Date(node.first_check).toLocaleString()}</div>}
                                     isSmall
                                 />
+
+                                <CardHorizontal label="Version" value={node.ver.split('|')[0]} isSmall />
+
+                                {!!licenseType && <CardHorizontal label="License type" value={licenseType} isSmall />}
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { BlockchainContextType, useBlockchainContext } from '@/lib/contexts/blockchain';
+import { BlockchainContextType, useBlockchainContext } from '@/lib/contexts/blockchainContext';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { CardWithIcon } from '../app/server-components/shared/cards/CardWithIcon';

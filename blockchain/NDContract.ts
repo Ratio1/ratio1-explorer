@@ -227,6 +227,37 @@ export const NDContractAbi = [
         anonymous: false,
         inputs: [
             {
+                indexed: true,
+                internalType: 'address',
+                name: 'to',
+                type: 'address',
+            },
+            {
+                indexed: true,
+                internalType: 'uint256',
+                name: 'licenseId',
+                type: 'uint256',
+            },
+            {
+                indexed: false,
+                internalType: 'uint256',
+                name: 'rewardsAmount',
+                type: 'uint256',
+            },
+            {
+                indexed: false,
+                internalType: 'uint256',
+                name: 'totalEpochs',
+                type: 'uint256',
+            },
+        ],
+        name: 'RewardsClaimed',
+        type: 'event',
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
                 indexed: false,
                 internalType: 'address',
                 name: 'newSigner',
@@ -350,11 +381,6 @@ export const NDContractAbi = [
                 name: 'soldUnits',
                 type: 'uint256',
             },
-            {
-                internalType: 'uint256',
-                name: 'limitPerWallet',
-                type: 'uint256',
-            },
         ],
         stateMutability: 'view',
         type: 'function',
@@ -426,6 +452,19 @@ export const NDContractAbi = [
         inputs: [
             {
                 internalType: 'uint256',
+                name: 'tokenId',
+                type: 'uint256',
+            },
+        ],
+        name: 'burn',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function',
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
                 name: 'nLicensesToBuy',
                 type: 'uint256',
             },
@@ -435,9 +474,19 @@ export const NDContractAbi = [
                 type: 'uint8',
             },
             {
+                internalType: 'uint256',
+                name: 'maxAcceptedTokenPerLicense',
+                type: 'uint256',
+            },
+            {
                 internalType: 'bytes32',
                 name: 'invoiceUuid',
                 type: 'bytes32',
+            },
+            {
+                internalType: 'uint256',
+                name: 'usdMintLimit',
+                type: 'uint256',
             },
             {
                 internalType: 'bytes',
@@ -596,19 +645,6 @@ export const NDContractAbi = [
     },
     {
         inputs: [],
-        name: 'getCurrentLimitPerWallet',
-        outputs: [
-            {
-                internalType: 'uint256',
-                name: '',
-                type: 'uint256',
-            },
-        ],
-        stateMutability: 'view',
-        type: 'function',
-    },
-    {
-        inputs: [],
         name: 'getLicensePriceInUSD',
         outputs: [
             {
@@ -720,15 +756,23 @@ export const NDContractAbi = [
                         name: 'soldUnits',
                         type: 'uint256',
                     },
-                    {
-                        internalType: 'uint256',
-                        name: 'limitPerWallet',
-                        type: 'uint256',
-                    },
                 ],
                 internalType: 'struct PriceTier[]',
                 name: '',
                 type: 'tuple[]',
+            },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+    },
+    {
+        inputs: [],
+        name: 'getSigners',
+        outputs: [
+            {
+                internalType: 'address[]',
+                name: '',
+                type: 'address[]',
             },
         ],
         stateMutability: 'view',
@@ -748,6 +792,25 @@ export const NDContractAbi = [
             },
         ],
         name: 'isApprovedForAll',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool',
+            },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'nodeAddress',
+                type: 'address',
+            },
+        ],
+        name: 'isNodeActive',
         outputs: [
             {
                 internalType: 'bool',
@@ -822,19 +885,6 @@ export const NDContractAbi = [
         type: 'function',
     },
     {
-        inputs: [],
-        name: 'limitPerWallet',
-        outputs: [
-            {
-                internalType: 'uint256',
-                name: '',
-                type: 'uint256',
-            },
-        ],
-        stateMutability: 'view',
-        type: 'function',
-    },
-    {
         inputs: [
             {
                 internalType: 'uint256',
@@ -886,12 +936,12 @@ export const NDContractAbi = [
                 type: 'address',
             },
         ],
-        name: 'nodeToUser',
+        name: 'nodeToLicenseId',
         outputs: [
             {
-                internalType: 'address',
+                internalType: 'uint256',
                 name: '',
-                type: 'address',
+                type: 'uint256',
             },
         ],
         stateMutability: 'view',
@@ -1099,19 +1149,6 @@ export const NDContractAbi = [
             },
         ],
         name: 'setCompanyWallets',
-        outputs: [],
-        stateMutability: 'nonpayable',
-        type: 'function',
-    },
-    {
-        inputs: [
-            {
-                internalType: 'uint8',
-                name: 'limitPerWallet_',
-                type: 'uint8',
-            },
-        ],
-        name: 'setLimitPerWallet',
         outputs: [],
         stateMutability: 'nonpayable',
         type: 'function',
@@ -1411,6 +1448,25 @@ export const NDContractAbi = [
         inputs: [
             {
                 internalType: 'address',
+                name: '',
+                type: 'address',
+            },
+        ],
+        name: 'userUsdMintedAmount',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256',
+            },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
                 name: 'addr',
                 type: 'address',
             },
@@ -1418,6 +1474,11 @@ export const NDContractAbi = [
                 internalType: 'bytes32',
                 name: 'invoiceUuid',
                 type: 'bytes32',
+            },
+            {
+                internalType: 'uint256',
+                name: 'usdMintLimit',
+                type: 'uint256',
             },
             {
                 internalType: 'bytes',

@@ -71,12 +71,16 @@ export const BlockchainProvider = ({ children }) => {
             return;
         }
 
-        const totalSupply = await publicClient.readContract({
-            address: config.liquidityManagerContractAddress,
-            abi: ERC20Abi,
-            functionName: 'totalSupply',
-        });
-        setR1TotalSupply(totalSupply);
+        try {
+            const totalSupply = await publicClient.readContract({
+                address: config.liquidityManagerContractAddress,
+                abi: ERC20Abi,
+                functionName: 'totalSupply',
+            });
+            setR1TotalSupply(totalSupply);
+        } catch (error) {
+            console.error('Error fetching R1 total supply');
+        }
     };
 
     return (

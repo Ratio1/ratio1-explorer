@@ -1,5 +1,6 @@
 import { EthAddress } from '@/typedefs/blockchain';
 import { addSeconds } from 'date-fns';
+import { base, baseSepolia } from 'viem/chains';
 
 export type Config = {
     environment: 'mainnet' | 'testnet' | 'devnet';
@@ -7,6 +8,8 @@ export type Config = {
     backendUrl: string;
     oraclesUrl: string;
     liquidityManagerContractAddress: EthAddress;
+    ndContractAddress: EthAddress;
+    mndContractAddress: EthAddress;
     r1ContractAddress: EthAddress;
     explorerUrl: string;
     genesisDate: Date;
@@ -37,12 +40,16 @@ export const domains = {
 
 const environment = process.env.NEXT_PUBLIC_ENVIRONMENT as 'mainnet' | 'testnet' | 'devnet';
 
+export const chain = environment === 'mainnet' ? base : baseSepolia;
+
 const config: Config = {
     environment,
     url: process.env.NEXT_PUBLIC_URL as string,
     backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL as string,
     oraclesUrl: process.env.NEXT_PUBLIC_ORACLES_URL as string,
     liquidityManagerContractAddress: process.env.NEXT_PUBLIC_LIQUIDITY_MANAGER_CA as EthAddress,
+    ndContractAddress: process.env.NEXT_PUBLIC_ND_CA as EthAddress,
+    mndContractAddress: process.env.NEXT_PUBLIC_MND_CA as EthAddress,
     r1ContractAddress: process.env.NEXT_PUBLIC_R1_CA as EthAddress,
     explorerUrl: process.env.NEXT_PUBLIC_EXPLORER_URL as string,
     genesisDate: new Date(process.env.NEXT_PUBLIC_GENESIS_DATE as string),

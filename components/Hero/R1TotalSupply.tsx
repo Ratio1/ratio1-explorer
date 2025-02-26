@@ -1,6 +1,6 @@
 'use client';
 
-import { BlockchainContextType, useBlockchainContext } from '@/lib/contexts/blockchain';
+import { BlockchainContextType, useBlockchainContext } from '@/lib/contexts/blockchainContext';
 import { useEffect } from 'react';
 import { formatUnits } from 'viem';
 

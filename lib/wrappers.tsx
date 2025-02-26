@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { createConfig, http, WagmiProvider } from 'wagmi';
 import { baseSepolia } from 'wagmi/chains';
 import { ApiProvider } from './contexts/apiContext';
-import { BlockchainProvider } from './contexts/blockchain';
+import { BlockchainProvider } from './contexts/blockchainContext';
 
 const wagmiConfig = createConfig({
     chains: [baseSepolia],

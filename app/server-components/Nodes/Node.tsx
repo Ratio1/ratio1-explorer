@@ -18,6 +18,8 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
         </div>
     );
 
+    console.log(node);
+
     return (
         <Link href={`${routePath.node}/${node.eth_addr}`}>
             <CardBordered isHoverable>
@@ -43,12 +45,12 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
                     />
 
                     <div className="min-w-[50px]">
-                        <Item label="Score" value={<>{node.score}</>} />
+                        <Item label="Version" value={<>{node.ver.split('|')[0]}</>} />
                     </div>
 
-                    <div className="min-w-[150px]">
+                    {/* <div className="min-w-[150px]">
                         <Item label="First Check" value={<>{new Date(node.first_check).toLocaleString()}</>} />
-                    </div>
+                    </div> */}
 
                     <Item
                         label="Last Epoch Availability"

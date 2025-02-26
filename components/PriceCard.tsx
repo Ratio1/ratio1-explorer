@@ -6,12 +6,13 @@ import { RiMoneyDollarCircleLine } from 'react-icons/ri';
 import { CardWithIcon } from '../app/server-components/shared/cards/CardWithIcon';
 
 export const PriceCard = () => {
-    const { r1Price, fetchR1Price } = useBlockchainContext() as BlockchainContextType;
+    const { r1Price, fetchR1Price, fetchMintedR1InLastEpoch } = useBlockchainContext() as BlockchainContextType;
     const [r1PriceUsd, setR1PriceUsd] = useState<number>();
 
     // Init
     useEffect(() => {
         fetchR1Price();
+        fetchMintedR1InLastEpoch();
     }, []);
 
     useEffect(() => {

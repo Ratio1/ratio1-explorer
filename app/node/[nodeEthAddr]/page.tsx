@@ -6,9 +6,15 @@ import EpochsChart from '@/components/Nodes/EpochsChart';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getLicenseFirstCheckEpoch } from '@/config';
 import { getActiveNodes } from '@/lib/api';
-import { getNodeToMNDLicenseId, getNodeToNDLicenseId } from '@/lib/api/blockchain';
+import {
+    getMNDLicense,
+    getNDLicense,
+    getNodeToMNDLicenseId,
+    getNodeToNDLicenseId,
+    getOwnerOfLicense,
+} from '@/lib/api/blockchain';
 import { getNodeEpochsRange, getNodeLastEpoch } from '@/lib/api/oracles';
-import { arrayAverage } from '@/lib/utils';
+import { arrayAverage, getShortAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import clsx from 'clsx';
 import { formatDistanceToNow, sub } from 'date-fns';
@@ -105,6 +111,10 @@ export default async function NodePage({ params }) {
     }
 
     let licenseType: 'ND' | 'MND' | 'GND' | undefined;
+    let licenseId: bigint | undefined;
+    let owner: types.EthAddress | undefined;
+    let lastClaimEpoch: bigint | undefined;
+    let assignTimestamp: bigint | undefined;
 
     try {
         const [ndLicenseId, mndLicenseId] = await Promise.all([
@@ -113,8 +123,17 @@ export default async function NodePage({ params }) {
         ]);
 
         licenseType = !mndLicenseId ? 'ND' : mndLicenseId === 1n ? 'GND' : 'MND';
-        const licenseId = Number(mndLicenseId || ndLicenseId);
-        console.log(`[${licenseType}] Node • ${licenseId}`);
+        licenseId = mndLicenseId || ndLicenseId;
+
+        owner = await getOwnerOfLicense(licenseId, licenseType);
+
+        const licenseCall = licenseType === 'ND' ? getNDLicense : getMNDLicense;
+        const license = await licenseCall(licenseId);
+
+        console.log('[NodePage] License', license);
+
+        lastClaimEpoch = license.lastClaimEpoch;
+        assignTimestamp = license.assignTimestamp;
     } catch (error) {
         console.error(error);
     }
@@ -194,8 +213,6 @@ export default async function NodePage({ params }) {
                                 />
 
                                 <CardHorizontal label="Version" value={node.ver.split('|')[0]} isSmall />
-
-                                {!!licenseType && <CardHorizontal label="License type" value={licenseType} isSmall />}
                             </div>
                         </div>
                     </div>
@@ -204,6 +221,43 @@ export default async function NodePage({ params }) {
                 </div>
             </CardBordered>
 
+            {/* License */}
+            <CardBordered>
+                <div className="col w-full gap-5 bg-white px-6 py-6">
+                    <div className="col w-full gap-5">
+                        <div className="text-2xl font-bold">License</div>
+
+                        <div className="col gap-3">
+                            {/* Row 1 */}
+                            <div className="flex flex-wrap items-stretch gap-3">
+                                {!!licenseType && <CardHorizontal label="Type" value={licenseType} isSmall />}
+
+                                {!!licenseId && <CardHorizontal label="ID" value={licenseId.toString()} isSmall />}
+
+                                {!!owner && <CardHorizontal label="Owner" value={getShortAddress(owner)} isSmall />}
+
+                                {!!assignTimestamp && (
+                                    <CardHorizontal
+                                        label="Assign timestamp"
+                                        value={new Date(Number(assignTimestamp) * 1000).toLocaleString()}
+                                        isSmall
+                                        isFlexible
+                                    />
+                                )}
+                            </div>
+
+                            {/* Row 2 */}
+                            <div className="flex flex-wrap items-stretch gap-3">
+                                {!!lastClaimEpoch && (
+                                    <CardHorizontal label="Last claimed epoch" value={lastClaimEpoch.toString()} isSmall />
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </CardBordered>
+
+            {/* Performance */}
             <CardBordered>
                 <div className="col w-full gap-5 bg-white px-6 py-6">
                     <div className="col w-full gap-5">

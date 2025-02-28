@@ -1,10 +1,8 @@
-'use client';
-
 import { LicenseUsageStats } from '@/app/server-components/shared/Licenses/LicenseUsageStats';
+import { SmallCard } from '@/components/Licenses/SmallCard';
 import { routePath } from '@/lib/routes';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { RiCpuLine } from 'react-icons/ri';
-import { SmallCard } from './SmallCard';
 
 interface Props {
     licenseId: number;
@@ -14,15 +12,8 @@ interface Props {
 }
 
 export const LicenseSmallCard = ({ licenseId, licenseType, totalClaimedAmount, totalAssignedAmount }: Props) => {
-    const router = useRouter();
-
     return (
-        <div
-            onClick={(e) => {
-                e.stopPropagation();
-                router.push(`${routePath.license}/${licenseId}`);
-            }}
-        >
+        <Link href={`${routePath.license}/${licenseId}`}>
             <SmallCard isHoverable>
                 <div className="col gap-1.5">
                     <div className="row justify-between text-sm font-medium">
@@ -39,6 +30,6 @@ export const LicenseSmallCard = ({ licenseId, licenseType, totalClaimedAmount, t
                     </div>
                 </div>
             </SmallCard>
-        </div>
+        </Link>
     );
 };

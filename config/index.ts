@@ -11,6 +11,7 @@ export type Config = {
     ndContractAddress: EthAddress;
     mndContractAddress: EthAddress;
     r1ContractAddress: EthAddress;
+    readerContractAddress: EthAddress;
     explorerUrl: string;
     genesisDate: Date;
     contractsGenesisBlock: bigint;
@@ -51,6 +52,7 @@ const config: Config = {
     ndContractAddress: process.env.NEXT_PUBLIC_ND_CA as EthAddress,
     mndContractAddress: process.env.NEXT_PUBLIC_MND_CA as EthAddress,
     r1ContractAddress: process.env.NEXT_PUBLIC_R1_CA as EthAddress,
+    readerContractAddress: process.env.NEXT_PUBLIC_READER_CA as EthAddress,
     explorerUrl: process.env.NEXT_PUBLIC_EXPLORER_URL as string,
     genesisDate: new Date(process.env.NEXT_PUBLIC_GENESIS_DATE as string),
     contractsGenesisBlock: BigInt(process.env.NEXT_PUBLIC_CONTRACTS_GENESIS_BLOCK as string),

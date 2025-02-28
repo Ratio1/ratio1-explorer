@@ -1,5 +1,6 @@
 import { MNDContractAbi } from '@/blockchain/MNDContract';
 import { NDContractAbi } from '@/blockchain/NDContract';
+import { ReaderAbi } from '@/blockchain/Reader';
 import config, { chain } from '@/config';
 import { EthAddress } from '@/typedefs/blockchain';
 import { createPublicClient, http } from 'viem';
@@ -88,4 +89,18 @@ export async function getMNDLicense(licenseId: bigint): Promise<{
         });
 
     return { totalAssignedAmount, totalClaimedAmount, lastClaimEpoch, assignTimestamp };
+}
+
+export async function getNodeLicenseDetails(nodeAddress: EthAddress) {
+    return await client
+        .readContract({
+            address: config.readerContractAddress,
+            abi: ReaderAbi,
+            functionName: 'getNodeLicenseDetails',
+            args: [nodeAddress],
+        })
+        .then((result) => ({
+            ...result,
+            licenseType: [undefined, 'ND', 'MND', 'GND'][result.licenseType] as 'ND' | 'MND' | 'GND' | undefined,
+        }));
 }

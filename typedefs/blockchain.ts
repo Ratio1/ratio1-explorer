@@ -1,6 +1,16 @@
 type R1Address = `0xai${string}`;
 type EthAddress = `0x${string}`;
 
+type License = {
+    nodeAddress: EthAddress;
+    totalAssignedAmount: bigint;
+    totalClaimedAmount: bigint;
+    lastClaimEpoch: bigint;
+    assignTimestamp: bigint;
+    lastClaimOracle: EthAddress;
+    isBanned: boolean;
+};
+
 type ComputeParam = {
     licenseId: bigint;
     nodeAddress: `0x${string}`;
@@ -96,6 +106,7 @@ export type {
     BuyLicenseRequest,
     ComputeParam,
     EthAddress,
+    License,
     NodeState,
     OraclesAvailabilityResult,
     OraclesDefaultResult,

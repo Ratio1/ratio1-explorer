@@ -13,7 +13,7 @@ interface Props {
 
 export const LicenseSmallCard = ({ licenseId, licenseType, totalClaimedAmount, totalAssignedAmount }: Props) => {
     return (
-        <Link href={`${routePath.license}/${licenseId}`}>
+        <Link href={`${routePath.license}/${licenseType}/${licenseId}`}>
             <SmallCard isHoverable>
                 <div className="col gap-1.5">
                     <div className="row justify-between text-sm font-medium">
@@ -22,7 +22,7 @@ export const LicenseSmallCard = ({ licenseId, licenseType, totalClaimedAmount, t
                             <div className="leading-none">License #{Number(licenseId)}</div>
                         </div>
 
-                        {licenseType && <div className="text-slate-400">{licenseType}</div>}
+                        {licenseType && <div className="text-slate-500">{licenseType}</div>}
                     </div>
 
                     <div className="w-52">

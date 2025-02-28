@@ -2,7 +2,7 @@ import { MNDContractAbi } from '@/blockchain/MNDContract';
 import { NDContractAbi } from '@/blockchain/NDContract';
 import { ReaderAbi } from '@/blockchain/Reader';
 import config, { chain } from '@/config';
-import { EthAddress } from '@/typedefs/blockchain';
+import * as types from '@/typedefs/blockchain';
 import { createPublicClient, http } from 'viem';
 
 const client = createPublicClient({
@@ -10,99 +10,7 @@ const client = createPublicClient({
     transport: http('https://base-sepolia.g.alchemy.com/v2/n2UXf8tPtZ242ZpCzspVBPVE_sQhe6S3'), // TODO: Use your RPC URL
 });
 
-export async function getNodeToNDLicenseId(address: EthAddress) {
-    const licenseId = await client.readContract({
-        address: config.ndContractAddress,
-        abi: NDContractAbi,
-        functionName: 'nodeToLicenseId',
-        args: [address],
-    });
-
-    return licenseId;
-}
-
-export async function getNodeToMNDLicenseId(address: EthAddress) {
-    const licenseId = await client.readContract({
-        address: config.mndContractAddress,
-        abi: MNDContractAbi,
-        functionName: 'nodeToLicenseId',
-        args: [address],
-    });
-
-    return licenseId;
-}
-
-export async function getNodeToLicense(address: EthAddress): Promise<{
-    licenseId: bigint;
-    licenseType: 'ND' | 'MND' | 'GND';
-}> {
-    const [ndLicenseId, mndLicenseId] = await Promise.all([getNodeToNDLicenseId(address), getNodeToMNDLicenseId(address)]);
-
-    const licenseType: 'ND' | 'MND' | 'GND' = !mndLicenseId ? 'ND' : mndLicenseId === 1n ? 'GND' : 'MND';
-    const licenseId = mndLicenseId || ndLicenseId;
-
-    return { licenseId, licenseType };
-}
-
-export async function getOwnerOfLicense(licenseId: bigint, type: 'ND' | 'MND' | 'GND'): Promise<EthAddress> {
-    const address = type === 'ND' ? config.ndContractAddress : config.mndContractAddress;
-    const abi = type === 'ND' ? NDContractAbi : MNDContractAbi;
-
-    const owner = await client.readContract({
-        address,
-        abi,
-        functionName: 'ownerOf',
-        args: [licenseId],
-    });
-
-    return owner;
-}
-
-export async function getNDLicense(licenseId: bigint): Promise<{
-    totalClaimedAmount: bigint;
-    lastClaimEpoch: bigint;
-    assignTimestamp: bigint;
-}> {
-    const [nodeAddress, totalClaimedAmount, lastClaimEpoch, assignTimestamp, lastClaimOracle, isBanned] =
-        await client.readContract({
-            address: config.ndContractAddress,
-            abi: NDContractAbi,
-            functionName: 'licenses',
-            args: [licenseId],
-        });
-
-    return { totalClaimedAmount, lastClaimEpoch, assignTimestamp };
-}
-
-export async function getMNDLicense(licenseId: bigint): Promise<{
-    totalAssignedAmount: bigint;
-    totalClaimedAmount: bigint;
-    lastClaimEpoch: bigint;
-    assignTimestamp: bigint;
-}> {
-    const [nodeAddress, totalAssignedAmount, totalClaimedAmount, lastClaimEpoch, assignTimestamp, lastClaimOracle] =
-        await client.readContract({
-            address: config.mndContractAddress,
-            abi: MNDContractAbi,
-            functionName: 'licenses',
-            args: [licenseId],
-        });
-
-    return { totalAssignedAmount, totalClaimedAmount, lastClaimEpoch, assignTimestamp };
-}
-
-export async function getNodeLicenseDetails(nodeAddress: EthAddress): Promise<{
-    licenseType: 'ND' | 'MND' | 'GND' | undefined;
-    licenseId: bigint;
-    owner: EthAddress;
-    nodeAddress: EthAddress;
-    totalAssignedAmount: bigint;
-    totalClaimedAmount: bigint;
-    lastClaimEpoch: bigint;
-    assignTimestamp: bigint;
-    lastClaimOracle: EthAddress;
-    isBanned: boolean;
-}> {
+export async function getNodeLicenseDetails(nodeAddress: types.EthAddress) {
     return await client
         .readContract({
             address: config.readerContractAddress,
@@ -114,4 +22,57 @@ export async function getNodeLicenseDetails(nodeAddress: EthAddress): Promise<{
             ...result,
             licenseType: [undefined, 'ND', 'MND', 'GND'][result.licenseType] as 'ND' | 'MND' | 'GND' | undefined,
         }));
+}
+
+export async function getOwnerOfLicense(
+    licenseType: 'ND' | 'MND' | 'GND',
+    licenseId: number | string,
+): Promise<types.EthAddress> {
+    const address = licenseType === 'ND' ? config.ndContractAddress : config.mndContractAddress;
+    const abi = licenseType === 'ND' ? NDContractAbi : MNDContractAbi;
+
+    return await client.readContract({
+        address,
+        abi,
+        functionName: 'ownerOf',
+        args: [BigInt(licenseId)],
+    });
+}
+
+export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: number | string): Promise<types.License> {
+    let nodeAddress: types.EthAddress,
+        totalAssignedAmount: bigint = config.ndLicenseCap,
+        totalClaimedAmount: bigint,
+        lastClaimEpoch: bigint,
+        assignTimestamp: bigint,
+        lastClaimOracle: types.EthAddress,
+        isBanned: boolean = false;
+
+    if (licenseType === 'ND') {
+        [nodeAddress, totalClaimedAmount, lastClaimEpoch, assignTimestamp, lastClaimOracle, isBanned] =
+            await client.readContract({
+                address: config.ndContractAddress,
+                abi: NDContractAbi,
+                functionName: 'licenses',
+                args: [BigInt(licenseId)],
+            });
+    } else {
+        [nodeAddress, totalAssignedAmount, totalClaimedAmount, lastClaimEpoch, assignTimestamp, lastClaimOracle] =
+            await client.readContract({
+                address: config.mndContractAddress,
+                abi: MNDContractAbi,
+                functionName: 'licenses',
+                args: [BigInt(licenseId)],
+            });
+    }
+
+    return {
+        nodeAddress,
+        totalAssignedAmount,
+        totalClaimedAmount,
+        lastClaimEpoch,
+        assignTimestamp,
+        lastClaimOracle,
+        isBanned,
+    };
 }

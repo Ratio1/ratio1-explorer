@@ -27,6 +27,16 @@ export default {
                 6: '6px',
             },
         },
+        screens: {
+            xs: '400px',
+            sm: '480px',
+            md: '768px',
+            layoutBreak: '836px',
+            lg: '1024px',
+            larger: '1232px',
+            xl: '1410px',
+            '2xl': '1536px',
+        },
     },
     plugins: [heroui()],
 } satisfies Config;

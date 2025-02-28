@@ -1,8 +1,8 @@
 import { arrayAverage } from '@/lib/utils';
 import { License } from '@/typedefs/blockchain';
 import clsx from 'clsx';
-import { RiTimeLine } from 'react-icons/ri';
 import { formatUnits } from 'viem';
+import { CardHorizontal } from '../cards/CardHorizontal';
 
 const nodePerformanceItems = [
     {
@@ -10,12 +10,12 @@ const nodePerformanceItems = [
         classes: 'bg-teal-100 text-teal-600',
     },
     {
-        label: 'All time average',
-        classes: 'bg-purple-100 text-purple-600',
+        label: 'Last Week Avg.',
+        classes: 'bg-orange-100 text-orange-600',
     },
     {
-        label: 'Last week average',
-        classes: 'bg-orange-100 text-orange-600',
+        label: 'All Time Avg.',
+        classes: 'bg-purple-100 text-purple-600',
     },
 ];
 
@@ -37,18 +37,14 @@ export const LicensePageCardDetails = ({ license, nodeEpochs }: { license: Licen
     );
 
     const getNodePerformanceItem = (key: number, label: string, value: number | undefined, classes: string) => (
-        <div key={key} className="row gap-2 sm:gap-3">
-            <div className={`rounded-full p-1.5 sm:p-3.5 ${classes}`}>
-                <RiTimeLine className="text-2xl" />
-            </div>
-
-            <div className="col gap-1 xl:gap-0">
-                <div className="text-sm leading-4 text-slate-500 xl:text-base">{label}</div>
-                <div className="text-sm font-medium xl:text-base">
-                    {value === undefined ? '...' : `${parseFloat(((value / 255) * 100).toFixed(1))}%`}
-                </div>
-            </div>
-        </div>
+        <CardHorizontal
+            key={key}
+            label={`${label} Availability`}
+            value={value === undefined ? '...' : `${parseFloat(((value / 255) * 100).toFixed(1))}%`}
+            isSmall
+            isFlexible
+            isDarker
+        />
     );
 
     const getNodePerformanceValue = (index: number): number | undefined => {
@@ -69,8 +65,8 @@ export const LicensePageCardDetails = ({ license, nodeEpochs }: { license: Licen
 
     return (
         <div className="px-5 py-5 md:px-8 md:py-7">
-            <div className="col gap-6 lg:gap-8">
-                <div className="border-b-2 border-slate-200 pb-6 text-sm lg:pb-8 lg:text-base xl:gap-0">
+            <div className="col gap-6 lg:gap-7">
+                <div className="border-b-2 border-slate-200 pb-6 text-sm lg:pb-7 lg:text-base xl:gap-0">
                     <div className="larger:flex-row flex w-full flex-col gap-6">
                         <div className="col flex-1 gap-3">
                             {getTitle('Details')}
@@ -111,14 +107,10 @@ export const LicensePageCardDetails = ({ license, nodeEpochs }: { license: Licen
                 <div className="col -mt-0.5 gap-3">
                     {getTitle('Node performance')}
 
-                    <div className="row gap-4 sm:gap-8">
-                        <div className="text-sm text-slate-500 sm:text-base">Uptime per epoch</div>
-
-                        <div className="flex flex-col gap-6 lg:flex-row lg:gap-10">
-                            {nodePerformanceItems.map(({ label, classes }, index) =>
-                                getNodePerformanceItem(index, label, getNodePerformanceValue(index), classes),
-                            )}
-                        </div>
+                    <div className="flex flex-wrap items-stretch gap-3">
+                        {nodePerformanceItems.map(({ label, classes }, index) =>
+                            getNodePerformanceItem(index, label, getNodePerformanceValue(index), classes),
+                        )}
                     </div>
                 </div>
             </div>

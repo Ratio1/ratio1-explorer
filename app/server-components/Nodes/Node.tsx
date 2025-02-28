@@ -41,6 +41,7 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
                     licenseType={licenseType}
                     totalAssignedAmount={totalAssignedAmount}
                     totalClaimedAmount={totalClaimedAmount}
+                    isLink
                 />
 
                 {/* Owner */}

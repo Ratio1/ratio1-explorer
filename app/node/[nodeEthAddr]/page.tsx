@@ -276,7 +276,7 @@ export default async function NodePage({ params }) {
                                                         >
                                                             <div
                                                                 className={clsx(
-                                                                    'h-5 w-5 cursor-pointer rounded-md hover:opacity-75',
+                                                                    'h-5 w-5 cursor-pointer rounded-md hover:opacity-70',
                                                                     {
                                                                         'bg-teal-500': val >= 200,
                                                                         'bg-yellow-500': val >= 100 && val < 200,

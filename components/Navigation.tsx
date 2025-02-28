@@ -14,7 +14,7 @@ export default function Navigation() {
             {navRoutes.map((routePath) => (
                 <div
                     key={routePath}
-                    className={clsx('cursor-pointer hover:opacity-60', {
+                    className={clsx('cursor-pointer hover:opacity-70', {
                         [activeStyle]: routePath === pathname,
                     })}
                 >

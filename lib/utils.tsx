@@ -93,3 +93,30 @@ export const getBlockByTimestamp = async (targetTimestamp: number, publicClient:
 
     return earliestBlock.number;
 };
+
+export function fN(num: number): string | number {
+    if (num >= 1_000_000) {
+        const formattedNum = num / 1_000_000;
+        return formattedNum % 1 === 0 ? `${formattedNum}M` : `${parseFloat(formattedNum.toFixed(2))}M`;
+    }
+
+    if (num >= 1000) {
+        const formattedNum = num / 1000;
+        return formattedNum % 1 === 0 ? `${formattedNum}K` : `${parseFloat(formattedNum.toFixed(2))}K`;
+    }
+
+    return parseFloat(num.toFixed(2));
+}
+
+export function fBI(num: bigint, decimals: number): string {
+    num = num / 10n ** BigInt(decimals);
+    if (num >= 1_000_000n) {
+        const formattedNum = Number(num) / 1_000_000;
+        return formattedNum % 1 === 0 ? `${formattedNum}M` : `${parseFloat(formattedNum.toFixed(2))}M`;
+    }
+    if (num >= 1000n) {
+        const formattedNum = Number(num) / 1000;
+        return formattedNum % 1 === 0 ? `${formattedNum}K` : `${parseFloat(formattedNum.toFixed(2))}K`;
+    }
+    return num.toString();
+}

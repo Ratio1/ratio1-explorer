@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "dotenv -e .env.production.testnet next dev --turbopack",
+        "dev": "dotenv -e .env.production.devnet next dev --turbopack",
         "dev:mainnet": "dotenv -e .env.production.mainnet next dev --turbopack",
         "dev:testnet": "dotenv -e .env.production.testnet next dev --turbopack",
         "dev:devnet": "dotenv -e .env.production.devnet next dev --turbopack",

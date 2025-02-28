@@ -13,7 +13,7 @@ export default async function List({ currentPage }: { currentPage: number }) {
 
     const pagesCount = response.result.nodes_total_pages;
 
-    console.log(`Nodes (p${currentPage})`, Object.entries(nodes));
+    // console.log(`Nodes (p${currentPage})`, Object.entries(nodes));
 
     return (
         <div className="col flex-1 justify-between gap-8">

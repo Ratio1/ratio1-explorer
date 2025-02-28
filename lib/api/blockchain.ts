@@ -91,7 +91,18 @@ export async function getMNDLicense(licenseId: bigint): Promise<{
     return { totalAssignedAmount, totalClaimedAmount, lastClaimEpoch, assignTimestamp };
 }
 
-export async function getNodeLicenseDetails(nodeAddress: EthAddress) {
+export async function getNodeLicenseDetails(nodeAddress: EthAddress): Promise<{
+    licenseType: 'ND' | 'MND' | 'GND' | undefined;
+    licenseId: bigint;
+    owner: EthAddress;
+    nodeAddress: EthAddress;
+    totalAssignedAmount: bigint;
+    totalClaimedAmount: bigint;
+    lastClaimEpoch: bigint;
+    assignTimestamp: bigint;
+    lastClaimOracle: EthAddress;
+    isBanned: boolean;
+}> {
     return await client
         .readContract({
             address: config.readerContractAddress,

@@ -8,7 +8,7 @@ import { SmallCard } from './SmallCard';
 
 interface Props {
     licenseId: number;
-    licenseType: 'ND' | 'MND' | 'GND';
+    licenseType: 'ND' | 'MND' | 'GND' | undefined;
     totalAssignedAmount: bigint | undefined;
     totalClaimedAmount: bigint;
 }
@@ -31,7 +31,7 @@ export const LicenseSmallCard = ({ licenseId, licenseType, totalClaimedAmount, t
                             <div className="leading-none">License #{Number(licenseId)}</div>
                         </div>
 
-                        <div className="text-slate-400">{licenseType}</div>
+                        {licenseType && <div className="text-slate-400">{licenseType}</div>}
                     </div>
 
                     <div className="w-52">

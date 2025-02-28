@@ -7,12 +7,14 @@ import Link from 'next/link';
 export default async function Header() {
     return (
         <div className="flex w-full justify-between">
-            <div className="row">
+            <div className="row gap-16">
                 <Link href="/">
                     <div className="flex items-end gap-2.5">
                         <Image className="h-8 w-auto" src="/logo_explorer.svg" width={0} height={0} alt="Logo" />
                     </div>
                 </Link>
+
+                {/* <Navigation /> */}
             </div>
 
             <div className="row gap-2">

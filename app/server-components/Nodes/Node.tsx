@@ -1,7 +1,8 @@
 import { LicenseSmallCard } from '@/components/Licenses/LicenseSmallCard';
+import { OwnerItem } from '@/components/Licenses/OwnerItem';
 import { SmallCard } from '@/components/Licenses/SmallCard';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
-import { getMNDLicense, getNDLicense, getNodeToLicense } from '@/lib/api/blockchain';
+import { getNodeLicenseDetails } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
 import { NodeState, R1Address } from '@/typedefs/blockchain';
 import Link from 'next/link';
@@ -9,16 +10,9 @@ import { CardBordered } from '../shared/cards/CardBordered';
 import { Item } from '../shared/Item';
 
 export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address; node: NodeState }) {
-    const { licenseId, licenseType } = await getNodeToLicense(node.eth_addr);
-
-    let totalAssignedAmount: bigint | undefined,
-        totalClaimedAmount: bigint = 0n;
-
-    if (licenseType === 'ND') {
-        ({ totalClaimedAmount } = await getNDLicense(licenseId));
-    } else {
-        ({ totalAssignedAmount, totalClaimedAmount } = await getMNDLicense(licenseId));
-    }
+    const { licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount } = await getNodeLicenseDetails(
+        node.eth_addr,
+    );
 
     return (
         <Link href={`${routePath.node}/${node.eth_addr}`}>
@@ -45,6 +39,9 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
                         totalAssignedAmount={totalAssignedAmount}
                         totalClaimedAmount={totalClaimedAmount}
                     />
+
+                    {/* Owner */}
+                    <OwnerItem owner={owner} />
 
                     <div className="min-w-[50px]">
                         <Item label="Version" value={<>{node.ver.split('|')[0]}</>} />

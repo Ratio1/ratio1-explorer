@@ -1,21 +1,19 @@
 import { arrayAverage } from '@/lib/utils';
 import { License } from '@/typedefs/blockchain';
 import clsx from 'clsx';
+import { cloneElement } from 'react';
 import { formatUnits } from 'viem';
 import { CardHorizontal } from '../cards/CardHorizontal';
 
 const nodePerformanceItems = [
     {
         label: 'Last Epoch',
-        classes: 'bg-teal-100 text-teal-600',
     },
     {
         label: 'Last Week Avg.',
-        classes: 'bg-orange-100 text-orange-600',
     },
     {
         label: 'All Time Avg.',
-        classes: 'bg-purple-100 text-purple-600',
     },
 ];
 
@@ -36,16 +34,17 @@ export const LicensePageCardDetails = ({ license, nodeEpochs }: { license: Licen
         </div>
     );
 
-    const getNodePerformanceItem = (key: number, label: string, value: number | undefined, classes: string) => (
-        <CardHorizontal
-            key={key}
-            label={`${label} Availability`}
-            value={value === undefined ? '...' : `${parseFloat(((value / 255) * 100).toFixed(1))}%`}
-            isSmall
-            isFlexible
-            isDarker
-        />
-    );
+    const getNodePerformanceItem = (key: number, label: string, value: number | undefined) =>
+        cloneElement(
+            <CardHorizontal
+                label={`${label} Availability`}
+                value={value === undefined ? '...' : `${parseFloat(((value / 255) * 100).toFixed(1))}%`}
+                isSmall
+                isFlexible
+                isDarker
+            />,
+            { key },
+        );
 
     const getNodePerformanceValue = (index: number): number | undefined => {
         switch (index) {
@@ -67,7 +66,7 @@ export const LicensePageCardDetails = ({ license, nodeEpochs }: { license: Licen
         <div className="px-5 py-5 md:px-8 md:py-7">
             <div className="col gap-6 lg:gap-7">
                 <div className="border-b-2 border-slate-200 pb-6 text-sm lg:pb-7 lg:text-base xl:gap-0">
-                    <div className="larger:flex-row flex w-full flex-col gap-6">
+                    <div className="flex w-full flex-col gap-6 larger:flex-row">
                         <div className="col flex-1 gap-3">
                             {getTitle('Details')}
 
@@ -108,8 +107,8 @@ export const LicensePageCardDetails = ({ license, nodeEpochs }: { license: Licen
                     {getTitle('Node performance')}
 
                     <div className="flex flex-wrap items-stretch gap-3">
-                        {nodePerformanceItems.map(({ label, classes }, index) =>
-                            getNodePerformanceItem(index, label, getNodePerformanceValue(index), classes),
+                        {nodePerformanceItems.map(({ label }, index) =>
+                            getNodePerformanceItem(index, label, getNodePerformanceValue(index)),
                         )}
                     </div>
                 </div>

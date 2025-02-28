@@ -1,8 +1,9 @@
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
-import { LicensePageCardHeader } from '@/app/server-components/shared/Licenses/LicensePageCardHeader';
+import LicensePageCard from '@/app/server-components/shared/Licenses/LicensePageCard';
 import { getLicense, getOwnerOfLicense } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
+import { getNodeAvailability } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -30,12 +31,13 @@ export default async function LicensePage({ params }) {
     try {
         owner = await getOwnerOfLicense(licenseType, licenseId);
         license = await getLicense(licenseType, licenseId);
+
+        const nodeResponse = await getNodeAvailability(license.nodeAddress, license.assignTimestamp);
+        console.log('[LicensePage]', nodeResponse);
     } catch (error) {
         console.error(error);
         notFound();
     }
-
-    console.log({ license, owner });
 
     return (
         <div className="col w-full flex-1 gap-6">
@@ -61,9 +63,7 @@ export default async function LicensePage({ params }) {
                             )}
                         </div>
 
-                        <CardBordered>
-                            <LicensePageCardHeader licenseId={licenseId} license={license} />
-                        </CardBordered>
+                        <LicensePageCard licenseId={licenseId} license={license} />
                     </div>
                 </div>
             </CardBordered>

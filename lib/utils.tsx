@@ -1,6 +1,8 @@
-import config, { domains } from '@/config';
+import config, { domains, getCurrentEpoch, getLicenseFirstCheckEpoch } from '@/config';
+import * as types from '@/typedefs/blockchain';
 import { Metadata } from 'next';
 import { usePublicClient } from 'wagmi';
+import { getNodeEpochsRange, getNodeLastEpoch } from './api/oracles';
 
 export const getShortAddress = (address: string, size = 4) => `${address.slice(0, size)}...${address.slice(-size)}`;
 
@@ -120,3 +122,15 @@ export function fBI(num: bigint, decimals: number): string {
     }
     return num.toString();
 }
+
+export const getNodeAvailability = async (
+    nodeEthAddr: types.EthAddress,
+    assignTimestamp: bigint,
+): Promise<types.OraclesAvailabilityResult & types.OraclesDefaultResult> => {
+    const currentEpoch: number = getCurrentEpoch();
+    const firstCheckEpoch: number = getLicenseFirstCheckEpoch(assignTimestamp);
+
+    return firstCheckEpoch === currentEpoch
+        ? await getNodeLastEpoch(nodeEthAddr)
+        : await getNodeEpochsRange(nodeEthAddr, firstCheckEpoch, currentEpoch - 1);
+};

@@ -5,10 +5,9 @@ import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizon
 import { Tag } from '@/app/server-components/shared/Tag';
 import EpochsChart from '@/components/Nodes/EpochsChart';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
-import { getCurrentEpoch, getLicenseFirstCheckEpoch } from '@/config';
+import { getCurrentEpoch } from '@/config';
 import { getNodeLicenseDetails } from '@/lib/api/blockchain';
-import { getNodeEpochsRange, getNodeLastEpoch } from '@/lib/api/oracles';
-import { arrayAverage, getShortAddress } from '@/lib/utils';
+import { arrayAverage, getNodeAvailability, getShortAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Tooltip } from '@heroui/tooltip';
 import clsx from 'clsx';
@@ -47,18 +46,9 @@ export async function generateMetadata({ params }) {
     };
 }
 
-const getNodeAvailability = async (nodeEthAddr: types.EthAddress, firstCheckEpoch: number, currentEpoch: number) => {
-    const response =
-        firstCheckEpoch === currentEpoch
-            ? await getNodeLastEpoch(nodeEthAddr)
-            : await getNodeEpochsRange(nodeEthAddr, firstCheckEpoch, currentEpoch - 1);
-
-    return response;
-};
-
 const getCachedLicenseAndNode = cache(async (nodeEthAddr: types.EthAddress) => {
     const { licenseId, licenseType, owner, lastClaimEpoch, assignTimestamp } = await getNodeLicenseDetails(nodeEthAddr);
-    const nodeResponse = await getNodeAvailability(nodeEthAddr, getLicenseFirstCheckEpoch(assignTimestamp), getCurrentEpoch());
+    const nodeResponse = await getNodeAvailability(nodeEthAddr, assignTimestamp);
     // console.log('[NodePage]', nodeResponse);
 
     return {

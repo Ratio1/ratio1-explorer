@@ -1,9 +1,19 @@
-import { License } from '@/typedefs/blockchain';
+import * as types from '@/typedefs/blockchain';
 import { FunctionComponent, PropsWithChildren } from 'react';
 import LicensePageCardNode from './LicensePageCardNode';
 import { LicenseSmallCard } from './LicenseSmallCard';
 
-export const LicensePageCardHeader = ({ licenseId, license }: { licenseId: string; license: License }) => {
+export const LicensePageCardHeader = ({
+    licenseId,
+    license,
+    nodeAlias,
+    isNodeOnline,
+}: {
+    licenseId: string;
+    license: types.License;
+    nodeAlias: string;
+    isNodeOnline: boolean;
+}) => {
     const getLicenseCard = () => (
         <LicenseSmallCard
             licenseId={Number(licenseId)}
@@ -20,7 +30,7 @@ export const LicensePageCardHeader = ({ licenseId, license }: { licenseId: strin
             <div className="row flex-1 flex-wrap gap-2 sm:gap-4">
                 {getLicenseCard()}
 
-                <LicensePageCardNode nodeAddress={license.nodeAddress} />
+                <LicensePageCardNode nodeAddress={license.nodeAddress} nodeAlias={nodeAlias} isNodeOnline={isNodeOnline} />
             </div>
 
             <div className="flex justify-end">{license.isBanned && <>{getBannedLicenseTag()}</>}</div>

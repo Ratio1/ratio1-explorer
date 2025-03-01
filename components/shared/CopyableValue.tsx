@@ -17,16 +17,23 @@ export const CopyableAddress = ({ value, size = 4, isLarge = false }) => {
     };
 
     return (
-        <div className="row gap-1 text-slate-400">
+        <div className="row gap-1">
             <div
-                className={clsx({
+                className={clsx('text-slate-400', {
                     'text-sm': !isLarge,
                     'text-[15px] text-body': isLarge,
                 })}
             >
                 {getShortAddress(value, size)}
             </div>
-            {!copied ? <RiFileCopyLine onClick={handleCopy} className="cursor-pointer hover:opacity-50" /> : <RiCheckLine />}
+
+            <div className="text-primary-200">
+                {!copied ? (
+                    <RiFileCopyLine onClick={handleCopy} className="cursor-pointer hover:opacity-50" />
+                ) : (
+                    <RiCheckLine />
+                )}
+            </div>
         </div>
     );
 };

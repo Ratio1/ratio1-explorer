@@ -130,6 +130,7 @@ export const getNodeAvailability = async (
 };
 
 export const isNonZeroInteger = (value: string): boolean => {
-    const int = parseInt(value);
-    return !isNaN(int) && Number.isInteger(int) && isFinite(int) && int > 0;
+    if (!/^\d+$/.test(value)) return false;
+    const int = parseInt(value, 10);
+    return !isNaN(int) && isFinite(int) && int > 0;
 };

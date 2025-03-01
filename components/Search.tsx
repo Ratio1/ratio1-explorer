@@ -271,7 +271,7 @@ export const Search = () => {
 
                                                                     <div className="text-sm">•</div>
 
-                                                                    <div className="center-all rounded-md bg-slate-100 px-1 py-0.5 text-xs font-medium">
+                                                                    <div className="center-all rounded-md bg-slate-100 px-1.5 py-0.5 text-xs font-medium">
                                                                         {license.licenseType}
                                                                     </div>
                                                                 </div>

@@ -22,7 +22,11 @@ export const LicenseSmallCard = ({ licenseId, licenseType, totalClaimedAmount, t
                         <div className="">License #{Number(licenseId)}</div>
                     </div>
 
-                    {licenseType && <div className="text-slate-500">{licenseType}</div>}
+                    {licenseType && (
+                        <div className="center-all rounded-md bg-slate-100 px-1.5 py-0.5 text-xs font-medium">
+                            {licenseType}
+                        </div>
+                    )}
                 </div>
 
                 <div className="w-52">

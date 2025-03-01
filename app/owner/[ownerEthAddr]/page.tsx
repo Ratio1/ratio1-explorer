@@ -10,9 +10,9 @@ export async function generateMetadata({ params }) {
     }
 
     return {
-        title: `${getShortAddress(ownerEthAddr)} | Ratio1 Explorer`,
+        title: `${getShortAddress(ownerEthAddr)}`,
         openGraph: {
-            title: `${getShortAddress(ownerEthAddr)} | Ratio1 Explorer`,
+            title: `${getShortAddress(ownerEthAddr)}`,
         },
     };
 }

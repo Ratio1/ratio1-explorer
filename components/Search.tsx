@@ -1,5 +1,6 @@
 'use client';
 
+import { isNonZeroInteger } from '@/lib/utils';
 import { Input } from '@heroui/input';
 import { Spinner } from '@heroui/spinner';
 import { useState } from 'react';
@@ -20,6 +21,14 @@ export const Search = () => {
 
         setLoading(true);
 
+        if (value.startsWith('0x') && value.length === 42) {
+            console.log('Searching by ETH Address');
+        } else if (isNonZeroInteger(value)) {
+            console.log('Searching by License ID');
+        } else {
+            console.error('We could not find any results matching your search.');
+        }
+
         setTimeout(() => {
             setLoading(false);
         }, 300);
@@ -36,7 +45,7 @@ export const Search = () => {
             onValueChange={(value) => {
                 setValue(value);
             }}
-            isDisabled={isLoading || true} // TODO: Remove
+            isDisabled={isLoading}
             size="lg"
             classNames={{
                 inputWrapper:
@@ -44,7 +53,7 @@ export const Search = () => {
             }}
             variant="flat"
             labelPlacement="outside"
-            placeholder="Search by Node ETH Address / Node Internal Address / Alias"
+            placeholder="Search by ETH Address / License ID"
             endContent={
                 <div className="center-all -mr-2.5 cursor-pointer p-2 text-[22px]">
                     {isLoading ? (
@@ -60,6 +69,7 @@ export const Search = () => {
                     )}
                 </div>
             }
+            maxLength={42}
         />
     );
 };

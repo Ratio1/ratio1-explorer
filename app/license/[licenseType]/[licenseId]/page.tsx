@@ -11,9 +11,9 @@ export async function generateMetadata({ params }) {
     const { licenseId } = await params;
 
     return {
-        title: `License #${licenseId} | Ratio1 Explorer`,
+        title: `License #${licenseId}`,
         openGraph: {
-            title: `License #${licenseId} | Ratio1 Explorer`,
+            title: `License #${licenseId}`,
         },
     };
 }

@@ -1,18 +1,24 @@
+import { buildMetadata } from '@/lib/utils';
 import { Wrappers } from '@/lib/wrappers';
 import { monaSans, robotoMono } from '@/styles/fonts';
 import '@/styles/globals.css';
-import type { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 import { Suspense } from 'react';
 import Footer from './server-components/Footer';
 import Header from './server-components/Header';
 import TopBarSkeleton from './server-components/Skeletons/TopBarSkeleton';
 import TopBar from './server-components/TopBar';
 
-export const metadata: Metadata = {
-    title: 'Ratio1 - Explorer',
-    description:
-        'Experience the power of Ratio1 AI OS, built on Ratio1 Protocol and powered by blockchain, democratizing AI to empower limitless innovation.',
+export const viewport: Viewport = {
+    themeColor: '#000000',
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+    return buildMetadata(
+        'Ratio1 Explorer',
+        'Experience the power of Ratio1 AI OS, built on Ratio1 Protocol and powered by blockchain, democratizing AI to empower limitless innovation.',
+    );
+}
 
 export default async function RootLayout({
     children,

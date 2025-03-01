@@ -39,9 +39,9 @@ export async function generateMetadata({ params }) {
     }
 
     return {
-        title: `Node • ${nodeResponse.node_alias} | Ratio1 Explorer`,
+        title: `Node • ${nodeResponse.node_alias}`,
         openGraph: {
-            title: `Node • ${nodeResponse.node_alias} | Ratio1 Explorer`,
+            title: `Node • ${nodeResponse.node_alias}`,
         },
     };
 }

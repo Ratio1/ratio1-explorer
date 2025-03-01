@@ -6,13 +6,7 @@ import { getNodeEpochsRange, getNodeLastEpoch } from './api/oracles';
 
 export const getShortAddress = (address: string, size = 4) => `${address.slice(0, size)}...${address.slice(-size)}`;
 
-export const generateMetadata = (
-    title: string,
-    description: string,
-    imageUrl: string,
-    imageWidth: number,
-    imageHeight: number,
-): Metadata => ({
+export const buildMetadata = (title: string, description: string): Metadata => ({
     title: {
         template: `%s | ${title}`,
         default: `${title}`,
@@ -34,9 +28,9 @@ export const generateMetadata = (
         siteName: title,
         images: [
             {
-                url: imageUrl,
-                width: imageWidth,
-                height: imageHeight,
+                url: `https://${domains[config.environment]}/card.jpg`,
+                width: 852,
+                height: 500,
             },
         ],
         type: 'website',
@@ -59,7 +53,7 @@ export const generateMetadata = (
         title,
         description,
         creator: '@nextjs',
-        images: [imageUrl],
+        images: [`https://${domains[config.environment]}/card.jpg`],
     },
     metadataBase: new URL(`https://${domains[config.environment]}`),
 });
@@ -133,4 +127,9 @@ export const getNodeAvailability = async (
     return firstCheckEpoch === currentEpoch
         ? await getNodeLastEpoch(nodeEthAddr)
         : await getNodeEpochsRange(nodeEthAddr, firstCheckEpoch, currentEpoch - 1);
+};
+
+export const isNonZeroInteger = (value: string): boolean => {
+    const int = parseInt(value);
+    return !isNaN(int) && Number.isInteger(int) && isFinite(int) && int > 0;
 };

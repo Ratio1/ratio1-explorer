@@ -4,7 +4,9 @@ import { Metadata } from 'next';
 import { usePublicClient } from 'wagmi';
 import { getNodeEpochsRange, getNodeLastEpoch } from './api/oracles';
 
-export const getShortAddress = (address: string, size = 4) => `${address.slice(0, size)}...${address.slice(-size)}`;
+export const getShortAddress = (address: string, size = 4) => (
+    <div className="roboto">{`${address.slice(0, size)}•••${address.slice(-size)}`}</div>
+);
 
 export const buildMetadata = (title: string, description: string): Metadata => ({
     title: {

@@ -1,15 +1,25 @@
 'use client';
 
 import { Alert } from '@/app/server-components/shared/Alert';
+import { getLicense } from '@/lib/api/blockchain';
 import { getNodeLastEpoch } from '@/lib/api/oracles';
+import { routePath } from '@/lib/routes';
 import useDebounce from '@/lib/useDebounce';
-import { getShortAddress, isNonZeroInteger, sleep } from '@/lib/utils';
+import { isNonZeroInteger } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Input } from '@heroui/input';
 import { Modal, ModalContent, useDisclosure } from '@heroui/modal';
 import { Spinner } from '@heroui/spinner';
+import clsx from 'clsx';
+import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { RiErrorWarningLine, RiLightbulbLine, RiSearchLine } from 'react-icons/ri';
+import { CopyableAddress } from './shared/CopyableValue';
+import Identicon from './shared/Identicon';
+
+type SearchResult =
+    | { type: 'node'; nodeAddress: types.EthAddress; alias: string; isOnline: boolean }
+    | { type: 'license'; licenseId: number; licenseType: 'ND' | 'MND' | 'GND'; nodeAddress: types.EthAddress };
 
 export const Search = () => {
     const [isLoading, setLoading] = useState<boolean>(false);
@@ -18,12 +28,7 @@ export const Search = () => {
     const [value, setValue] = useState<string>('');
     const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 
-    const [results, setResults] = useState<
-        {
-            type: 'node' | 'ND' | 'MND' | 'GND';
-            address: string;
-        }[]
-    >([]);
+    const [results, setResults] = useState<SearchResult[]>([]);
 
     const handleKeyPress = useCallback((event: KeyboardEvent) => {
         if (event.key === '/') {
@@ -33,10 +38,6 @@ export const Search = () => {
 
         if (event.key === 'Escape') {
             onClose();
-        }
-
-        if (event.key === 'Enter' && isOpen) {
-            console.log('Enter pressed');
         }
     }, []);
 
@@ -60,21 +61,46 @@ export const Search = () => {
             setLoading(true);
 
             if (query.startsWith('0x') && query.length === 42) {
-                console.log('Searching by ETH Address', query);
-
                 const nodeResponse = await getNodeLastEpoch(query as types.EthAddress);
-                console.log(nodeResponse);
 
-                setResults([{ type: 'node', address: nodeResponse.node_eth_address }]);
+                setResults([
+                    {
+                        type: 'node',
+                        nodeAddress: nodeResponse.node_eth_address,
+                        alias: nodeResponse.node_alias,
+                        isOnline: nodeResponse.node_is_online,
+                    },
+                ]);
                 setError(false);
             } else if (isNonZeroInteger(query)) {
-                console.log('Searching by License ID');
-                await sleep(500);
+                const licenseId = parseInt(query);
 
-                setResults([{ type: 'MND', address: '123' }]);
-                setError(false);
+                const ndLicense = await getLicense('ND', licenseId);
+                const mndLicense = await getLicense('MND', licenseId);
+
+                const resultsArray: SearchResult[] = [];
+
+                if (ndLicense.nodeAddress !== '0x0000000000000000000000000000000000000000') {
+                    resultsArray.push({
+                        type: 'license',
+                        licenseId,
+                        licenseType: 'ND',
+                        nodeAddress: ndLicense.nodeAddress,
+                    });
+                }
+
+                if (mndLicense.nodeAddress !== '0x0000000000000000000000000000000000000000') {
+                    resultsArray.push({
+                        type: 'license',
+                        licenseId,
+                        licenseType: licenseId === 1 ? 'GND' : 'MND',
+                        nodeAddress: mndLicense.nodeAddress,
+                    });
+                }
+
+                setResults(resultsArray);
+                setError(resultsArray.length === 0);
             } else {
-                console.log('We could not find any results matching your search.');
                 setResults([]);
                 setError(true);
             }
@@ -92,7 +118,7 @@ export const Search = () => {
             onSearch(value);
         },
         [value],
-        500,
+        400,
     );
 
     const getAlert = () => {
@@ -118,6 +144,8 @@ export const Search = () => {
         }
     };
 
+    const getSectionTitle = (value: string) => <div className="-mb-1 text-sm font-medium text-slate-500">{value}</div>;
+
     return (
         <>
             <div className="max-w-lg">
@@ -135,9 +163,9 @@ export const Search = () => {
             </div>
 
             <Modal
+                className="max-w-[524px]"
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
-                size="lg"
                 shouldBlockScroll={false}
                 placement="top"
                 hideCloseButton
@@ -145,6 +173,7 @@ export const Search = () => {
                 <ModalContent>
                     <div className="col gap-4 p-4">
                         <Input
+                            isClearable
                             autoFocus
                             value={value}
                             onValueChange={(value) => {
@@ -161,20 +190,100 @@ export const Search = () => {
                             labelPlacement="outside"
                             placeholder="Search the Ratio1 ecosystem"
                             startContent={<RiSearchLine className="text-xl text-slate-400" />}
-                            endContent={isLoading ? <Spinner size="sm" /> : null}
+                            endContent={
+                                isLoading ? (
+                                    <div className="center-all">
+                                        <Spinner size="sm" />
+                                    </div>
+                                ) : null
+                            }
                             maxLength={42}
                         />
 
                         {!results.length ? (
                             getAlert()
                         ) : (
-                            <div className="col gap-2">
-                                {results.map((result, index) => (
-                                    <div key={index} className="row justify-between gap-4">
-                                        <div>{getShortAddress(result.address, 8)}</div>
-                                        <div>{result.type}</div>
+                            <div className="col gap-4">
+                                {results.some((r) => r.type === 'node') && (
+                                    <div className="col gap-2">
+                                        {getSectionTitle('Nodes')}
+
+                                        {results
+                                            .filter((r): r is Extract<SearchResult, { type: 'node' }> => r.type === 'node')
+                                            .map((node, index) => (
+                                                <div key={index}>
+                                                    <Link
+                                                        href={`${routePath.node}/${node.nodeAddress}`}
+                                                        className="row -mx-4 cursor-pointer px-4 py-2.5 transition-all hover:bg-slate-50"
+                                                        onClick={onClose}
+                                                    >
+                                                        <div className="row gap-3">
+                                                            <div className="relative h-8 w-8">
+                                                                <Identicon value={node.nodeAddress} />
+
+                                                                <div
+                                                                    className={clsx(
+                                                                        'absolute right-0 top-0 z-10 -mr-1 -mt-1 h-4 w-4 rounded-full border-2 border-white',
+                                                                        {
+                                                                            'bg-teal-500': node?.isOnline,
+                                                                            'bg-red-500': !node?.isOnline,
+                                                                        },
+                                                                    )}
+                                                                ></div>
+                                                            </div>
+
+                                                            <div className="col">
+                                                                <div className="text-sm font-medium">{node.alias}</div>
+                                                                <CopyableAddress value={node.nodeAddress} size={8} />
+                                                            </div>
+                                                        </div>
+                                                    </Link>
+                                                </div>
+                                            ))}
                                     </div>
-                                ))}
+                                )}
+
+                                {results.some((r) => r.type === 'license') && (
+                                    <div className="col gap-2">
+                                        {getSectionTitle('Licenses')}
+
+                                        {results
+                                            .filter(
+                                                (r): r is Extract<SearchResult, { type: 'license' }> => r.type === 'license',
+                                            )
+                                            .map((license, index) => (
+                                                <div key={index}>
+                                                    <Link
+                                                        href={`${routePath.license}/${license.licenseType}/${license.licenseId}`}
+                                                        className="row -mx-4 cursor-pointer px-4 py-2.5 transition-all hover:bg-slate-50"
+                                                        onClick={onClose}
+                                                    >
+                                                        <div className="row gap-3">
+                                                            <div className="relative h-8 w-8">
+                                                                <Identicon value={`${license.licenseId}`} />
+                                                            </div>
+
+                                                            <div className="col">
+                                                                <div className="row gap-1.5">
+                                                                    <div className="text-sm font-medium">
+                                                                        License #{license.licenseId}
+                                                                    </div>
+
+                                                                    <div className="text-sm">•</div>
+
+                                                                    <div className="center-all rounded-md bg-slate-100 px-1 py-0.5 text-xs font-medium">
+                                                                        {license.licenseType}
+                                                                    </div>
+                                                                </div>
+
+                                                                <CopyableAddress value={license.nodeAddress} size={8} />
+                                                            </div>
+                                                        </div>
+                                                    </Link>
+                                                </div>
+                                            ))}
+                                    </div>
+                                )}
                             </div>
                         )}
 

@@ -27,9 +27,16 @@ export const CopyableAddress = ({ value, size = 4, isLarge = false }) => {
                 {getShortAddress(value, size)}
             </div>
 
-            <div className="text-primary-200">
+            <div className="text-primary-300">
                 {!copied ? (
-                    <RiFileCopyLine onClick={handleCopy} className="cursor-pointer hover:opacity-50" />
+                    <RiFileCopyLine
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            handleCopy();
+                        }}
+                        className="cursor-pointer hover:opacity-50"
+                    />
                 ) : (
                     <RiCheckLine />
                 )}

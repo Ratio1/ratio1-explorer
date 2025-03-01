@@ -290,11 +290,6 @@ export const Search = () => {
                         {/* Bottom bar */}
                         <div className="row w-full justify-between rounded-xl bg-slate-50 px-3 py-2.5">
                             <div className="row gap-1 text-sm text-black/80">
-                                <div className="center-all rounded-lg bg-slate-200 px-2 py-1 font-medium">enter</div>
-                                <div>To Select</div>
-                            </div>
-
-                            <div className="row gap-1 text-sm text-black/80">
                                 <div className="center-all rounded-lg bg-slate-200 px-2 py-1 font-medium">ESC</div>
                                 <div>To Cancel</div>
                             </div>

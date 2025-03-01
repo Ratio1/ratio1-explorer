@@ -1,39 +1,34 @@
 import clsx from 'clsx';
-import { FunctionComponent, JSX, PropsWithChildren } from 'react';
+import { FunctionComponent, JSX } from 'react';
 
 interface Props {
+    variant?: 'primary' | 'warning';
     icon: JSX.Element;
     title: string;
-    description: JSX.Element;
-    largeTitle?: boolean;
+    description: string;
 }
 
-export const Alert: FunctionComponent<PropsWithChildren<Props>> = ({
-    children,
-    icon,
-    title,
-    description,
-    largeTitle = false,
-}) => {
+export const Alert: FunctionComponent<Props> = ({ variant = 'primary', icon, title, description }) => {
     return (
-        <div className="center-all col gap-6 py-6">
-            <div className="center-all rounded-full bg-red-100 p-5">
-                <div className="text-3xl text-red-500">{icon}</div>
-            </div>
-
-            <div className="col gap-1 text-center">
+        <div
+            className={clsx('col gap-0.5 rounded-xl px-4 py-3', {
+                'bg-primary-50': variant === 'primary',
+                'bg-warning-50': variant === 'warning',
+            })}
+        >
+            <div className="row">
                 <div
-                    className={clsx('font-bold uppercase tracking-wider text-primary-800', {
-                        'text-3xl': largeTitle,
+                    className={clsx('center-all w-[18px]', {
+                        'text-primary': variant === 'primary',
+                        'text-warning': variant === 'warning',
                     })}
                 >
-                    {title}
+                    {icon}
                 </div>
-
-                <div className="text-slate-400">{description}</div>
-
-                {!!children && <div className="mx-auto pt-4">{children}</div>}
+                <div className="pl-1.5 font-medium">{title}</div>
             </div>
+
+            <div className="ml-[18px] pl-1.5 text-sm text-gray-800">{description}</div>
         </div>
     );
 };

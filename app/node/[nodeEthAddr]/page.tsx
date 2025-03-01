@@ -1,7 +1,7 @@
-import { Alert } from '@/app/server-components/shared/Alert';
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
 import { CardFlexible } from '@/app/server-components/shared/cards/CardFlexible';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
+import { DetailedAlert } from '@/app/server-components/shared/DetailedAlert';
 import { Tag } from '@/app/server-components/shared/Tag';
 import EpochsChart from '@/components/Nodes/EpochsChart';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
@@ -80,7 +80,7 @@ export default async function NodePage({ params }) {
         if (error.message.includes('Oracle state is not valid')) {
             return (
                 <div className="center-all flex-1">
-                    <Alert
+                    <DetailedAlert
                         icon={<RiCloseLine />}
                         title="Unexpected Error"
                         description={<div>Oracle state is not valid, please contact the development team.</div>}

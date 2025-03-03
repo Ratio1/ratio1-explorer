@@ -3,9 +3,11 @@ import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizon
 import LicensePageCard from '@/app/server-components/shared/Licenses/LicensePageCard';
 import { getLicense, getOwnerOfLicense } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
+import { getShortAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 export async function generateMetadata({ params }) {
     const { licenseId } = await params;
@@ -34,8 +36,7 @@ export default async function LicensePage({ params }) {
     let owner: types.EthAddress, license: types.License;
 
     try {
-        owner = await getOwnerOfLicense(licenseType, licenseId);
-        license = await getLicense(licenseType, licenseId);
+        [owner, license] = await Promise.all([getOwnerOfLicense(licenseType, licenseId), getLicense(licenseType, licenseId)]);
     } catch (error) {
         console.error(error);
         notFound();
@@ -48,28 +49,52 @@ export default async function LicensePage({ params }) {
                     <div className="col w-full gap-5">
                         <div className="text-2xl font-bold">License #{licenseId}</div>
 
-                        <div className="flex flex-wrap items-stretch gap-3">
-                            {!!licenseType && <CardHorizontal label="Type" value={licenseType} isSmall />}
+                        <div className="col gap-3">
+                            {/* Row 1 */}
+                            <div className="flex flex-wrap items-stretch gap-3">
+                                {!!licenseType && <CardHorizontal label="Type" value={licenseType} isSmall />}
 
-                            {!!owner && (
-                                <CardHorizontal
-                                    label="Owner"
-                                    value={
-                                        <Link href={`${routePath.owner}/${owner}`}>
-                                            <div className="roboto hover:opacity-50">{owner}</div>
-                                        </Link>
-                                    }
-                                    isSmall
-                                    isFlexible
-                                />
-                            )}
+                                {!!owner && (
+                                    <CardHorizontal
+                                        label="Owner"
+                                        value={
+                                            <Link href={`${routePath.owner}/${owner}`}>
+                                                <div className="hover:opacity-50">{getShortAddress(owner)}</div>
+                                            </Link>
+                                        }
+                                        isSmall
+                                    />
+                                )}
+
+                                {!!license.assignTimestamp && (
+                                    <CardHorizontal
+                                        label="Assign timestamp"
+                                        value={new Date(Number(license.assignTimestamp) * 1000).toLocaleString()}
+                                        isSmall
+                                        isFlexible
+                                    />
+                                )}
+                            </div>
+
+                            {/* Row 2 */}
+                            <div className="flex flex-wrap items-stretch gap-3">
+                                {!!license.lastClaimEpoch && (
+                                    <CardHorizontal
+                                        label="Last claimed epoch"
+                                        value={license.lastClaimEpoch.toString()}
+                                        isSmall
+                                    />
+                                )}
+                            </div>
                         </div>
 
-                        <LicensePageCard
-                            licenseId={licenseId}
-                            licenseType={licenseType as 'ND' | 'MND' | 'GND'}
-                            license={license}
-                        />
+                        <Suspense>
+                            <LicensePageCard
+                                licenseId={licenseId}
+                                licenseType={licenseType as 'ND' | 'MND' | 'GND'}
+                                license={license}
+                            />
+                        </Suspense>
                     </div>
                 </div>
             </CardBordered>

@@ -1,6 +1,7 @@
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
 import { getNodeAvailability, isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
+import { Suspense } from 'react';
 import LicensePageCardDetails from './LicensePageCardDetails';
 import LicensePageCardHeader from './LicensePageCardHeader';
 
@@ -31,7 +32,10 @@ export default async function LicensePageCard({
         <CardBordered>
             <div className="col w-full">
                 <LicensePageCardHeader licenseId={licenseId} license={license} nodeResponse={nodeResponse} />
-                <LicensePageCardDetails license={license} licenseType={licenseType} nodeResponse={nodeResponse} />
+
+                <Suspense>
+                    <LicensePageCardDetails license={license} licenseType={licenseType} nodeResponse={nodeResponse} />
+                </Suspense>
             </div>
         </CardBordered>
     );

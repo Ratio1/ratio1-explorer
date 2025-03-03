@@ -2,6 +2,7 @@ import NodesPagination from '@/components/Nodes/NodesPagination';
 import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
 import { NodeState, R1Address } from '@/typedefs/blockchain';
+import { Suspense } from 'react';
 import Node from './Node';
 
 export default async function List({ currentPage }: { currentPage: number }) {
@@ -22,7 +23,9 @@ export default async function List({ currentPage }: { currentPage: number }) {
 
                     .map(([ratio1Addr, node]) => (
                         <div key={ratio1Addr}>
-                            <Node ratio1Addr={ratio1Addr as R1Address} node={node} />
+                            <Suspense>
+                                <Node ratio1Addr={ratio1Addr as R1Address} node={node} />
+                            </Suspense>
                         </div>
                     ))}
             </div>

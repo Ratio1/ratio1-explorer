@@ -6,6 +6,7 @@ import { routePath } from '@/lib/routes';
 import { getShortAddress, isEmptyETHAddr } from '@/lib/utils';
 import { NodeState, R1Address } from '@/typedefs/blockchain';
 import Link from 'next/link';
+import { RiEye2Line } from 'react-icons/ri';
 import { CardBordered } from '../shared/cards/CardBordered';
 import { Item } from '../shared/Item';
 
@@ -14,16 +15,16 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
         node.eth_addr,
     );
 
-    if (node.eth_addr === '0xb0c73Bf8F859D4b3DeFB28CF5AF33adC151B0Be7') {
-        console.log(node, { licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount });
-    }
-
     return (
         <CardBordered>
             <div className="row w-full justify-between gap-6 bg-white px-6 py-3">
-                <Link href={`${routePath.node}/${node.eth_addr}`}>
-                    <div className="w-[228px] overflow-hidden text-ellipsis whitespace-nowrap py-2 text-[15px] font-medium hover:text-primary">
-                        {node.alias}
+                <Link href={`${routePath.node}/${node.eth_addr}`} className="group w-[228px] py-3">
+                    <div className="row gap-1.5">
+                        <div className="overflow-hidden text-ellipsis whitespace-nowrap text-[15px] font-medium group-hover:text-primary">
+                            {node.alias}
+                        </div>
+
+                        {false && <RiEye2Line className="text-lg text-primary" />}
                     </div>
                 </Link>
 

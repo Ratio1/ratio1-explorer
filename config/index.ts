@@ -17,6 +17,9 @@ export type Config = {
     contractsGenesisBlock: bigint;
     epochDurationInSeconds: number;
     ndLicenseCap: bigint;
+    gndVestingEpochs: number;
+    mndVestingEpochs: number;
+    ndVestingEpochs: number;
 };
 
 export const projectId = 'b0be1322e97542cc32eb568b37173a1c'; // Ratio1 Explorer
@@ -58,6 +61,9 @@ const config: Config = {
     contractsGenesisBlock: BigInt(process.env.NEXT_PUBLIC_CONTRACTS_GENESIS_BLOCK as string),
     epochDurationInSeconds: Number(process.env.NEXT_PUBLIC_EPOCH_DURATION_SECONDS),
     ndLicenseCap: BigInt(process.env.NEXT_PUBLIC_ND_LICENSE_CAP as string),
+    gndVestingEpochs: 365,
+    mndVestingEpochs: 900,
+    ndVestingEpochs: 1080,
 };
 
 export default config;

@@ -3,17 +3,15 @@ import { FunctionComponent, PropsWithChildren } from 'react';
 import LicensePageCardNode from './LicensePageCardNode';
 import { LicenseSmallCard } from './LicenseSmallCard';
 
-export const LicensePageCardHeader = ({
+export default async function LicensePageCardHeader({
     licenseId,
     license,
-    nodeAlias,
-    isNodeOnline,
+    nodeResponse,
 }: {
     licenseId: string;
     license: types.License;
-    nodeAlias: string;
-    isNodeOnline: boolean;
-}) => {
+    nodeResponse?: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
+}) {
     const getLicenseCard = () => (
         <LicenseSmallCard
             licenseId={Number(licenseId)}
@@ -30,13 +28,19 @@ export const LicensePageCardHeader = ({
             <div className="row flex-1 flex-wrap gap-2 sm:gap-4">
                 {getLicenseCard()}
 
-                <LicensePageCardNode nodeAddress={license.nodeAddress} nodeAlias={nodeAlias} isNodeOnline={isNodeOnline} />
+                {!!nodeResponse && (
+                    <LicensePageCardNode
+                        nodeAddress={license.nodeAddress}
+                        nodeAlias={nodeResponse.node_alias}
+                        isNodeOnline={nodeResponse.node_is_online}
+                    />
+                )}
             </div>
 
             <div className="flex justify-end">{license.isBanned && <>{getBannedLicenseTag()}</>}</div>
         </div>
     );
-};
+}
 
 const Tag: FunctionComponent<PropsWithChildren> = ({ children }) => (
     <div className="flex">

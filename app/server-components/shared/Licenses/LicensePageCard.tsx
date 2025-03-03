@@ -1,15 +1,19 @@
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
-import { LicensePageCardHeader } from '@/app/server-components/shared/Licenses/LicensePageCardHeader';
-import { getNodeAvailability } from '@/lib/utils';
+import { getNodeAvailability, isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
-import { LicensePageCardDetails } from './LicensePageCardDetails';
+import LicensePageCardDetails from './LicensePageCardDetails';
+import LicensePageCardHeader from './LicensePageCardHeader';
 
 export default async function LicensePageCard({ licenseId, license }: { licenseId: string; license: types.License }) {
-    let nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
+    let nodeResponse: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined;
 
     try {
-        nodeResponse = await getNodeAvailability(license.nodeAddress, license.assignTimestamp);
-        console.log('[LicensePageCard]', nodeResponse);
+        const isLinked = !isEmptyETHAddr(license.nodeAddress);
+
+        if (isLinked) {
+            nodeResponse = await getNodeAvailability(license.nodeAddress, license.assignTimestamp);
+            console.log(`[License ${licenseId}] Node`, nodeResponse);
+        }
     } catch (error) {
         console.error(error);
         return null;
@@ -18,14 +22,8 @@ export default async function LicensePageCard({ licenseId, license }: { licenseI
     return (
         <CardBordered>
             <div className="col w-full">
-                <LicensePageCardHeader
-                    licenseId={licenseId}
-                    license={license}
-                    nodeAlias={nodeResponse.node_alias}
-                    isNodeOnline={nodeResponse.node_is_online}
-                />
-
-                <LicensePageCardDetails license={license} nodeEpochs={nodeResponse.epochs_vals} />
+                <LicensePageCardHeader licenseId={licenseId} license={license} nodeResponse={nodeResponse} />
+                <LicensePageCardDetails license={license} nodeResponse={nodeResponse} />
             </div>
         </CardBordered>
     );

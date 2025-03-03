@@ -7,12 +7,14 @@ import EpochsChart from '@/components/Nodes/EpochsChart';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getCurrentEpoch } from '@/config';
 import { getNodeLicenseDetails } from '@/lib/api/blockchain';
+import { routePath } from '@/lib/routes';
 import { arrayAverage, getNodeAvailability, getShortAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Tooltip } from '@heroui/tooltip';
 import clsx from 'clsx';
 import { formatDistanceToNow, subSeconds } from 'date-fns';
 import { round } from 'lodash';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { RiCloseLine, RiEye2Line } from 'react-icons/ri';
@@ -98,7 +100,7 @@ export default async function NodePage({ params }) {
                 <div className="col w-full gap-5 bg-white px-6 py-6">
                     <div className="col w-full gap-5">
                         <div className="row gap-3">
-                            <div className="text-[26px] font-bold">Node • {nodeResponse.node_alias}</div>
+                            <div className="text-2xl font-bold">Node • {nodeResponse.node_alias}</div>
 
                             {nodeResponse.node_is_oracle && (
                                 <Tag>
@@ -175,16 +177,28 @@ export default async function NodePage({ params }) {
             <CardBordered>
                 <div className="col w-full gap-5 bg-white px-6 py-6">
                     <div className="col w-full gap-5">
-                        <div className="text-2xl font-bold">License</div>
+                        <div className="flex">
+                            <Link href={`${routePath.license}/${licenseType}/${licenseId}`} className="hover:text-primary">
+                                <div className="text-2xl font-bold">License #{licenseId}</div>
+                            </Link>
+                        </div>
 
                         <div className="col gap-3">
                             {/* Row 1 */}
                             <div className="flex flex-wrap items-stretch gap-3">
                                 {!!licenseType && <CardHorizontal label="Type" value={licenseType} isSmall />}
 
-                                {!!licenseId && <CardHorizontal label="ID" value={licenseId.toString()} isSmall />}
-
-                                {!!owner && <CardHorizontal label="Owner" value={getShortAddress(owner)} isSmall />}
+                                {!!owner && (
+                                    <CardHorizontal
+                                        label="Owner"
+                                        value={
+                                            <Link href={`${routePath.owner}/${owner}`}>
+                                                <div className="hover:opacity-50">{getShortAddress(owner)}</div>
+                                            </Link>
+                                        }
+                                        isSmall
+                                    />
+                                )}
 
                                 {!!assignTimestamp && (
                                     <CardHorizontal

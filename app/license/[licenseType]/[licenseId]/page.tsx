@@ -21,7 +21,13 @@ export async function generateMetadata({ params }) {
 export default async function LicensePage({ params }) {
     const { licenseType, licenseId } = await params;
 
-    if (!licenseType || !licenseId) {
+    if (!licenseType || !['ND', 'MND', 'GND'].includes(licenseType)) {
+        notFound();
+    }
+
+    const licenseIdNum = parseInt(licenseId);
+
+    if (isNaN(licenseIdNum) || licenseIdNum < 0 || licenseIdNum > 10000) {
         notFound();
     }
 
@@ -59,7 +65,11 @@ export default async function LicensePage({ params }) {
                             )}
                         </div>
 
-                        <LicensePageCard licenseId={licenseId} license={license} />
+                        <LicensePageCard
+                            licenseId={licenseId}
+                            licenseType={licenseType as 'ND' | 'MND' | 'GND'}
+                            license={license}
+                        />
                     </div>
                 </div>
             </CardBordered>

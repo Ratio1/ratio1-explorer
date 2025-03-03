@@ -17,6 +17,7 @@ export type Config = {
     contractsGenesisBlock: bigint;
     epochDurationInSeconds: number;
     ndLicenseCap: bigint;
+    mndCliffEpochs: number;
     gndVestingEpochs: number;
     mndVestingEpochs: number;
     ndVestingEpochs: number;
@@ -61,6 +62,7 @@ const config: Config = {
     contractsGenesisBlock: BigInt(process.env.NEXT_PUBLIC_CONTRACTS_GENESIS_BLOCK as string),
     epochDurationInSeconds: Number(process.env.NEXT_PUBLIC_EPOCH_DURATION_SECONDS),
     ndLicenseCap: BigInt(process.env.NEXT_PUBLIC_ND_LICENSE_CAP as string),
+    mndCliffEpochs: 120,
     gndVestingEpochs: 365,
     mndVestingEpochs: 900,
     ndVestingEpochs: 1080,

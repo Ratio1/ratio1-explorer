@@ -4,7 +4,15 @@ import * as types from '@/typedefs/blockchain';
 import LicensePageCardDetails from './LicensePageCardDetails';
 import LicensePageCardHeader from './LicensePageCardHeader';
 
-export default async function LicensePageCard({ licenseId, license }: { licenseId: string; license: types.License }) {
+export default async function LicensePageCard({
+    licenseId,
+    licenseType,
+    license,
+}: {
+    licenseId: string;
+    licenseType: 'ND' | 'MND' | 'GND';
+    license: types.License;
+}) {
     let nodeResponse: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined;
 
     try {
@@ -23,7 +31,7 @@ export default async function LicensePageCard({ licenseId, license }: { licenseI
         <CardBordered>
             <div className="col w-full">
                 <LicensePageCardHeader licenseId={licenseId} license={license} nodeResponse={nodeResponse} />
-                <LicensePageCardDetails license={license} nodeResponse={nodeResponse} />
+                <LicensePageCardDetails license={license} licenseType={licenseType} nodeResponse={nodeResponse} />
             </div>
         </CardBordered>
     );

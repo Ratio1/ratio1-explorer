@@ -1,5 +1,5 @@
 import { getLicenseFirstCheckEpoch } from '@/config';
-import { getNdLicenseRewards } from '@/lib/api/blockchain';
+import { getLicenseRewards } from '@/lib/api/blockchain';
 import { arrayAverage } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { License } from '@/typedefs/blockchain';
@@ -22,9 +22,11 @@ const nodePerformanceItems = [
 
 export default async function LicensePageCardDetails({
     license,
+    licenseType,
     nodeResponse,
 }: {
     license: License;
+    licenseType: 'ND' | 'MND' | 'GND';
     nodeResponse?: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
 }) {
     let rewards: bigint | undefined;
@@ -33,8 +35,9 @@ export default async function LicensePageCardDetails({
         const firstCheckEpoch: number = getLicenseFirstCheckEpoch(license.assignTimestamp);
         const lastClaimEpoch: number = Number(license.lastClaimEpoch);
 
-        rewards = await getNdLicenseRewards(
+        rewards = await getLicenseRewards(
             license,
+            licenseType,
             nodeResponse.epochs.slice(lastClaimEpoch - firstCheckEpoch),
             nodeResponse.epochs_vals.slice(lastClaimEpoch - firstCheckEpoch),
         );

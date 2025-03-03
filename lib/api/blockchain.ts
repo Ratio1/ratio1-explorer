@@ -122,11 +122,53 @@ export const getBlockByTimestamp = async (targetTimestamp: number) => {
     return earliestBlock.number;
 };
 
-export const getNdLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]) => {
-    const currentEpoch = getCurrentEpoch();
-    const epochsToClaim = currentEpoch - Number(license.lastClaimEpoch);
+export const getLicenseRewards = async (
+    license: types.License,
+    licenseType: 'ND' | 'MND' | 'GND',
+    epochs: number[],
+    epochs_vals: number[],
+): Promise<bigint> => {
+    switch (licenseType) {
+        case 'ND':
+            return getNdLicenseRewards(license, epochs, epochs_vals);
+        case 'MND':
+            return getMndLicenseRewards(license, epochs, epochs_vals);
+        case 'GND':
+            return getGndLicenseRewards(license, epochs, epochs_vals);
+    }
+};
 
-    if (epochsToClaim <= 0) {
+const getNdLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {
+    return calculateLicenseRewards(license, epochs, epochs_vals, config.ndVestingEpochs);
+};
+
+const getMndLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {
+    return calculateLicenseRewards(license, epochs, epochs_vals, config.mndVestingEpochs, config.mndCliffEpochs);
+};
+
+const getGndLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {
+    return calculateLicenseRewards(license, epochs, epochs_vals, config.gndVestingEpochs);
+};
+
+const calculateLicenseRewards = async (
+    license: types.License,
+    epochs: number[],
+    epochs_vals: number[],
+    vestingEpochs: number,
+    cliffEpochs: number = 0,
+): Promise<bigint> => {
+    const currentEpoch = getCurrentEpoch();
+
+    const firstEpochToClaim =
+        cliffEpochs > 0
+            ? license.lastClaimEpoch >= cliffEpochs
+                ? Number(license.lastClaimEpoch)
+                : cliffEpochs
+            : Number(license.lastClaimEpoch);
+
+    const epochsToClaim = currentEpoch - firstEpochToClaim;
+
+    if ((cliffEpochs > 0 && currentEpoch < cliffEpochs) || epochsToClaim <= 0) {
         return 0n;
     }
 
@@ -134,7 +176,7 @@ export const getNdLicenseRewards = async (license: types.License, epochs: number
         throw new Error('Invalid epochs array length.');
     }
 
-    const maxRewardsPerEpoch = license.totalAssignedAmount / BigInt(config.ndVestingEpochs);
+    const maxRewardsPerEpoch = license.totalAssignedAmount / BigInt(vestingEpochs);
     let rewards_amount = 0n;
 
     for (let i = 0; i < epochsToClaim; i++) {
@@ -142,134 +184,5 @@ export const getNdLicenseRewards = async (license: types.License, epochs: number
     }
 
     const maxRemainingClaimAmount = license.totalAssignedAmount - license.totalClaimedAmount;
-
     return rewards_amount < maxRemainingClaimAmount ? rewards_amount : maxRemainingClaimAmount;
 };
-
-// const getGndNodeAndLicenseRewards = async (
-//     license: GNDLicense,
-// ): Promise<{
-//     rewards_amount: bigint;
-//     epochs: number[];
-//     epochs_vals: number[];
-//     eth_signatures: EthAddress[];
-//     node_alias: string;
-//     node_is_online: boolean;
-// }> => {
-//     const currentEpoch = getCurrentEpoch();
-//     const epochsToClaim = currentEpoch - Number(license.lastClaimEpoch);
-
-//     const { epochs, epochs_vals, eth_signatures, node_alias, node_is_online } = await getNodeEpochsRange(
-//         license.nodeAddress,
-//         Number(license.lastClaimEpoch),
-//         currentEpoch - 1,
-//     );
-
-//     const baseResult = {
-//         rewards_amount: 0n,
-//         epochs: [],
-//         epochs_vals: [],
-//         eth_signatures: [],
-//         node_alias,
-//         node_is_online,
-//     };
-
-//     if (epochsToClaim <= 0) {
-//         return baseResult;
-//     }
-
-//     if (epochsToClaim !== epochs.length || epochsToClaim !== epochs_vals.length) {
-//         throw new Error('Invalid epochs array length');
-//     }
-
-//     const maxRewardsPerEpoch = license.totalAssignedAmount / BigInt(config.gndVestingEpochs);
-//     let rewards_amount = 0n;
-
-//     for (let i = 0; i < epochsToClaim; i++) {
-//         rewards_amount += (maxRewardsPerEpoch * BigInt(epochs_vals[i])) / 255n;
-//     }
-
-//     const maxRemainingClaimAmount = license.totalAssignedAmount - license.totalClaimedAmount;
-
-//     if (rewards_amount > maxRemainingClaimAmount) {
-//         return {
-//             ...baseResult,
-//             rewards_amount: maxRemainingClaimAmount,
-//             epochs,
-//             epochs_vals,
-//             eth_signatures,
-//         };
-//     }
-//     return {
-//         ...baseResult,
-//         rewards_amount,
-//         epochs,
-//         epochs_vals,
-//         eth_signatures,
-//     };
-// };
-
-// const getMndNodeAndLicenseRewards = async (
-//     license: MNDLicense,
-// ): Promise<{
-//     rewards_amount: bigint;
-//     epochs: number[];
-//     epochs_vals: number[];
-//     eth_signatures: EthAddress[];
-// }> => {
-//     const currentEpoch = getCurrentEpoch();
-
-//     const firstEpochToClaim =
-//         license.lastClaimEpoch >= config.mndCliffEpochs ? Number(license.lastClaimEpoch) : config.mndCliffEpochs;
-//     const epochsToClaim = currentEpoch - firstEpochToClaim;
-
-//     const { epochs, epochs_vals, eth_signatures, node_alias, node_is_online } = await getNodeEpochsRange(
-//         license.nodeAddress,
-//         currentEpoch >= config.mndCliffEpochs ? firstEpochToClaim : currentEpoch - 1,
-//         currentEpoch - 1,
-//     );
-
-//     const baseResult = {
-//         rewards_amount: 0n,
-//         epochs: [],
-//         epochs_vals: [],
-//         eth_signatures: [],
-//         node_alias,
-//         node_is_online,
-//     };
-
-//     if (currentEpoch < config.mndCliffEpochs || epochsToClaim === 0) {
-//         return baseResult;
-//     }
-
-//     if (epochsToClaim !== epochs.length || epochsToClaim !== epochs_vals.length) {
-//         throw new Error('Invalid epochs array length');
-//     }
-
-//     const maxRewardsPerEpoch = license.totalAssignedAmount / BigInt(config.mndVestingEpochs);
-//     let rewards_amount = 0n;
-
-//     for (let i = 0; i < epochsToClaim; i++) {
-//         rewards_amount += (maxRewardsPerEpoch * BigInt(epochs_vals[i])) / 255n;
-//     }
-
-//     const maxRemainingClaimAmount = license.totalAssignedAmount - license.totalClaimedAmount;
-
-//     if (rewards_amount > maxRemainingClaimAmount) {
-//         return {
-//             ...baseResult,
-//             rewards_amount: maxRemainingClaimAmount,
-//             epochs,
-//             epochs_vals,
-//             eth_signatures,
-//         };
-//     }
-
-//     return {
-//         ...baseResult,
-//         rewards_amount,
-//         epochs,
-//         epochs_vals,
-//         eth_signatures,
-//     };
-// };

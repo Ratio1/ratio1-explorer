@@ -1,11 +1,12 @@
 import { EpochTimer } from '@/components/Hero/EpochTimer';
-import { R1MintedLastEpoch } from '@/components/Hero/R1MintedLastEpoch';
 import { R1TotalSupply } from '@/components/Hero/R1TotalSupply';
 import { getEpochStartTimestamp } from '@/config';
 import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
 import { format } from 'date-fns';
+import { Suspense } from 'react';
 import { RiTimeLine } from 'react-icons/ri';
+import R1MintedLastEpoch from './R1MintedLastEpoch';
 import { CardBordered } from './shared/cards/CardBordered';
 import { CardFlexible } from './shared/cards/CardFlexible';
 import { CardHorizontal } from './shared/cards/CardHorizontal';
@@ -46,7 +47,11 @@ export default async function Hero() {
                                             <span className="font-semibold text-primary">$R1</span> minted last epoch
                                         </div>
                                     }
-                                    value={<R1MintedLastEpoch />}
+                                    value={
+                                        <Suspense>
+                                            <R1MintedLastEpoch />
+                                        </Suspense>
+                                    }
                                     isFlexible
                                 />
                             </div>

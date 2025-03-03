@@ -10,9 +10,9 @@ export async function generateMetadata({ params }) {
     }
 
     return {
-        title: `${getShortAddress(ownerEthAddr)}`,
+        title: `${getShortAddress(ownerEthAddr, 4, true)}`,
         openGraph: {
-            title: `${getShortAddress(ownerEthAddr)}`,
+            title: `${getShortAddress(ownerEthAddr, 4, true)}`,
         },
     };
 }

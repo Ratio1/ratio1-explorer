@@ -1,3 +1,4 @@
+import '@/lib/cron';
 import { buildMetadata } from '@/lib/utils';
 import { Wrappers } from '@/lib/wrappers';
 import { monaSans, robotoMono } from '@/styles/fonts';

@@ -1,12 +1,18 @@
 import config, { domains, getCurrentEpoch, getLicenseFirstCheckEpoch } from '@/config';
 import * as types from '@/typedefs/blockchain';
 import { Metadata } from 'next';
-import { usePublicClient } from 'wagmi';
+import { JSX } from 'react';
 import { getNodeEpochsRange, getNodeLastEpoch } from './api/oracles';
 
-export const getShortAddress = (address: string, size = 4) => (
-    <div className="roboto">{`${address.slice(0, size)}•••${address.slice(-size)}`}</div>
-);
+export const getShortAddress = (address: string, size = 4, asString = false): string | JSX.Element => {
+    const str = `${address.slice(0, size)}•••${address.slice(-size)}`;
+
+    if (asString) {
+        return str;
+    }
+
+    return <div className="roboto">{str}</div>;
+};
 
 export const buildMetadata = (title: string, description: string): Metadata => ({
     title: {
@@ -65,31 +71,6 @@ export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve
 export const arrayAverage = (numbers: number[]): number => {
     if (numbers.length === 0) return 0;
     return numbers.reduce((sum, num) => sum + num, 0) / numbers.length;
-};
-
-export const getBlockByTimestamp = async (targetTimestamp: number, publicClient: ReturnType<typeof usePublicClient>) => {
-    // Binary search for the block with the closest timestamp to the target timestamp
-    if (!publicClient) {
-        return;
-    }
-
-    let latestBlock = await publicClient.getBlock();
-    let earliestBlock = await publicClient.getBlock({ blockNumber: config.contractsGenesisBlock });
-
-    while (earliestBlock.number < latestBlock.number) {
-        const middleBlockNumber = earliestBlock.number + (latestBlock.number - earliestBlock.number) / 2n;
-        const middleBlock = await publicClient.getBlock({ blockNumber: middleBlockNumber });
-
-        if (middleBlock.timestamp === BigInt(targetTimestamp)) {
-            return middleBlock.number;
-        } else if (middleBlock.timestamp < BigInt(targetTimestamp)) {
-            earliestBlock = middleBlock;
-        } else {
-            latestBlock = middleBlock;
-        }
-    }
-
-    return earliestBlock.number;
 };
 
 export function fN(num: number): string | number {

@@ -3,7 +3,7 @@ import { LiquidityManagerAbi } from '@/blockchain/LiquidityManager';
 import config, { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
 import { createContext, useContext, useState } from 'react';
 import { usePublicClient } from 'wagmi';
-import { getBlockByTimestamp } from '../utils';
+import { getBlockByTimestamp } from '../api/blockchain';
 
 export interface BlockchainContextType {
     // R1 Price
@@ -49,8 +49,8 @@ export const BlockchainProvider = ({ children }) => {
         const lastEpochStartTimestamp = getEpochStartTimestamp(currentEpoch - 1);
         const lastEpochEndTimestamp = getEpochStartTimestamp(currentEpoch);
 
-        const fromBlock = await getBlockByTimestamp(lastEpochStartTimestamp.getTime() / 1000, publicClient);
-        const toBlock = await getBlockByTimestamp(lastEpochEndTimestamp.getTime() / 1000, publicClient);
+        const fromBlock = await getBlockByTimestamp(lastEpochStartTimestamp.getTime() / 1000);
+        const toBlock = await getBlockByTimestamp(lastEpochEndTimestamp.getTime() / 1000);
 
         const logs = await publicClient.getLogs({
             address: config.r1ContractAddress,

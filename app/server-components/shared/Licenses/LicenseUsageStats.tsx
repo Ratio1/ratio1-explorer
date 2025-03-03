@@ -7,19 +7,25 @@ export const LicenseUsageStats = ({
 }: {
     totalClaimedAmount: bigint;
     totalAssignedAmount?: bigint;
-}) => (
-    <div className="row gap-2.5 text-sm font-medium leading-none">
-        <div>
-            {fBI(totalClaimedAmount, 18)}/{fBI(totalAssignedAmount, 18)}
-        </div>
+}) => {
+    if (!totalAssignedAmount) {
+        return null;
+    }
 
-        <div className="flex h-1 w-full overflow-hidden rounded-full bg-gray-300">
-            <div
-                className="rounded-full bg-primary transition-all"
-                style={{ width: `${Number((totalClaimedAmount * 100n) / totalAssignedAmount)}%` }}
-            ></div>
-        </div>
+    return (
+        <div className="row gap-2.5 text-sm font-medium leading-none">
+            <div>
+                {fBI(totalClaimedAmount, 18)}/{fBI(totalAssignedAmount, 18)}
+            </div>
 
-        <div>{parseFloat(((Number(totalClaimedAmount) / Number(totalAssignedAmount)) * 100).toFixed(2))}%</div>
-    </div>
-);
+            <div className="flex h-1 w-full overflow-hidden rounded-full bg-gray-300">
+                <div
+                    className="rounded-full bg-primary transition-all"
+                    style={{ width: `${Number((totalClaimedAmount * 100n) / totalAssignedAmount)}%` }}
+                ></div>
+            </div>
+
+            <div>{parseFloat(((Number(totalClaimedAmount) / Number(totalAssignedAmount)) * 100).toFixed(2))}%</div>
+        </div>
+    );
+};

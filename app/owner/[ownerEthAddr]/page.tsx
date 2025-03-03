@@ -25,7 +25,7 @@ export default async function OwnerPage({ params }) {
             <CardBordered>
                 <div className="col w-full gap-5 bg-white px-6 py-6">
                     <div className="col w-full gap-5">
-                        <div className="text-[20px] font-bold">{ownerEthAddr}</div>
+                        <div className="roboto text-[20px] font-bold">{ownerEthAddr}</div>
                     </div>
                 </div>
             </CardBordered>

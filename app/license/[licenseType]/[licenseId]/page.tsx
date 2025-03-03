@@ -50,7 +50,7 @@ export default async function LicensePage({ params }) {
                                     label="Owner"
                                     value={
                                         <Link href={`${routePath.owner}/${owner}`}>
-                                            <div className="hover:opacity-50">{owner}</div>
+                                            <div className="roboto hover:opacity-50">{owner}</div>
                                         </Link>
                                     }
                                     isSmall

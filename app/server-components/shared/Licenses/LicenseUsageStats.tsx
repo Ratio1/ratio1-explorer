@@ -13,7 +13,7 @@ export const LicenseUsageStats = ({
     }
 
     return (
-        <div className="row gap-2.5 text-sm font-medium leading-none">
+        <div className="row w-full gap-2.5 text-sm font-medium leading-none">
             <div>
                 {fBI(totalClaimedAmount, 18)}/{fBI(totalAssignedAmount, 18)}
             </div>

@@ -6,7 +6,7 @@ import { License } from '@/typedefs/blockchain';
 import clsx from 'clsx';
 import { cloneElement } from 'react';
 import { formatUnits } from 'viem';
-import { CardHorizontal } from '../cards/CardHorizontal';
+import { CardHorizontal } from '../shared/cards/CardHorizontal';
 
 const nodePerformanceItems = [
     {

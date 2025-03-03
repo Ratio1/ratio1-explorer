@@ -66,7 +66,7 @@ export default async function Hero() {
 
                                             <div className="col gap-[5px]">
                                                 <div className="text-[15px] font-medium leading-none text-slate-500">Epoch</div>
-                                                <div className="text-base font-semibold leading-none">
+                                                <div className="font-semibold leading-none">
                                                     {activeNodes.result.server_current_epoch}
                                                 </div>
                                             </div>
@@ -76,7 +76,7 @@ export default async function Hero() {
                                             <div className="text-[15px] font-medium leading-none text-slate-500">
                                                 Started at
                                             </div>
-                                            <div className="text-base font-semibold leading-none">
+                                            <div className="font-semibold leading-none">
                                                 {format(
                                                     getEpochStartTimestamp(activeNodes.result.server_current_epoch),
                                                     'PP, kk:mm',

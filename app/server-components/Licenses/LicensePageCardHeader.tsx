@@ -1,7 +1,7 @@
 import * as types from '@/typedefs/blockchain';
 import { FunctionComponent, PropsWithChildren } from 'react';
+import { LicenseSmallCard } from '../shared/Licenses/LicenseSmallCard';
 import LicensePageCardNode from './LicensePageCardNode';
-import { LicenseSmallCard } from './LicenseSmallCard';
 
 export default async function LicensePageCardHeader({
     licenseId,

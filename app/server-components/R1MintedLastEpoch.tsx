@@ -16,13 +16,11 @@ const fetchCachedR1MintedLastEpoch = cache(async () => {
 });
 
 export default async function R1MintedLastEpoch() {
-    const value: string = await fetchCachedR1MintedLastEpoch();
+    const value: string | undefined = await fetchCachedR1MintedLastEpoch();
 
     return (
         <div className="text-xl text-primary">
-            {R1MintedLastEpoch !== undefined
-                ? `${parseFloat(Number(formatUnits(BigInt(value), 18)).toFixed(3)).toLocaleString('en-US')}`
-                : '...'}
+            {!!value ? `${parseFloat(Number(formatUnits(BigInt(value), 18)).toFixed(3)).toLocaleString('en-US')}` : '...'}
         </div>
     );
 }

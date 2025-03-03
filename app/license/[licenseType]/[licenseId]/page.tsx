@@ -1,6 +1,6 @@
+import LicenseContainer from '@/app/server-components/Licenses/LicenseContainer';
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
-import LicensePageCard from '@/app/server-components/shared/Licenses/LicensePageCard';
 import { getLicense, getOwnerOfLicense } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
 import { getShortAddress } from '@/lib/utils';
@@ -89,7 +89,7 @@ export default async function LicensePage({ params }) {
                         </div>
 
                         <Suspense>
-                            <LicensePageCard
+                            <LicenseContainer
                                 licenseId={licenseId}
                                 licenseType={licenseType as 'ND' | 'MND' | 'GND'}
                                 license={license}

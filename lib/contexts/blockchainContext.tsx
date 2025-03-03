@@ -4,6 +4,7 @@ import config, { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
 import { createContext, useContext, useState } from 'react';
 import { usePublicClient } from 'wagmi';
 import { getBlockByTimestamp } from '../api/blockchain';
+import { ETH_EMPTY_ADDR } from '../utils';
 
 export interface BlockchainContextType {
     // R1 Price
@@ -58,7 +59,7 @@ export const BlockchainProvider = ({ children }) => {
             fromBlock,
             toBlock,
             args: {
-                from: '0x0000000000000000000000000000000000000000',
+                from: ETH_EMPTY_ADDR,
             },
         });
 

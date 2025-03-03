@@ -5,7 +5,7 @@ import { getLicense } from '@/lib/api/blockchain';
 import { getNodeLastEpoch } from '@/lib/api/oracles';
 import { routePath } from '@/lib/routes';
 import useDebounce from '@/lib/useDebounce';
-import { isNonZeroInteger } from '@/lib/utils';
+import { isEmptyETHAddr, isNonZeroInteger } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Input } from '@heroui/input';
 import { Modal, ModalContent, useDisclosure } from '@heroui/modal';
@@ -80,7 +80,7 @@ export const Search = () => {
 
                 const resultsArray: SearchResult[] = [];
 
-                if (ndLicense.nodeAddress !== '0x0000000000000000000000000000000000000000') {
+                if (!isEmptyETHAddr(ndLicense.nodeAddress)) {
                     resultsArray.push({
                         type: 'license',
                         licenseId,
@@ -89,7 +89,7 @@ export const Search = () => {
                     });
                 }
 
-                if (mndLicense.nodeAddress !== '0x0000000000000000000000000000000000000000') {
+                if (!isEmptyETHAddr(mndLicense.nodeAddress)) {
                     resultsArray.push({
                         type: 'license',
                         licenseId,

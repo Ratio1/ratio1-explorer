@@ -4,6 +4,10 @@ import { Metadata } from 'next';
 import { JSX } from 'react';
 import { getNodeEpochsRange, getNodeLastEpoch } from './api/oracles';
 
+export const ETH_EMPTY_ADDR = '0x0000000000000000000000000000000000000000';
+
+export const isEmptyETHAddr = (addr: string): boolean => addr === ETH_EMPTY_ADDR;
+
 export const getShortAddress = (address: string, size = 4, asString = false): string | JSX.Element => {
     const str = `${address.slice(0, size)}•••${address.slice(-size)}`;
 

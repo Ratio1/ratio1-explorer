@@ -5,6 +5,7 @@ import { ReaderAbi } from '@/blockchain/Reader';
 import config, { chain, getCurrentEpoch, getEpochStartTimestamp } from '@/config';
 import * as types from '@/typedefs/blockchain';
 import { createPublicClient, http } from 'viem';
+import { ETH_EMPTY_ADDR } from '../utils';
 
 export const publicClient = createPublicClient({
     chain,
@@ -92,7 +93,7 @@ export const fetchR1MintedLastEpoch = async () => {
         fromBlock,
         toBlock,
         args: {
-            from: '0x0000000000000000000000000000000000000000',
+            from: ETH_EMPTY_ADDR,
         },
     });
 

@@ -1,12 +1,12 @@
 import { ERC20Abi } from '@/blockchain/ERC20';
 import config, { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
 import { getBlockByTimestamp, publicClient } from '@/lib/api/blockchain';
+import { ETH_EMPTY_ADDR } from '@/lib/utils';
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic'; // Ensure API route is not cached
 
-// Your function (moved from server component)
-export async function fetchR1MintedLastEpoch() {
+async function fetchR1MintedLastEpoch() {
     const currentEpoch = getCurrentEpoch();
     const lastEpochStartTimestamp = getEpochStartTimestamp(currentEpoch - 1);
     const lastEpochEndTimestamp = getEpochStartTimestamp(currentEpoch);
@@ -20,7 +20,7 @@ export async function fetchR1MintedLastEpoch() {
         fromBlock,
         toBlock,
         args: {
-            from: '0x0000000000000000000000000000000000000000',
+            from: ETH_EMPTY_ADDR,
         },
     });
 

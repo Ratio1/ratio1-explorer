@@ -36,6 +36,10 @@ export const LicenseSmallCard = ({ licenseId, licenseType, totalClaimedAmount, t
         </SmallCard>
     );
 
+    if (!licenseId) {
+        return null;
+    }
+
     if (!isLink) {
         return getContent();
     }

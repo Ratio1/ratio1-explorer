@@ -3,7 +3,7 @@ import { SmallCard } from '@/components/Licenses/SmallCard';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getNodeLicenseDetails } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
-import { getShortAddress } from '@/lib/utils';
+import { getShortAddress, isEmptyETHAddr } from '@/lib/utils';
 import { NodeState, R1Address } from '@/typedefs/blockchain';
 import Link from 'next/link';
 import { CardBordered } from '../shared/cards/CardBordered';
@@ -13,6 +13,10 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
     const { licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount } = await getNodeLicenseDetails(
         node.eth_addr,
     );
+
+    if (node.eth_addr === '0xb0c73Bf8F859D4b3DeFB28CF5AF33adC151B0Be7') {
+        console.log(node, { licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount });
+    }
 
     return (
         <CardBordered>
@@ -45,14 +49,16 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
                 />
 
                 {/* Owner */}
-                <Item
-                    label="Owner"
-                    value={
-                        <Link href={`${routePath.owner}/${owner}`}>
-                            <div className="hover:opacity-50">{getShortAddress(owner)}</div>
-                        </Link>
-                    }
-                />
+                {!isEmptyETHAddr(owner) && (
+                    <Item
+                        label="Owner"
+                        value={
+                            <Link href={`${routePath.owner}/${owner}`}>
+                                <div className="hover:opacity-50">{getShortAddress(owner)}</div>
+                            </Link>
+                        }
+                    />
+                )}
 
                 <div className="min-w-[50px]">
                     <Item label="Version" value={<>{node.ver.split('|')[0]}</>} />

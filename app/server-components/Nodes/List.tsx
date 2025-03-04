@@ -2,6 +2,7 @@ import NodesPagination from '@/components/Nodes/NodesPagination';
 import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
 import { NodeState, R1Address } from '@/typedefs/blockchain';
+import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
 import Node from './Node';
 
@@ -14,8 +15,6 @@ export default async function List({ currentPage }: { currentPage: number }) {
 
     const pagesCount = response.result.nodes_total_pages;
 
-    // console.log(`Nodes (p${currentPage})`, Object.entries(nodes));
-
     return (
         <div className="col flex-1 justify-between gap-8">
             <div className="col w-full gap-2">
@@ -23,7 +22,7 @@ export default async function List({ currentPage }: { currentPage: number }) {
 
                     .map(([ratio1Addr, node]) => (
                         <div key={ratio1Addr}>
-                            <Suspense>
+                            <Suspense fallback={<Skeleton className="min-h-[88px] w-full rounded-2xl" />}>
                                 <Node ratio1Addr={ratio1Addr as R1Address} node={node} />
                             </Suspense>
                         </div>

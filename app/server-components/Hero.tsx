@@ -3,6 +3,7 @@ import { R1TotalSupply } from '@/components/Hero/R1TotalSupply';
 import { getEpochStartTimestamp } from '@/config';
 import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
+import { Skeleton } from '@heroui/skeleton';
 import { format } from 'date-fns';
 import { Suspense } from 'react';
 import { RiTimeLine } from 'react-icons/ri';
@@ -48,7 +49,7 @@ export default async function Hero() {
                                         </div>
                                     }
                                     value={
-                                        <Suspense>
+                                        <Suspense fallback={<Skeleton className="min-h-[70px] w-full rounded-2xl" />}>
                                             <R1MintedLastEpoch />
                                         </Suspense>
                                     }

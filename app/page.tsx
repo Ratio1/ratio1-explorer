@@ -1,3 +1,4 @@
+import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
 import Hero from './server-components/Hero';
 import List from './server-components/Nodes/List';
@@ -13,7 +14,9 @@ export default async function HomePage(props: {
 
     return (
         <>
-            <Hero />
+            <Suspense fallback={<Skeleton className="min-h-[271px] w-full rounded-2xl" />}>
+                <Hero />
+            </Suspense>
 
             <Suspense fallback={<NodesListSkeleton />}>
                 <List currentPage={currentPage} />

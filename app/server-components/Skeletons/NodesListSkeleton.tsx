@@ -3,11 +3,11 @@ import { Skeleton } from '@heroui/skeleton';
 export default function NodesListSkeleton() {
     return (
         <div className="col w-full gap-2">
-            {Array(5)
+            {Array(10)
                 .fill(null)
                 .map((_, index) => (
                     <div key={index}>
-                        <Skeleton className="my h-[99px] rounded-2xl" />
+                        <Skeleton className="min-h-[88px] rounded-2xl" />
                     </div>
                 ))}
         </div>

@@ -6,6 +6,7 @@ import { LicenseUsageStats } from '@/app/server-components/shared/Licenses/Licen
 import { routePath } from '@/lib/routes';
 import { getShortAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
+import { Skeleton } from '@heroui/skeleton';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { Suspense } from 'react';
@@ -133,7 +134,7 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
 
                         {/* Row 3 */}
                         <div className="flex flex-wrap items-stretch gap-3">
-                            <Suspense>
+                            <Suspense fallback={<Skeleton className="min-h-[76px] min-w-[258px] rounded-2xl" />}>
                                 <LicenseRewards
                                     license={license}
                                     licenseType={licenseType as 'ND' | 'MND' | 'GND'}

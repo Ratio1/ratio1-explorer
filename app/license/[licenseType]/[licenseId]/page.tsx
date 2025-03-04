@@ -4,6 +4,7 @@ import LicenseCard from '@/app/server-components/main-cards/LicenseCard';
 import { getLicense, getOwnerOfLicense } from '@/lib/api/blockchain';
 import { getNodeAvailability, isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
+import { Skeleton } from '@heroui/skeleton';
 import { notFound } from 'next/navigation';
 import { cache, Suspense } from 'react';
 
@@ -64,11 +65,11 @@ export default async function LicensePage({ params }) {
                 getNodeAvailability={cachedGetNodeAvailability}
             />
 
-            <Suspense>
+            <Suspense fallback={<Skeleton className="min-h-[310px] w-full rounded-2xl" />}>
                 <LicensePageNodeCardWrapper cachedGetNodeAvailability={cachedGetNodeAvailability} />
             </Suspense>
 
-            <Suspense>
+            <Suspense fallback={<Skeleton className="min-h-[276px] w-full rounded-2xl" />}>
                 <LicensePageNodePerformanceCardWrapper cachedGetNodeAvailability={cachedGetNodeAvailability} />
             </Suspense>
         </div>

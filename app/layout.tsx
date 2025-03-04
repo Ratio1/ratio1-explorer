@@ -2,6 +2,7 @@ import '@/lib/cron';
 import { buildMetadata } from '@/lib/utils';
 import { monaSans, robotoMono } from '@/styles/fonts';
 import '@/styles/globals.css';
+import { Skeleton } from '@heroui/skeleton';
 import { HeroUIProvider } from '@heroui/system';
 import { Metadata, Viewport } from 'next';
 import { Suspense } from 'react';
@@ -41,7 +42,9 @@ export default async function RootLayout({
 
                         {children}
 
-                        <Footer />
+                        <Suspense fallback={<Skeleton className="min-h-[298px] w-full rounded-3xl" />}>
+                            <Footer />
+                        </Suspense>
                     </div>
                 </HeroUIProvider>
             </body>

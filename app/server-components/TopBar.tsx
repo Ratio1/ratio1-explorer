@@ -12,7 +12,8 @@ export default async function TopBar() {
     try {
         activeNodes = await getActiveNodes();
     } catch (error) {
-        return;
+        console.error(error);
+        return null;
     }
 
     return (

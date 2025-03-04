@@ -15,6 +15,8 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
         node.eth_addr,
     );
 
+    console.log('Node', licenseId, node);
+
     return (
         <CardBordered>
             <div className="row w-full justify-between gap-6 bg-white px-6 py-3">

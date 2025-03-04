@@ -7,7 +7,7 @@ export default function NodesListSkeleton() {
                 .fill(null)
                 .map((_, index) => (
                     <div key={index}>
-                        <Skeleton className="min-h-[88px] rounded-2xl" />
+                        <Skeleton className="min-h-[88px] w-full rounded-2xl" />
                     </div>
                 ))}
         </div>

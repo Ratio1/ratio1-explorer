@@ -1,9 +1,10 @@
-import ApiStatus from '@/components/shared/ApiStatusCard';
+import ApiStatusCard from '@/app/server-components/shared/ApiStatusCard';
 import { getCurrentEpoch } from '@/lib/api/oracles';
 import * as types from '@/typedefs/blockchain';
+import { Skeleton } from '@heroui/skeleton';
 import Image from 'next/image';
 import Link from 'next/link';
-import { JSX } from 'react';
+import { JSX, Suspense } from 'react';
 import { RiDiscordLine, RiLinkedinBoxLine, RiTwitterXLine, RiYoutubeLine } from 'react-icons/ri';
 
 const socialLinks = [
@@ -62,7 +63,9 @@ export default async function Footer() {
                 </div>
             )}
 
-            <ApiStatus />
+            <Suspense fallback={<Skeleton className="min-h-[40px] w-full max-w-[116px] rounded-xl" />}>
+                <ApiStatusCard />
+            </Suspense>
         </div>
     );
 }

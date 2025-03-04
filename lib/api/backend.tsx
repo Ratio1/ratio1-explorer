@@ -5,10 +5,7 @@ import axios from 'axios';
 
 const backendUrl = config.backendUrl;
 
-export const ping = async () =>
-    _doGet<{
-        status: string;
-    }>('/auth/nodeData');
+export const ping = async () => _doGet('/auth/nodeData');
 
 // Hepers
 async function _doGet<T>(endpoint: string) {

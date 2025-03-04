@@ -4,7 +4,6 @@ import { arrayAverage } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Tooltip } from '@heroui/tooltip';
 import clsx from 'clsx';
-import { round } from 'lodash';
 import { CardBordered } from '../shared/cards/CardBordered';
 import { CardHorizontal } from '../shared/cards/CardHorizontal';
 
@@ -61,7 +60,7 @@ export default async function NodePerformanceCard({
                                                         content={
                                                             <div className="px-1 py-1.5 text-small">
                                                                 <div className="font-semibold">
-                                                                    {round((val * 100) / 255, 2)}%
+                                                                    {parseFloat(((val * 100) / 255).toFixed(2))}%
                                                                 </div>
                                                                 <div className="text-slate-500">
                                                                     Epoch {getCurrentEpoch() - 10 + index}

@@ -4,24 +4,29 @@ import config, { domains } from '@/config';
 import { ping } from '@/lib/api/backend';
 import { Select, SelectItem } from '@heroui/select';
 import { SharedSelection } from '@heroui/system';
-import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const networks = ['mainnet', 'testnet', 'devnet'];
 
 export const NetworkSelector = () => {
     const [keys, setKeys] = useState(new Set<'mainnet' | 'testnet' | 'devnet'>([config.environment]));
+    const [pingError, setPingError] = useState<boolean>();
 
-    const {
-        data: pingData,
-        error: pingError,
-        isLoading: isPingLoading,
-    } = useQuery({
-        queryKey: ['ping'],
-        queryFn: ping,
-        retry: false,
-    });
+    // Init
+    useEffect(() => {
+        (async () => {
+            try {
+                const pingResponse = await ping();
+
+                if (pingResponse) {
+                    setPingError(false);
+                }
+            } catch (error) {
+                setPingError(true);
+            }
+        })();
+    }, []);
 
     return (
         <Select
@@ -69,13 +74,13 @@ export const NetworkSelector = () => {
             }}
             variant="flat"
             startContent={
-                isPingLoading ? (
+                pingError === undefined ? (
                     <></>
                 ) : (
                     <div
                         className={clsx('ml-1 mt-0.5 h-2 min-h-2 w-2 min-w-2 rounded-full', {
                             'bg-green-500': !pingError,
-                            'bg-red-500': pingData?.status === 'error' || !!pingError,
+                            'bg-red-500': !!pingError,
                         })}
                     ></div>
                 )

@@ -1,8 +1,8 @@
 import '@/lib/cron';
 import { buildMetadata } from '@/lib/utils';
-import { Wrappers } from '@/lib/wrappers';
 import { monaSans, robotoMono } from '@/styles/fonts';
 import '@/styles/globals.css';
+import { HeroUIProvider } from '@heroui/system';
 import { Metadata, Viewport } from 'next';
 import { Suspense } from 'react';
 import Footer from './server-components/Footer';
@@ -29,7 +29,7 @@ export default async function RootLayout({
     return (
         <html lang="en">
             <body className={`${monaSans.variable} ${robotoMono.variable} antialiased`}>
-                <Wrappers>
+                <HeroUIProvider>
                     <div className="col layout min-h-screen gap-6 py-6">
                         <div className="pb-4">
                             <Header />
@@ -43,7 +43,7 @@ export default async function RootLayout({
 
                         <Footer />
                     </div>
-                </Wrappers>
+                </HeroUIProvider>
             </body>
         </html>
     );

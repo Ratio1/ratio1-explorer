@@ -82,7 +82,7 @@ export default async function OwnerPage({ params }) {
                                 label="Address"
                                 value={
                                     <div>
-                                        <CopyableAddress value={ownerEthAddr} size={8} isLarge />
+                                        <CopyableAddress value={ownerEthAddr} size={4} isLarge />
                                     </div>
                                 }
                                 isSmall

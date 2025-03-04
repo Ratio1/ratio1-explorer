@@ -13,8 +13,13 @@ import { isAddress } from 'viem';
 export async function generateMetadata({ params }) {
     const { ownerEthAddr } = await params;
 
-    if (!ownerEthAddr) {
-        notFound();
+    if (!ownerEthAddr || !isAddress(ownerEthAddr) || isEmptyETHAddr(ownerEthAddr)) {
+        return {
+            title: 'Error',
+            openGraph: {
+                title: 'Error',
+            },
+        };
     }
 
     const ensName = await cachedGetENSName(ownerEthAddr);

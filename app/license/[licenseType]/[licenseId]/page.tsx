@@ -9,7 +9,38 @@ import { notFound } from 'next/navigation';
 import { cache, Suspense } from 'react';
 
 export async function generateMetadata({ params }) {
-    const { licenseId } = await params;
+    const { licenseType, licenseId } = await params;
+
+    if (!licenseType || !['ND', 'MND', 'GND'].includes(licenseType)) {
+        return {
+            title: 'Error',
+            openGraph: {
+                title: 'Error',
+            },
+        };
+    }
+
+    const licenseIdNum = parseInt(licenseId);
+
+    if (isNaN(licenseIdNum) || licenseIdNum < 0 || licenseIdNum > 10000) {
+        return {
+            title: 'Error',
+            openGraph: {
+                title: 'Error',
+            },
+        };
+    }
+
+    try {
+        await cachedGetOwnerOfLicense(licenseType, licenseId);
+    } catch (error) {
+        return {
+            title: 'Error',
+            openGraph: {
+                title: 'Error',
+            },
+        };
+    }
 
     return {
         title: `License #${licenseId}`,
@@ -18,6 +49,10 @@ export async function generateMetadata({ params }) {
         },
     };
 }
+
+const cachedGetOwnerOfLicense = cache(async (licenseType: 'ND' | 'MND' | 'GND', licenseId: string) => {
+    return await getOwnerOfLicense(licenseType, licenseId);
+});
 
 export default async function LicensePage({ params }) {
     const { licenseType, licenseId } = await params;

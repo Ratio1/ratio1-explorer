@@ -15,7 +15,10 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
         node.eth_addr,
     );
 
-    console.log('Node', licenseId, node);
+    // The node will soon be disconnected by dAuth
+    if (!licenseId) {
+        return null;
+    }
 
     return (
         <CardBordered>

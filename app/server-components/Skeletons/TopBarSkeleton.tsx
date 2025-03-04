@@ -13,7 +13,7 @@ export default function TopBarSkeleton() {
                         .fill(null)
                         .map((_, index) => (
                             <div key={index}>
-                                <Skeleton className="h-16 w-40 rounded-full" />
+                                <Skeleton className="h-[52px] min-w-40 rounded-full" />
                             </div>
                         ))}
                 </div>

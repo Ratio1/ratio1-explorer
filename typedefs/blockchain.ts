@@ -11,6 +11,12 @@ type License = {
     isBanned: boolean;
 };
 
+type NodeLicenseDetailsResponse = License & {
+    licenseId: bigint;
+    licenseType: 'ND' | 'MND' | 'GND' | undefined;
+    owner: EthAddress;
+};
+
 type ComputeParam = {
     licenseId: bigint;
     nodeAddress: `0x${string}`;
@@ -107,6 +113,7 @@ export type {
     ComputeParam,
     EthAddress,
     License,
+    NodeLicenseDetailsResponse,
     NodeState,
     OraclesAvailabilityResult,
     OraclesDefaultResult,

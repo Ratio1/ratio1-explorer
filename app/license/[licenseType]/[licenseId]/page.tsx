@@ -1,3 +1,4 @@
+import LicensePageNode from '@/app/server-components/Licenses/LicensePageNode';
 import LicensePageNodePerformance from '@/app/server-components/Licenses/LicensePageNodePerformance';
 import LicenseRewards from '@/app/server-components/Licenses/LicenseRewards';
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
@@ -66,7 +67,7 @@ export default async function LicensePage({ params }) {
             <CardBordered>
                 <div className="col w-full gap-5 bg-white px-6 py-6">
                     <div className="col w-full gap-5">
-                        <div className="text-2xl font-bold">License #{licenseId}</div>
+                        <div className="text-[26px] font-bold">License #{licenseId}</div>
 
                         <div className="col gap-3">
                             {/* Row 1 */}
@@ -170,6 +171,10 @@ export default async function LicensePage({ params }) {
                     </div>
                 </div>
             </CardBordered>
+
+            <Suspense>
+                <LicensePageNode cachedGetNodeAvailability={cachedGetNodeAvailability} />
+            </Suspense>
 
             <Suspense>
                 <LicensePageNodePerformance cachedGetNodeAvailability={cachedGetNodeAvailability} />

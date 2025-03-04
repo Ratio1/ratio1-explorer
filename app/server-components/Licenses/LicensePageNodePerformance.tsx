@@ -24,7 +24,7 @@ export default async function LicensePageNodePerformance({
         <CardBordered>
             <div className="col w-full gap-5 bg-white px-6 py-6">
                 <div className="col w-full gap-5">
-                    <div className="text-2xl font-bold">Performance</div>
+                    <div className="text-2xl font-bold">Node Performance</div>
 
                     <div className="col gap-3">
                         <div className="flex flex-wrap items-stretch gap-3">

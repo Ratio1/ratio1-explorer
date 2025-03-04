@@ -51,11 +51,10 @@ export async function generateMetadata({ params }) {
 const getCachedLicenseAndNode = cache(async (nodeEthAddr: types.EthAddress) => {
     const { licenseId, licenseType, owner, lastClaimEpoch, assignTimestamp } = await getNodeLicenseDetails(nodeEthAddr);
     const nodeResponse = await getNodeAvailability(nodeEthAddr, assignTimestamp);
-    // console.log('[NodePage]', nodeResponse);
 
     return {
-        licenseType,
         licenseId,
+        licenseType,
         owner,
         lastClaimEpoch,
         assignTimestamp,
@@ -67,8 +66,8 @@ export default async function NodePage({ params }) {
     const { nodeEthAddr } = await params;
 
     let nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
-    let licenseType: 'ND' | 'MND' | 'GND' | undefined;
     let licenseId: bigint | undefined;
+    let licenseType: 'ND' | 'MND' | 'GND' | undefined;
     let owner: types.EthAddress | undefined;
     let lastClaimEpoch: bigint | undefined;
     let assignTimestamp: bigint | undefined;
@@ -221,11 +220,11 @@ export default async function NodePage({ params }) {
                 </div>
             </CardBordered>
 
-            {/* Performance */}
+            {/* Node Performance */}
             <CardBordered>
                 <div className="col w-full gap-5 bg-white px-6 py-6">
                     <div className="col w-full gap-5">
-                        <div className="text-2xl font-bold">Performance</div>
+                        <div className="text-2xl font-bold">Node Performance</div>
 
                         <div className="col gap-3">
                             <div className="flex flex-wrap items-stretch gap-3">

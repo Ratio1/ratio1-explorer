@@ -12,7 +12,7 @@ export const publicClient = createPublicClient({
     transport: http('https://base-sepolia.g.alchemy.com/v2/n2UXf8tPtZ242ZpCzspVBPVE_sQhe6S3'), // TODO: Replace
 });
 
-export async function getNodeLicenseDetails(nodeAddress: types.EthAddress) {
+export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Promise<types.NodeLicenseDetailsResponse> {
     return await publicClient
         .readContract({
             address: config.readerContractAddress,

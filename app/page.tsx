@@ -23,7 +23,7 @@ export default async function HomePage(props: {
 
     return (
         <>
-            <Hero currentEpoch={response.result.server_current_epoch} nodesTotalItems={response.result.nodes_total_items} />
+            <Hero nodesTotalItems={response.result.nodes_total_items} />
 
             <Suspense fallback={<NodesListSkeleton />}>
                 <List nodes={nodes} pagesCount={pagesCount} />

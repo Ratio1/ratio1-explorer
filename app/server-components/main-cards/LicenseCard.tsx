@@ -2,7 +2,6 @@ import LicenseRewards from '@/app/server-components/Licenses/LicenseRewards';
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
 import { CardFlexible } from '@/app/server-components/shared/cards/CardFlexible';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
-import { LicenseUsageStats } from '@/app/server-components/shared/Licenses/LicenseUsageStats';
 import { routePath } from '@/lib/routes';
 import { getShortAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
@@ -13,6 +12,7 @@ import { Suspense } from 'react';
 import { RiCpuLine } from 'react-icons/ri';
 import { formatUnits } from 'viem';
 import { LargeTag } from '../shared/LargeTag';
+import LicenseUsageStats from '../shared/Licenses/LicenseUsageStats';
 
 interface Props {
     license: types.License;
@@ -134,7 +134,7 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
 
                         {/* Row 3 */}
                         <div className="flex flex-wrap items-stretch gap-3">
-                            <Suspense fallback={<Skeleton className="min-h-[76px] min-w-[258px] rounded-2xl" />}>
+                            <Suspense fallback={<Skeleton className="min-h-[76px] w-full max-w-[258px] rounded-xl" />}>
                                 <LicenseRewards
                                     license={license}
                                     licenseType={licenseType as 'ND' | 'MND' | 'GND'}

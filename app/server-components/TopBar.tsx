@@ -1,10 +1,9 @@
 import { CardWithIcon } from '@/app/server-components/shared/cards/CardWithIcon';
 import { Search } from '@/components/Search';
-import { getNextEpochTimestamp } from '@/config';
+import TopBarEpochCard from '@/components/TopBarEpochCard';
 import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
-import { formatDistanceToNow } from 'date-fns';
-import { RiCpuLine, RiTimeLine } from 'react-icons/ri';
+import { RiCpuLine } from 'react-icons/ri';
 import PriceCard from './shared/PriceCard';
 
 export default async function TopBar() {
@@ -24,11 +23,7 @@ export default async function TopBar() {
 
             <div className="flex-1">
                 <div className="row justify-end gap-3">
-                    <CardWithIcon icon={<RiTimeLine />} label={`${formatDistanceToNow(getNextEpochTimestamp())} left`}>
-                        <div className="pr-0.5 font-medium leading-none">
-                            Epoch <span className="font-semibold text-primary">{activeNodes.result.server_current_epoch}</span>
-                        </div>
-                    </CardWithIcon>
+                    <TopBarEpochCard />
 
                     <PriceCard />
 

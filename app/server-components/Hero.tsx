@@ -1,16 +1,12 @@
-import { EpochTimer } from '@/components/Hero/EpochTimer';
-import { getEpochStartTimestamp } from '@/config';
+import HeroEpochCard from '@/components/HeroEpochCard';
 import { Skeleton } from '@heroui/skeleton';
-import { format } from 'date-fns';
 import { Suspense } from 'react';
-import { RiTimeLine } from 'react-icons/ri';
 import R1MintedLastEpoch from './R1MintedLastEpoch';
 import { CardBordered } from './shared/cards/CardBordered';
-import { CardFlexible } from './shared/cards/CardFlexible';
 import { CardHorizontal } from './shared/cards/CardHorizontal';
 import R1TotalSupply from './shared/R1TotalSupply';
 
-export default async function Hero({ currentEpoch, nodesTotalItems }) {
+export default async function Hero({ nodesTotalItems }) {
     return (
         <div className="w-full">
             <CardBordered>
@@ -32,7 +28,7 @@ export default async function Hero({ currentEpoch, nodesTotalItems }) {
                                     isFlexible
                                 />
 
-                                <Suspense fallback={<Skeleton className="min-h-[76px] max-w-[380px] rounded-2xl" />}>
+                                <Suspense fallback={<Skeleton className="min-h-[76px] w-full max-w-[380px] rounded-xl" />}>
                                     <CardHorizontal
                                         label={
                                             <div>
@@ -46,36 +42,7 @@ export default async function Hero({ currentEpoch, nodesTotalItems }) {
                             </div>
 
                             <div className="row flex-wrap gap-3">
-                                <CardFlexible>
-                                    <div className="row h-[76px] w-full justify-between gap-16 px-6 py-2">
-                                        <div className="row gap-2">
-                                            <div className="center-all rounded-full bg-blue-100 p-2.5 text-2xl text-primary">
-                                                <RiTimeLine />
-                                            </div>
-
-                                            <div className="col gap-[5px]">
-                                                <div className="text-[15px] font-medium leading-none text-slate-500">Epoch</div>
-                                                <div className="font-semibold leading-none">{currentEpoch}</div>
-                                            </div>
-                                        </div>
-
-                                        <div className="col gap-[5px]">
-                                            <div className="text-[15px] font-medium leading-none text-slate-500">
-                                                Started at
-                                            </div>
-                                            <div className="font-semibold leading-none">
-                                                {format(getEpochStartTimestamp(currentEpoch), 'PP, kk:mm')}
-                                            </div>
-                                        </div>
-
-                                        <div className="col gap-[5px]">
-                                            <div className="text-[15px] font-medium leading-none text-slate-500">Time left</div>
-                                            <div className="font-semibold leading-none">
-                                                <EpochTimer />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </CardFlexible>
+                                <HeroEpochCard />
                             </div>
                         </div>
                     </div>

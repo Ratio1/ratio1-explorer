@@ -1,7 +1,6 @@
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
 import { CardFlexible } from '@/app/server-components/shared/cards/CardFlexible';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
-import { LicenseUsageStats } from '@/app/server-components/shared/Licenses/LicenseUsageStats';
 import { routePath } from '@/lib/routes';
 import { getShortAddress, isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
@@ -9,6 +8,7 @@ import Link from 'next/link';
 import { RiCpuLine } from 'react-icons/ri';
 import { formatUnits } from 'viem';
 import { LargeTag } from '../shared/LargeTag';
+import LicenseUsageStats from '../shared/Licenses/LicenseUsageStats';
 
 interface Props {
     license: types.License;

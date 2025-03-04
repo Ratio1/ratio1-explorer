@@ -1,6 +1,6 @@
+import LicensePageNodeCardWrapper from '@/app/server-components/LicensePage/LicensePageNodeCardWrapper';
+import LicensePageNodePerformanceCardWrapper from '@/app/server-components/LicensePage/LicensePageNodePerformanceCardWrapper';
 import LicenseCard from '@/app/server-components/main-cards/LicenseCard';
-import NodeCard from '@/app/server-components/main-cards/NodeCard';
-import NodePerformanceCard from '@/app/server-components/main-cards/NodePerformanceCard';
 import { getLicense, getOwnerOfLicense } from '@/lib/api/blockchain';
 import { getNodeAvailability, isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
@@ -61,15 +61,15 @@ export default async function LicensePage({ params }) {
                 licenseType={licenseType}
                 licenseId={licenseId}
                 owner={owner}
-                cachedGetNodeAvailability={cachedGetNodeAvailability}
+                getNodeAvailability={cachedGetNodeAvailability}
             />
 
             <Suspense>
-                <NodeCard cachedGetNodeAvailability={cachedGetNodeAvailability} hasLink />
+                <LicensePageNodeCardWrapper cachedGetNodeAvailability={cachedGetNodeAvailability} />
             </Suspense>
 
             <Suspense>
-                <NodePerformanceCard cachedGetNodeAvailability={cachedGetNodeAvailability} />
+                <LicensePageNodePerformanceCardWrapper cachedGetNodeAvailability={cachedGetNodeAvailability} />
             </Suspense>
         </div>
     );

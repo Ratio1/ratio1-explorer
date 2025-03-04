@@ -9,17 +9,10 @@ import { CardBordered } from '../shared/cards/CardBordered';
 import { CardHorizontal } from '../shared/cards/CardHorizontal';
 
 export default async function NodePerformanceCard({
-    cachedGetNodeAvailability,
+    nodeResponse,
 }: {
-    cachedGetNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;
+    nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
 }) {
-    const nodeResponse: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined =
-        await cachedGetNodeAvailability();
-
-    if (!nodeResponse) {
-        return null;
-    }
-
     return (
         <CardBordered>
             <div className="col w-full gap-5 bg-white px-6 py-6">

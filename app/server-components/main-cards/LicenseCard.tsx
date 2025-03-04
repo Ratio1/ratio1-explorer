@@ -17,18 +17,11 @@ interface Props {
     licenseType: 'ND' | 'MND' | 'GND';
     licenseId: string;
     owner: types.EthAddress;
-    cachedGetNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;
+    getNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;
     hasLink?: boolean; // If it has a link to it, it means it's not the main card (displayed on top of the page)
 }
 
-export default async function LicenseCard({
-    license,
-    licenseType,
-    licenseId,
-    owner,
-    cachedGetNodeAvailability,
-    hasLink,
-}: Props) {
+export default async function LicenseCard({ license, licenseType, licenseId, owner, getNodeAvailability, hasLink }: Props) {
     const getTitle = () => (
         <div
             className={clsx('font-bold', {
@@ -139,7 +132,7 @@ export default async function LicenseCard({
                                 <LicenseRewards
                                     license={license}
                                     licenseType={licenseType as 'ND' | 'MND' | 'GND'}
-                                    cachedGetNodeAvailability={cachedGetNodeAvailability}
+                                    getNodeAvailability={getNodeAvailability}
                                 />
                             </Suspense>
                         </div>

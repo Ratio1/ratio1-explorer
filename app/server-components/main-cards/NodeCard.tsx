@@ -11,19 +11,12 @@ import Link from 'next/link';
 import { RiEye2Line } from 'react-icons/ri';
 
 export default async function NodeCard({
-    cachedGetNodeAvailability,
+    nodeResponse,
     hasLink,
 }: {
-    cachedGetNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;
+    nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
     hasLink?: boolean; // If it has a link to it, it means it's not the main card (displayed on top of the page)
 }) {
-    const nodeResponse: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined =
-        await cachedGetNodeAvailability();
-
-    if (!nodeResponse) {
-        return null;
-    }
-
     const getTitle = () => (
         <div
             className={clsx('font-bold', {

@@ -7,30 +7,30 @@ import { CardHorizontal } from '../shared/cards/CardHorizontal';
 export default async function LicenseRewards({
     license,
     licenseType,
-    cachedGetNodeAvailability,
+    getNodeAvailability,
 }: {
     license: types.License;
     licenseType: 'ND' | 'MND' | 'GND';
-    cachedGetNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;
+    getNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;
 }) {
-    let rewards: bigint | undefined;
+    let rewards: bigint | undefined = 0n;
 
     const nodeResponse: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined =
-        await cachedGetNodeAvailability();
+        await getNodeAvailability();
 
-    if (nodeResponse) {
-        const firstCheckEpoch: number = getLicenseFirstCheckEpoch(license.assignTimestamp);
-        const lastClaimEpoch: number = Number(license.lastClaimEpoch);
-
-        rewards = await getLicenseRewards(
-            license,
-            licenseType,
-            nodeResponse.epochs.slice(lastClaimEpoch - firstCheckEpoch),
-            nodeResponse.epochs_vals.slice(lastClaimEpoch - firstCheckEpoch),
-        );
-    } else {
-        rewards = 0n;
+    if (!nodeResponse) {
+        return null;
     }
+
+    const firstCheckEpoch: number = getLicenseFirstCheckEpoch(license.assignTimestamp);
+    const lastClaimEpoch: number = Number(license.lastClaimEpoch);
+
+    rewards = await getLicenseRewards(
+        license,
+        licenseType,
+        nodeResponse.epochs.slice(lastClaimEpoch - firstCheckEpoch),
+        nodeResponse.epochs_vals.slice(lastClaimEpoch - firstCheckEpoch),
+    );
 
     return (
         <CardHorizontal

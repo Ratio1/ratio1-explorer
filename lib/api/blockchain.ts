@@ -5,7 +5,7 @@ import { ReaderAbi } from '@/blockchain/Reader';
 import config, { chain, getCurrentEpoch, getEpochStartTimestamp } from '@/config';
 import * as types from '@/typedefs/blockchain';
 import { createPublicClient, http } from 'viem';
-import { ETH_EMPTY_ADDR } from '../utils';
+import { ETH_EMPTY_ADDR, isEmptyETHAddr } from '../utils';
 
 export const publicClient = createPublicClient({
     chain,
@@ -26,6 +26,7 @@ export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Prom
         }));
 }
 
+// TODO: Ale add to Reader
 export async function getOwnerOfLicense(
     licenseType: 'ND' | 'MND' | 'GND',
     licenseId: number | string,
@@ -41,6 +42,7 @@ export async function getOwnerOfLicense(
     });
 }
 
+// TODO: Ale add to Reader
 export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: number | string): Promise<types.License> {
     let nodeAddress: types.EthAddress,
         totalAssignedAmount: bigint = config.ndLicenseCap,
@@ -78,6 +80,61 @@ export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: n
         isBanned,
     };
 }
+
+export const getLicenses = async (address: types.EthAddress): Promise<types.LicenseInfo[]> => {
+    const [mndLicense, ndLicenses] = await Promise.all([
+        publicClient
+            .readContract({
+                address: config.mndContractAddress,
+                abi: MNDContractAbi,
+                functionName: 'getUserLicense',
+                args: [address],
+            })
+            .then((license) => {
+                const isLinked = license.nodeAddress !== '0x0000000000000000000000000000000000000000';
+                const licenseType: 'MND' | 'GND' = license.licenseId === 1n ? 'GND' : 'MND';
+
+                if (!isLinked) {
+                    return { ...license, licenseType, isLinked, isBanned: false };
+                }
+
+                return {
+                    ...license,
+                    licenseType,
+                    isLinked,
+                    isBanned: false,
+                };
+            }),
+        publicClient
+            .readContract({
+                address: config.ndContractAddress,
+                abi: NDContractAbi,
+                functionName: 'getLicenses',
+                args: [address],
+            })
+            .then((licenses) => {
+                return licenses.map((license) => {
+                    const licenseType: 'ND' | 'MND' | 'GND' = 'ND';
+                    const isLinked = !isEmptyETHAddr(license.nodeAddress);
+                    const totalAssignedAmount = config.ndLicenseCap;
+
+                    if (!isLinked) {
+                        return { ...license, licenseType, totalAssignedAmount, isLinked };
+                    }
+
+                    return {
+                        ...license,
+                        licenseType,
+                        totalAssignedAmount,
+                        isLinked,
+                    };
+                });
+            }),
+    ]);
+
+    const licenses = mndLicense.totalAssignedAmount ? [mndLicense, ...ndLicenses] : ndLicenses;
+    return licenses;
+};
 
 export const fetchR1MintedLastEpoch = async () => {
     const currentEpoch = getCurrentEpoch();

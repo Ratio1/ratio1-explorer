@@ -17,6 +17,12 @@ type NodeLicenseDetailsResponse = License & {
     owner: EthAddress;
 };
 
+type LicenseInfo = License & {
+    licenseType: 'ND' | 'MND' | 'GND';
+    licenseId: bigint;
+    isLinked: boolean;
+};
+
 type ComputeParam = {
     licenseId: bigint;
     nodeAddress: `0x${string}`;
@@ -113,6 +119,7 @@ export type {
     ComputeParam,
     EthAddress,
     License,
+    LicenseInfo,
     NodeLicenseDetailsResponse,
     NodeState,
     OraclesAvailabilityResult,

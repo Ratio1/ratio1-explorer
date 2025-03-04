@@ -1,9 +1,8 @@
 export const routePath = {
     root: '/',
-    // nodes: '/nodes',
     node: '/node',
     license: '/license',
-    owner: '/owner',
+    owner: '/account',
 };
 
 export const routeTitles = {

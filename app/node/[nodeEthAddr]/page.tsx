@@ -13,7 +13,7 @@ import { isAddress } from 'viem';
 export async function generateMetadata({ params }) {
     const { nodeEthAddr } = await params;
 
-    if (!nodeEthAddr || !isAddress(nodeEthAddr)) {
+    if (!nodeEthAddr || !isAddress(nodeEthAddr) || isEmptyETHAddr(nodeEthAddr)) {
         notFound();
     }
 

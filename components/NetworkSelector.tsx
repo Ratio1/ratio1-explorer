@@ -30,7 +30,11 @@ export const NetworkSelector = () => {
 
     return (
         <Select
-            className="min-w-[126px]"
+            className={clsx({
+                'w-[128px]': keys.has('mainnet'),
+                'w-[118px]': keys.has('testnet'),
+                'w-[116px]': keys.has('devnet'),
+            })}
             classNames={{
                 trigger: 'min-h-12 bg-primary data-[hover=true]:bg-primary/85 rounded-full ',
                 label: 'group-data-[filled=true]:-translate-y-5',

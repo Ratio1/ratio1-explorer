@@ -12,11 +12,19 @@ const fetchCachedR1MintedLastEpoch = cache(async () => {
     const data: {
         value: string;
     } = await res.json();
+
     return data.value;
 });
 
 export default async function R1MintedLastEpoch() {
-    const value: string | undefined = await fetchCachedR1MintedLastEpoch();
+    let value: string | undefined;
+
+    try {
+        value = await fetchCachedR1MintedLastEpoch();
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
 
     return (
         <div className="text-xl text-primary">

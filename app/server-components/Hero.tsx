@@ -1,8 +1,6 @@
 import { EpochTimer } from '@/components/Hero/EpochTimer';
 import { R1TotalSupply } from '@/components/Hero/R1TotalSupply';
 import { getEpochStartTimestamp } from '@/config';
-import { getActiveNodes } from '@/lib/api';
-import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import { format } from 'date-fns';
 import { Suspense } from 'react';
@@ -12,15 +10,7 @@ import { CardBordered } from './shared/cards/CardBordered';
 import { CardFlexible } from './shared/cards/CardFlexible';
 import { CardHorizontal } from './shared/cards/CardHorizontal';
 
-export default async function Hero() {
-    let activeNodes: types.OraclesDefaultResult;
-
-    try {
-        activeNodes = await getActiveNodes();
-    } catch (error) {
-        return null;
-    }
-
+export default async function Hero({ currentEpoch, nodesTotalItems }) {
     return (
         <div className="w-full">
             <CardBordered>
@@ -30,7 +20,7 @@ export default async function Hero() {
 
                         <div className="col gap-3">
                             <div className="row flex-wrap gap-3">
-                                <CardHorizontal label="Active Nodes" value={activeNodes.result.nodes_total_items} isFlexible />
+                                <CardHorizontal label="Active Nodes" value={nodesTotalItems} isFlexible />
 
                                 <CardHorizontal
                                     label={
@@ -42,19 +32,17 @@ export default async function Hero() {
                                     isFlexible
                                 />
 
-                                <CardHorizontal
-                                    label={
-                                        <div>
-                                            <span className="font-semibold text-primary">$R1</span> minted last epoch
-                                        </div>
-                                    }
-                                    value={
-                                        <Suspense fallback={<Skeleton className="min-h-[70px] w-full rounded-2xl" />}>
-                                            <R1MintedLastEpoch />
-                                        </Suspense>
-                                    }
-                                    isFlexible
-                                />
+                                <Suspense fallback={<Skeleton className="min-h-[76px] w-full rounded-2xl" />}>
+                                    <CardHorizontal
+                                        label={
+                                            <div>
+                                                <span className="font-semibold text-primary">$R1</span> minted last epoch
+                                            </div>
+                                        }
+                                        value={<R1MintedLastEpoch />}
+                                        isFlexible
+                                    />
+                                </Suspense>
                             </div>
 
                             <div className="row flex-wrap gap-3">
@@ -67,9 +55,7 @@ export default async function Hero() {
 
                                             <div className="col gap-[5px]">
                                                 <div className="text-[15px] font-medium leading-none text-slate-500">Epoch</div>
-                                                <div className="font-semibold leading-none">
-                                                    {activeNodes.result.server_current_epoch}
-                                                </div>
+                                                <div className="font-semibold leading-none">{currentEpoch}</div>
                                             </div>
                                         </div>
 
@@ -78,10 +64,7 @@ export default async function Hero() {
                                                 Started at
                                             </div>
                                             <div className="font-semibold leading-none">
-                                                {format(
-                                                    getEpochStartTimestamp(activeNodes.result.server_current_epoch),
-                                                    'PP, kk:mm',
-                                                )}
+                                                {format(getEpochStartTimestamp(currentEpoch), 'PP, kk:mm')}
                                             </div>
                                         </div>
 

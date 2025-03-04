@@ -1,19 +1,20 @@
 import NodesPagination from '@/components/Nodes/NodesPagination';
-import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
-import { NodeState, R1Address } from '@/typedefs/blockchain';
+import { R1Address } from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
 import Node from './Node';
 
-export default async function List({ currentPage }: { currentPage: number }) {
-    const response: types.OraclesDefaultResult = await getActiveNodes(currentPage);
-
-    const nodes: {
-        [key: string]: NodeState;
-    } = response.result.nodes;
-
-    const pagesCount = response.result.nodes_total_pages;
+export default async function List({
+    nodes,
+    pagesCount,
+}: {
+    nodes: {
+        [key: string]: types.NodeState;
+    };
+    pagesCount: number;
+}) {
+    console.log('List nodes', nodes);
 
     return (
         <div className="col flex-1 justify-between gap-8">

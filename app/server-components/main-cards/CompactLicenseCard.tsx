@@ -5,10 +5,10 @@ import { LicenseUsageStats } from '@/app/server-components/shared/Licenses/Licen
 import { routePath } from '@/lib/routes';
 import { getShortAddress, isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
-import clsx from 'clsx';
 import Link from 'next/link';
 import { RiCpuLine } from 'react-icons/ri';
 import { formatUnits } from 'viem';
+import { LargeTag } from '../shared/LargeTag';
 
 interface Props {
     license: types.License;
@@ -25,16 +25,9 @@ export default async function CompactLicenseCard({ license, licenseType, license
                     <Link href={`${routePath.license}/${licenseType}/${licenseId}`} className="hover:text-primary">
                         <div className="row gap-2.5">
                             <div className="text-2xl font-bold">License #{licenseId}</div>
+                            <LargeTag variant={licenseType}>{licenseType}</LargeTag>
 
-                            <div
-                                className={clsx('center-all rounded-md px-2 text-lg font-semibold', {
-                                    'bg-primary-50 text-primary': licenseType === 'ND',
-                                    'bg-purple-100 text-purple-600': licenseType === 'MND',
-                                    'bg-orange-100 text-orange-600': licenseType === 'GND',
-                                })}
-                            >
-                                {licenseType}
-                            </div>
+                            {license.isBanned && <LargeTag variant="banned">Banned</LargeTag>}
                         </div>
                     </Link>
 

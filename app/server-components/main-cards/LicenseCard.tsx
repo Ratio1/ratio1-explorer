@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { RiCpuLine } from 'react-icons/ri';
 import { formatUnits } from 'viem';
+import { LargeTag } from '../shared/LargeTag';
 
 interface Props {
     license: types.License;
@@ -37,13 +38,17 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
         <CardBordered>
             <div className="col w-full gap-5 bg-white px-6 py-6">
                 <div className="col w-full gap-5">
-                    {!hasLink ? (
-                        getTitle()
-                    ) : (
-                        <Link href={`${routePath.license}/${licenseType}/${licenseId}`} className="hover:text-primary">
-                            {getTitle()}
-                        </Link>
-                    )}
+                    <div className="row gap-2.5">
+                        {!hasLink ? (
+                            getTitle()
+                        ) : (
+                            <Link href={`${routePath.license}/${licenseType}/${licenseId}`} className="hover:text-primary">
+                                {getTitle()}
+                            </Link>
+                        )}
+
+                        {license.isBanned && <LargeTag variant="banned">Banned</LargeTag>}
+                    </div>
 
                     <div className="col gap-3">
                         {/* Row 1 */}

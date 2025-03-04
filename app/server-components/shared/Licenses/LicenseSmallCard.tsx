@@ -1,7 +1,9 @@
 import { LicenseUsageStats } from '@/app/server-components/shared/Licenses/LicenseUsageStats';
 import { SmallCard } from '@/components/Licenses/SmallCard';
 import { routePath } from '@/lib/routes';
+import clsx from 'clsx';
 import Link from 'next/link';
+import { FunctionComponent, PropsWithChildren } from 'react';
 import { RiCpuLine } from 'react-icons/ri';
 
 interface Props {
@@ -9,10 +11,18 @@ interface Props {
     licenseType: 'ND' | 'MND' | 'GND' | undefined;
     totalAssignedAmount: bigint | undefined;
     totalClaimedAmount: bigint;
+    isBanned: boolean;
     isLink?: boolean;
 }
 
-export const LicenseSmallCard = ({ licenseId, licenseType, totalClaimedAmount, totalAssignedAmount, isLink }: Props) => {
+export const LicenseSmallCard = ({
+    licenseId,
+    licenseType,
+    totalClaimedAmount,
+    totalAssignedAmount,
+    isBanned,
+    isLink,
+}: Props) => {
     const getContent = () => (
         <SmallCard isHoverable={isLink}>
             <div className="col gap-1.5">
@@ -22,10 +32,12 @@ export const LicenseSmallCard = ({ licenseId, licenseType, totalClaimedAmount, t
                         <div className="">License #{Number(licenseId)}</div>
                     </div>
 
-                    {licenseType && (
-                        <div className="center-all rounded-md bg-slate-100 px-1.5 py-0.5 text-xs font-medium">
-                            {licenseType}
-                        </div>
+                    {isBanned ? (
+                        <SmallTag variant="banned">Banned</SmallTag>
+                    ) : !!licenseType ? (
+                        <SmallTag>{licenseType}</SmallTag>
+                    ) : (
+                        <></>
                     )}
                 </div>
 
@@ -46,3 +58,20 @@ export const LicenseSmallCard = ({ licenseId, licenseType, totalClaimedAmount, t
 
     return <Link href={`${routePath.license}/${licenseType}/${licenseId}`}>{getContent()}</Link>;
 };
+
+const SmallTag: FunctionComponent<
+    PropsWithChildren<{
+        variant?: 'default' | 'banned';
+    }>
+> = ({ children, variant = 'default' }) => (
+    <div className="flex">
+        <div
+            className={clsx('center-all rounded-md px-1.5 py-0.5 text-xs font-medium', {
+                'bg-slate-100': variant === 'default',
+                'bg-red-100 text-red-600': variant === 'banned',
+            })}
+        >
+            {children}
+        </div>
+    </div>
+);

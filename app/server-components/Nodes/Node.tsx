@@ -11,7 +11,7 @@ import { CardBordered } from '../shared/cards/CardBordered';
 import { Item } from '../shared/Item';
 
 export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address; node: NodeState }) {
-    const { licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount } = await getNodeLicenseDetails(
+    const { licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount, isBanned } = await getNodeLicenseDetails(
         node.eth_addr,
     );
 
@@ -46,6 +46,7 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
                     licenseType={licenseType}
                     totalAssignedAmount={totalAssignedAmount}
                     totalClaimedAmount={totalClaimedAmount}
+                    isBanned={isBanned}
                     isLink
                 />
 

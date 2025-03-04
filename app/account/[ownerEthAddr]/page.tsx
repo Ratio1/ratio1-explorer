@@ -1,7 +1,9 @@
+import CompactLicenseCard from '@/app/server-components/main-cards/CompactLicenseCard';
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
-import { getLicenses } from '@/lib/api/blockchain';
+import config from '@/config';
+import { fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
 import { fBI, getShortAddress, isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { notFound } from 'next/navigation';
@@ -25,12 +27,12 @@ export async function generateMetadata({ params }) {
     };
 }
 
-const cachedGetENSName = cache(async (ownerEthAddr: string) => {
+const cachedGetENSName = cache(async (ownerEthAddr: string): Promise<string | undefined> => {
     try {
         const response = await fetch(`https://api.ensideas.com/ens/resolve/${ownerEthAddr}`);
         if (response.ok) {
             const data = await response.json();
-            return data.name || null;
+            return data.name || undefined;
         }
     } catch (error) {
         console.log('Error fetching ENS name');
@@ -44,17 +46,20 @@ export default async function OwnerPage({ params }) {
         notFound();
     }
 
-    let licenses: types.LicenseInfo[];
+    let licenses: types.LicenseInfo[], ensName: string | undefined, r1Balance: bigint;
 
     try {
-        licenses = await getLicenses(ownerEthAddr);
+        [licenses, ensName, r1Balance] = await Promise.all([
+            getLicenses(ownerEthAddr),
+            cachedGetENSName(ownerEthAddr),
+            fetchErc20Balance(ownerEthAddr, config.r1ContractAddress),
+        ]);
+
         console.log('[OwnerPage]', licenses);
     } catch (error) {
         console.error(error);
         notFound();
     }
-
-    const ensName = await cachedGetENSName(ownerEthAddr);
 
     return (
         <div className="col w-full flex-1 gap-6">
@@ -84,12 +89,12 @@ export default async function OwnerPage({ params }) {
                                 isFlexible
                             />
 
-                            <CardHorizontal label="Licenses Owned" value={<div>{licenses.length}</div>} isSmall isFlexible />
+                            <CardHorizontal label="Licenses Owned" value={<div>{licenses.length}</div>} isSmall />
 
                             <CardHorizontal
                                 label="Total $R1 Claimed"
                                 value={
-                                    <div>
+                                    <div className="text-primary">
                                         {fBI(
                                             licenses.reduce((acc, license) => acc + license.totalClaimedAmount, 0n),
                                             18,
@@ -97,12 +102,28 @@ export default async function OwnerPage({ params }) {
                                     </div>
                                 }
                                 isSmall
-                                isFlexible
+                            />
+
+                            <CardHorizontal
+                                label="Wallet $R1 Balance"
+                                value={<div className="text-primary">{fBI(r1Balance, 18)}</div>}
+                                isSmall
                             />
                         </div>
                     </div>
                 </div>
             </CardBordered>
+
+            {licenses.map((license, index) => (
+                <div key={index}>
+                    <CompactLicenseCard
+                        license={license}
+                        licenseType={license.licenseType}
+                        licenseId={license.licenseId.toString()}
+                        nodeEthAddress={license.nodeAddress}
+                    />
+                </div>
+            ))}
         </div>
     );
 }

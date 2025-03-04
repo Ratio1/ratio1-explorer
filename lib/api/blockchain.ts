@@ -158,6 +158,15 @@ export const fetchR1MintedLastEpoch = async () => {
     return value;
 };
 
+export const fetchErc20Balance = (address: types.EthAddress, tokenAddress: types.EthAddress): Promise<bigint> => {
+    return publicClient.readContract({
+        address: tokenAddress,
+        abi: ERC20Abi,
+        functionName: 'balanceOf',
+        args: [address],
+    });
+};
+
 // Binary search for the block with the closest timestamp to the target timestamp
 export const getBlockByTimestamp = async (targetTimestamp: number) => {
     let latestBlock = await publicClient.getBlock();

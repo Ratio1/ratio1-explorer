@@ -10,10 +10,12 @@ import { formatDistanceToNow, subSeconds } from 'date-fns';
 import Link from 'next/link';
 import { RiEye2Line } from 'react-icons/ri';
 
-export default async function LicensePageNode({
+export default async function NodeCard({
     cachedGetNodeAvailability,
+    hasLink,
 }: {
     cachedGetNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;
+    hasLink?: boolean; // If it has a link to it, it means it's not the main card (displayed on top of the page)
 }) {
     const nodeResponse: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined =
         await cachedGetNodeAvailability();
@@ -22,14 +24,29 @@ export default async function LicensePageNode({
         return null;
     }
 
+    const getTitle = () => (
+        <div
+            className={clsx('font-bold', {
+                'text-2xl': hasLink,
+                'text-[26px]': !hasLink,
+            })}
+        >
+            Node • {nodeResponse.node_alias}
+        </div>
+    );
+
     return (
         <CardBordered>
             <div className="col w-full gap-5 bg-white px-6 py-6">
                 <div className="col w-full gap-5">
                     <div className="row gap-3">
-                        <Link href={`${routePath.node}/${nodeResponse.node_eth_address}`} className="hover:text-primary">
-                            <div className="text-2xl font-bold">Node • {nodeResponse.node_alias}</div>
-                        </Link>
+                        {!hasLink ? (
+                            getTitle()
+                        ) : (
+                            <Link href={`${routePath.node}/${nodeResponse.node_eth_address}`} className="hover:text-primary">
+                                {getTitle()}
+                            </Link>
+                        )}
 
                         {nodeResponse.node_is_oracle && (
                             <Tag>

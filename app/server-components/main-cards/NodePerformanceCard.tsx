@@ -8,7 +8,7 @@ import { round } from 'lodash';
 import { CardBordered } from '../shared/cards/CardBordered';
 import { CardHorizontal } from '../shared/cards/CardHorizontal';
 
-export default async function LicensePageNodePerformance({
+export default async function NodePerformanceCard({
     cachedGetNodeAvailability,
 }: {
     cachedGetNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;

@@ -13,8 +13,6 @@ export default async function HomePage(props: {
     const searchParams = await props.searchParams;
     const currentPage = Number(searchParams?.page) || 1;
 
-    console.log('HomePage currentPage', currentPage);
-
     const response: types.OraclesDefaultResult = await getActiveNodes(currentPage);
 
     const nodes: {

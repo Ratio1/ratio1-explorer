@@ -1,13 +1,13 @@
 import config from '@/config';
 import { fBI } from '@/lib/utils';
 
-export const LicenseUsageStats = ({
+export default async function LicenseUsageStats({
     totalClaimedAmount,
     totalAssignedAmount = config.ndLicenseCap,
 }: {
     totalClaimedAmount: bigint;
     totalAssignedAmount?: bigint;
-}) => {
+}) {
     if (!totalAssignedAmount) {
         return null;
     }
@@ -28,4 +28,4 @@ export const LicenseUsageStats = ({
             <div>{parseFloat(((Number(totalClaimedAmount) / Number(totalAssignedAmount)) * 100).toFixed(2))}%</div>
         </div>
     );
-};
+}

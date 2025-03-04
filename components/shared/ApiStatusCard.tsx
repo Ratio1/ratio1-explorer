@@ -1,11 +1,20 @@
 'use client';
 
-import { ApiContextType, useApiContext } from '@/lib/contexts/apiContext';
+import { ping } from '@/lib/api/backend';
 import { Spinner } from '@heroui/spinner';
+import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 
 function ApiStatus() {
-    const { pingData, pingError, isPingLoading } = useApiContext() as ApiContextType;
+    const {
+        data: pingData,
+        error: pingError,
+        isLoading: isPingLoading,
+    } = useQuery({
+        queryKey: ['ping'],
+        queryFn: ping,
+        retry: false,
+    });
 
     return (
         <div className="row mx-auto gap-2 rounded-lg bg-slate-200 px-3.5 py-2.5">

@@ -1,4 +1,5 @@
 import { ERC20Abi } from '@/blockchain/ERC20';
+import { LiquidityManagerAbi } from '@/blockchain/LiquidityManager';
 import { MNDContractAbi } from '@/blockchain/MNDContract';
 import { NDContractAbi } from '@/blockchain/NDContract';
 import { ReaderAbi } from '@/blockchain/Reader';
@@ -164,6 +165,24 @@ export const fetchErc20Balance = (address: types.EthAddress, tokenAddress: types
         abi: ERC20Abi,
         functionName: 'balanceOf',
         args: [address],
+    });
+};
+
+export const fetchR1Price = async () => {
+    if (config.liquidityManagerContractAddress.length === 42) {
+        return await publicClient.readContract({
+            address: config.liquidityManagerContractAddress,
+            abi: LiquidityManagerAbi,
+            functionName: 'getTokenPrice',
+        });
+    }
+};
+
+export const fetchR1TotalSupply = async () => {
+    return await publicClient.readContract({
+        address: config.r1ContractAddress,
+        abi: ERC20Abi,
+        functionName: 'totalSupply',
     });
 };
 

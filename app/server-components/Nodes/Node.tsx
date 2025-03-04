@@ -1,5 +1,4 @@
-import { LicenseSmallCard } from '@/app/server-components/shared/Licenses/LicenseSmallCard';
-import { SmallCard } from '@/components/Licenses/SmallCard';
+import { SmallCard } from '@/app/server-components/shared/Licenses/SmallCard';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getNodeLicenseDetails } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
@@ -9,6 +8,7 @@ import Link from 'next/link';
 import { RiEye2Line } from 'react-icons/ri';
 import { CardBordered } from '../shared/cards/CardBordered';
 import { Item } from '../shared/Item';
+import LicenseSmallCard from '../shared/Licenses/LicenseSmallCard';
 
 export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address; node: NodeState }) {
     const { licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount, isBanned } = await getNodeLicenseDetails(

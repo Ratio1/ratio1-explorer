@@ -1,5 +1,4 @@
 import { EpochTimer } from '@/components/Hero/EpochTimer';
-import { R1TotalSupply } from '@/components/Hero/R1TotalSupply';
 import { getEpochStartTimestamp } from '@/config';
 import { Skeleton } from '@heroui/skeleton';
 import { format } from 'date-fns';
@@ -9,6 +8,7 @@ import R1MintedLastEpoch from './R1MintedLastEpoch';
 import { CardBordered } from './shared/cards/CardBordered';
 import { CardFlexible } from './shared/cards/CardFlexible';
 import { CardHorizontal } from './shared/cards/CardHorizontal';
+import R1TotalSupply from './shared/R1TotalSupply';
 
 export default async function Hero({ currentEpoch, nodesTotalItems }) {
     return (
@@ -32,7 +32,7 @@ export default async function Hero({ currentEpoch, nodesTotalItems }) {
                                     isFlexible
                                 />
 
-                                <Suspense fallback={<Skeleton className="min-h-[76px] w-full rounded-2xl" />}>
+                                <Suspense fallback={<Skeleton className="min-h-[76px] max-w-[380px] rounded-2xl" />}>
                                     <CardHorizontal
                                         label={
                                             <div>

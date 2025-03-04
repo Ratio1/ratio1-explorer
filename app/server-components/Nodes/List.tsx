@@ -14,8 +14,6 @@ export default async function List({
     };
     pagesCount: number;
 }) {
-    console.log('List nodes', nodes);
-
     return (
         <div className="col flex-1 justify-between gap-8">
             <div className="col w-full gap-2">

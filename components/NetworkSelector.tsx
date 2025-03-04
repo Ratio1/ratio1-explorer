@@ -1,18 +1,27 @@
 'use client';
 
 import config, { domains } from '@/config';
-import { ApiContextType, useApiContext } from '@/lib/contexts/apiContext';
+import { ping } from '@/lib/api/backend';
 import { Select, SelectItem } from '@heroui/select';
 import { SharedSelection } from '@heroui/system';
+import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useState } from 'react';
 
 const networks = ['mainnet', 'testnet', 'devnet'];
 
 export const NetworkSelector = () => {
-    const { pingData, pingError, isPingLoading } = useApiContext() as ApiContextType;
-
     const [keys, setKeys] = useState(new Set<'mainnet' | 'testnet' | 'devnet'>([config.environment]));
+
+    const {
+        data: pingData,
+        error: pingError,
+        isLoading: isPingLoading,
+    } = useQuery({
+        queryKey: ['ping'],
+        queryFn: ping,
+        retry: false,
+    });
 
     return (
         <Select

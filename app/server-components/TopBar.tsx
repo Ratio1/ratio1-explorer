@@ -1,11 +1,11 @@
 import { CardWithIcon } from '@/app/server-components/shared/cards/CardWithIcon';
-import { PriceCard } from '@/components/PriceCard';
 import { Search } from '@/components/Search';
 import { getNextEpochTimestamp } from '@/config';
 import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
 import { formatDistanceToNow } from 'date-fns';
 import { RiCpuLine, RiTimeLine } from 'react-icons/ri';
+import PriceCard from './shared/PriceCard';
 
 export default async function TopBar() {
     let activeNodes: types.OraclesDefaultResult;

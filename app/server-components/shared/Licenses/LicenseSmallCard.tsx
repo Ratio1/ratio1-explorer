@@ -1,10 +1,10 @@
-import { LicenseUsageStats } from '@/app/server-components/shared/Licenses/LicenseUsageStats';
-import { SmallCard } from '@/components/Licenses/SmallCard';
+import { SmallCard } from '@/app/server-components/shared/Licenses/SmallCard';
 import { routePath } from '@/lib/routes';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { FunctionComponent, PropsWithChildren } from 'react';
 import { RiCpuLine } from 'react-icons/ri';
+import LicenseUsageStats from './LicenseUsageStats';
 
 interface Props {
     licenseId: number;
@@ -15,14 +15,14 @@ interface Props {
     isLink?: boolean;
 }
 
-export const LicenseSmallCard = ({
+export default async function LicenseSmallCard({
     licenseId,
     licenseType,
     totalClaimedAmount,
     totalAssignedAmount,
     isBanned,
     isLink,
-}: Props) => {
+}: Props) {
     const getContent = () => (
         <SmallCard isHoverable={isLink}>
             <div className="col gap-1.5">
@@ -57,7 +57,7 @@ export const LicenseSmallCard = ({
     }
 
     return <Link href={`${routePath.license}/${licenseType}/${licenseId}`}>{getContent()}</Link>;
-};
+}
 
 const SmallTag: FunctionComponent<
     PropsWithChildren<{

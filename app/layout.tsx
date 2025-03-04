@@ -32,7 +32,7 @@ export default async function RootLayout({
             <body className={`${monaSans.variable} ${robotoMono.variable} antialiased`}>
                 <HeroUIProvider>
                     <div className="col layout min-h-screen gap-6 py-6">
-                        <div className="pb-4">
+                        <div className="lg:pb-4">
                             <Header />
                         </div>
 

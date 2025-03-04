@@ -8,7 +8,7 @@ export const CardFlexible: FunctionComponent<PropsWithChildren<{ isFlexible?: bo
 }) => {
     return (
         <div
-            className={clsx('row min-w-56 rounded-xl', {
+            className={clsx('row w-full min-w-56 rounded-xl lg:w-auto', {
                 'flex-1': isFlexible,
                 'bg-slate-100': !isDarker,
                 'bg-slate-200': isDarker,

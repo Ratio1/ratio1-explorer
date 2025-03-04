@@ -17,13 +17,13 @@ export default async function TopBar() {
     }
 
     return (
-        <div className="row w-full justify-between gap-12">
+        <div className="flex w-full flex-col justify-between gap-6 lg:flex-row lg:gap-12">
             <div className="w-full flex-1">
                 <Search />
             </div>
 
             <div className="flex-1">
-                <div className="row justify-end gap-3">
+                <div className="row flex-wrap justify-between gap-2 lg:flex-nowrap lg:justify-end lg:gap-3">
                     <TopBarEpochCard />
 
                     <PriceCard />

@@ -69,52 +69,48 @@ export default async function OwnerPage({ params }) {
     return (
         <div className="col w-full flex-1 gap-6">
             <CardBordered>
-                <div className="col w-full gap-5 bg-white px-6 py-6">
-                    <div className="col w-full gap-5">
-                        <div className="text-[26px] font-bold">
-                            Account •{' '}
-                            {ensName ? (
-                                <span>{ensName}</span>
-                            ) : (
-                                <span className="roboto">{getShortAddress(ownerEthAddr, 4, true)}</span>
-                            )}
-                        </div>
-                    </div>
+                <div className="text-[26px] font-bold">
+                    Account •{' '}
+                    {ensName ? (
+                        <span>{ensName}</span>
+                    ) : (
+                        <span className="roboto">{getShortAddress(ownerEthAddr, 4, true)}</span>
+                    )}
+                </div>
 
-                    <div className="col gap-3">
-                        <div className="flex flex-wrap items-stretch gap-3">
-                            <CardHorizontal
-                                label="Address"
-                                value={
-                                    <div>
-                                        <CopyableAddress value={ownerEthAddr} size={4} isLarge />
-                                    </div>
-                                }
-                                isSmall
-                                isFlexible
-                            />
+                <div className="col gap-3">
+                    <div className="flexible-row">
+                        <CardHorizontal
+                            label="Address"
+                            value={
+                                <div>
+                                    <CopyableAddress value={ownerEthAddr} size={4} isLarge />
+                                </div>
+                            }
+                            isSmall
+                            isFlexible
+                        />
 
-                            <CardHorizontal label="Licenses Owned" value={<div>{licenses.length}</div>} isSmall />
+                        <CardHorizontal label="Licenses Owned" value={<div>{licenses.length}</div>} isSmall />
 
-                            <CardHorizontal
-                                label="Total $R1 Claimed"
-                                value={
-                                    <div className="text-primary">
-                                        {fBI(
-                                            licenses.reduce((acc, license) => acc + license.totalClaimedAmount, 0n),
-                                            18,
-                                        )}
-                                    </div>
-                                }
-                                isSmall
-                            />
+                        <CardHorizontal
+                            label="Total $R1 Claimed"
+                            value={
+                                <div className="text-primary">
+                                    {fBI(
+                                        licenses.reduce((acc, license) => acc + license.totalClaimedAmount, 0n),
+                                        18,
+                                    )}
+                                </div>
+                            }
+                            isSmall
+                        />
 
-                            <CardHorizontal
-                                label="Wallet $R1 Balance"
-                                value={<div className="text-primary">{fBI(r1Balance, 18)}</div>}
-                                isSmall
-                            />
-                        </div>
+                        <CardHorizontal
+                            label="Wallet $R1 Balance"
+                            value={<div className="text-primary">{fBI(r1Balance, 18)}</div>}
+                            isSmall
+                        />
                     </div>
                 </div>
             </CardBordered>

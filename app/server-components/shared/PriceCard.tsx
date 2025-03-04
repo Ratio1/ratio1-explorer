@@ -15,7 +15,9 @@ export default async function PriceCard() {
 
     return (
         <CardWithIcon
-            icon={<Image className="h-[22px] w-auto" src="/token.svg" width={0} height={0} alt="Logo" priority />}
+            icon={
+                <Image className="h-[22px] w-[22px] min-w-[22px]" src="/token.svg" width={0} height={0} alt="Logo" priority />
+            }
             label="Current Price"
         >
             <div className="font-semibold leading-none text-primary">

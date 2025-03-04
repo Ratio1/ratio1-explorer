@@ -10,15 +10,13 @@ export default async function Header() {
             <div className="row gap-16">
                 <Link href="/">
                     <div className="flex items-end gap-2.5">
-                        <Image className="h-8 w-auto" src="/logo_explorer.svg" width={0} height={0} alt="Logo" />
+                        <Image className="h-7 w-auto lg:h-8" src="/logo_explorer.svg" width={0} height={0} alt="Logo" />
                     </div>
                 </Link>
-
-                {/* <Navigation /> */}
             </div>
 
             <div className="row gap-2">
-                <div className="flex">
+                <div className="web-only-flex">
                     <CardRounded>
                         <div className="row gap-1.5 px-4 py-3">
                             <Image className="h-6 w-auto" src="/base.webp" width={32} height={32} alt="Blockchain" />

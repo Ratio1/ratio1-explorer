@@ -148,7 +148,7 @@ export const Search = () => {
 
     return (
         <>
-            <div className="max-w-lg">
+            <div className="w-full lg:max-w-lg">
                 <div
                     className="row group h-[52px] w-full cursor-pointer justify-between rounded-xl border-2 border-slate-100 px-4 transition-all hover:border-slate-200"
                     onClick={onOpen}

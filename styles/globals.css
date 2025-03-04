@@ -11,6 +11,10 @@ body {
     @apply flex items-center;
 }
 
+.flexible-row {
+    @apply flex flex-wrap items-stretch gap-3;
+}
+
 .col {
     @apply flex flex-col;
 }
@@ -29,6 +33,15 @@ body {
 
 .roboto {
     @apply font-[family-name:var(--font-roboto-mono)];
+}
+
+/* Responsiveness */
+.web-only-flex {
+    @apply hidden md:flex;
+}
+
+.mobile-only-flex {
+    @apply flex md:hidden;
 }
 
 /* Scrollbar */

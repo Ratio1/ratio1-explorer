@@ -32,11 +32,11 @@ export const NetworkSelector = () => {
         <Select
             className={clsx({
                 'w-[128px]': keys.has('mainnet'),
-                'w-[118px]': keys.has('testnet'),
-                'w-[116px]': keys.has('devnet'),
+                'w-[122px]': keys.has('testnet'),
+                'w-[118px]': keys.has('devnet'),
             })}
             classNames={{
-                trigger: 'min-h-12 bg-primary data-[hover=true]:bg-primary/85 rounded-full ',
+                trigger: 'min-h-10 lg:min-h-12 bg-primary data-[hover=true]:bg-primary/85 rounded-full ',
                 label: 'group-data-[filled=true]:-translate-y-5',
                 value: 'font-medium text-[15px] !text-white pl-1.5',
                 selectorIcon: '!text-white mt-0.5 mr-0.5',

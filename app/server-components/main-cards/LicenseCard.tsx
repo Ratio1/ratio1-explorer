@@ -37,112 +37,106 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
 
     return (
         <CardBordered>
-            <div className="col w-full gap-5 bg-white px-6 py-6">
-                <div className="col w-full gap-5">
-                    <div className="row gap-2.5">
-                        {!hasLink ? (
-                            getTitle()
-                        ) : (
-                            <Link href={`${routePath.license}/${licenseType}/${licenseId}`} className="hover:text-primary">
-                                {getTitle()}
-                            </Link>
-                        )}
+            <div className="row gap-2.5">
+                {!hasLink ? (
+                    getTitle()
+                ) : (
+                    <Link href={`${routePath.license}/${licenseType}/${licenseId}`} className="hover:text-primary">
+                        {getTitle()}
+                    </Link>
+                )}
 
-                        {license.isBanned && <LargeTag variant="banned">Banned</LargeTag>}
-                    </div>
+                {license.isBanned && <LargeTag variant="banned">Banned</LargeTag>}
+            </div>
 
-                    <div className="col gap-3">
-                        {/* Row 1 */}
-                        <div className="flex flex-wrap items-stretch gap-3">
-                            {!!licenseType && <CardHorizontal label="Type" value={licenseType} isSmall />}
+            <div className="col gap-3">
+                {/* Row 1 */}
+                <div className="flexible-row">
+                    {!!licenseType && <CardHorizontal label="Type" value={licenseType} isSmall />}
 
-                            {!!owner && (
-                                <CardHorizontal
-                                    label="Owner"
-                                    value={
-                                        <Link href={`${routePath.owner}/${owner}`}>
-                                            <div className="hover:opacity-50">{getShortAddress(owner)}</div>
-                                        </Link>
-                                    }
-                                    isSmall
+                    {!!owner && (
+                        <CardHorizontal
+                            label="Owner"
+                            value={
+                                <Link href={`${routePath.owner}/${owner}`}>
+                                    <div className="hover:opacity-50">{getShortAddress(owner)}</div>
+                                </Link>
+                            }
+                            isSmall
+                        />
+                    )}
+
+                    {!!license.assignTimestamp && (
+                        <CardHorizontal
+                            label="Assign timestamp"
+                            value={new Date(Number(license.assignTimestamp) * 1000).toLocaleString()}
+                            isSmall
+                            isFlexible
+                        />
+                    )}
+                </div>
+
+                {/* Row 2 */}
+                <div className="flexible-row">
+                    {!!license.lastClaimEpoch && (
+                        <CardHorizontal label="Last claimed epoch" value={license.lastClaimEpoch.toString()} isSmall />
+                    )}
+
+                    <CardHorizontal
+                        label="Usage"
+                        value={
+                            <div className="w-full min-w-60">
+                                <LicenseUsageStats
+                                    totalClaimedAmount={license.totalClaimedAmount}
+                                    totalAssignedAmount={license.totalAssignedAmount}
                                 />
-                            )}
+                            </div>
+                        }
+                        isSmall
+                    />
 
-                            {!!license.assignTimestamp && (
-                                <CardHorizontal
-                                    label="Assign timestamp"
-                                    value={new Date(Number(license.assignTimestamp) * 1000).toLocaleString()}
-                                    isSmall
-                                    isFlexible
-                                />
-                            )}
-                        </div>
-
-                        {/* Row 2 */}
-                        <div className="flex flex-wrap items-stretch gap-3">
-                            {!!license.lastClaimEpoch && (
-                                <CardHorizontal label="Last claimed epoch" value={license.lastClaimEpoch.toString()} isSmall />
-                            )}
-
-                            <CardHorizontal
-                                label="Usage"
-                                value={
-                                    <div className="w-full min-w-60">
-                                        <LicenseUsageStats
-                                            totalClaimedAmount={license.totalClaimedAmount}
-                                            totalAssignedAmount={license.totalAssignedAmount}
-                                        />
-                                    </div>
-                                }
-                                isSmall
-                            />
-
-                            <CardFlexible isFlexible>
-                                <div className="row h-[76px] w-full justify-between gap-16 px-6 py-2">
-                                    <div className="row gap-2">
-                                        <div className="center-all rounded-full bg-blue-100 p-2.5 text-2xl text-primary">
-                                            <RiCpuLine />
-                                        </div>
-
-                                        <div className="text-[15px] font-medium leading-none text-slate-500">PoA</div>
-                                    </div>
-
-                                    <div className="col gap-[5px]">
-                                        <div className="text-[15px] font-medium leading-none text-slate-500">Remaining</div>
-                                        <div className="font-semibold leading-none">
-                                            {parseFloat(
-                                                Number(
-                                                    formatUnits(license.totalAssignedAmount - license.totalClaimedAmount, 18),
-                                                ).toFixed(2),
-                                            ).toLocaleString()}
-                                        </div>
-                                    </div>
-
-                                    <div className="col gap-[5px]">
-                                        <div className="text-[15px] font-medium leading-none text-slate-500">
-                                            Initial amount
-                                        </div>
-                                        <div className="font-semibold leading-none">
-                                            {parseFloat(
-                                                Number(formatUnits(license.totalAssignedAmount ?? 0n, 18)).toFixed(2),
-                                            ).toLocaleString()}
-                                        </div>
-                                    </div>
+                    <CardFlexible isFlexible>
+                        <div className="row h-[76px] w-full justify-between gap-16 px-6 py-2">
+                            <div className="row gap-2">
+                                <div className="center-all rounded-full bg-blue-100 p-2.5 text-2xl text-primary">
+                                    <RiCpuLine />
                                 </div>
-                            </CardFlexible>
-                        </div>
 
-                        {/* Row 3 */}
-                        <div className="flex flex-wrap items-stretch gap-3">
-                            <Suspense fallback={<Skeleton className="min-h-[76px] w-full max-w-[258px] rounded-xl" />}>
-                                <LicenseRewards
-                                    license={license}
-                                    licenseType={licenseType as 'ND' | 'MND' | 'GND'}
-                                    getNodeAvailability={getNodeAvailability}
-                                />
-                            </Suspense>
+                                <div className="text-[15px] font-medium leading-none text-slate-500">PoA</div>
+                            </div>
+
+                            <div className="col gap-[5px]">
+                                <div className="text-[15px] font-medium leading-none text-slate-500">Remaining</div>
+                                <div className="font-semibold leading-none">
+                                    {parseFloat(
+                                        Number(
+                                            formatUnits(license.totalAssignedAmount - license.totalClaimedAmount, 18),
+                                        ).toFixed(2),
+                                    ).toLocaleString()}
+                                </div>
+                            </div>
+
+                            <div className="col gap-[5px]">
+                                <div className="text-[15px] font-medium leading-none text-slate-500">Initial amount</div>
+                                <div className="font-semibold leading-none">
+                                    {parseFloat(
+                                        Number(formatUnits(license.totalAssignedAmount ?? 0n, 18)).toFixed(2),
+                                    ).toLocaleString()}
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </CardFlexible>
+                </div>
+
+                {/* Row 3 */}
+                <div className="flexible-row">
+                    <Suspense fallback={<Skeleton className="min-h-[76px] w-full max-w-[258px] rounded-xl" />}>
+                        <LicenseRewards
+                            license={license}
+                            licenseType={licenseType as 'ND' | 'MND' | 'GND'}
+                            getNodeAvailability={getNodeAvailability}
+                        />
+                    </Suspense>
                 </div>
             </div>
         </CardBordered>

@@ -21,8 +21,8 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
     }
 
     return (
-        <CardBordered>
-            <div className="row w-full justify-between gap-6 bg-white px-6 py-3">
+        <CardBordered useCustomWrapper>
+            <div className="row justify-between gap-6 py-3">
                 <Link href={`${routePath.node}/${node.eth_addr}`} className="group w-[228px] py-3">
                     <div className="row gap-1.5">
                         <div className="overflow-hidden text-ellipsis whitespace-nowrap text-[15px] font-medium group-hover:text-primary">

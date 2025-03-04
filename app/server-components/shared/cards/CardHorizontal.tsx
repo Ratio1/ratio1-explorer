@@ -17,7 +17,7 @@ export const CardHorizontal = ({
 }) => {
     return (
         <CardFlexible isFlexible={isFlexible} isDarker={isDarker}>
-            <div className="row w-full justify-between gap-12 px-6 py-6">
+            <div className="row w-full justify-between gap-12 px-4 py-4 lg:px-6 lg:py-6">
                 <div className="text-[15px] font-medium text-slate-500">{label}</div>
                 <div
                     className={clsx('font-semibold', {

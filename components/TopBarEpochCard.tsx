@@ -1,6 +1,7 @@
 'use client';
 
 import { CardWithIcon } from '@/app/server-components/shared/cards/CardWithIcon';
+import { RowWithIcon } from '@/app/server-components/shared/cards/RowWithIcon';
 import { getCurrentEpoch, getNextEpochTimestamp } from '@/config';
 import { differenceInSeconds, formatDistanceToNow } from 'date-fns';
 import { useEffect, useState } from 'react';
@@ -19,10 +20,18 @@ export default function TopBarEpochCard() {
     }, [currentEpoch]);
 
     return (
-        <CardWithIcon icon={<RiTimeLine />} label={`${formatDistanceToNow(getNextEpochTimestamp())} left`}>
-            <div className="pr-0.5 font-medium leading-none">
-                Epoch <span className="font-semibold text-primary">{currentEpoch}</span>
+        <>
+            <div className="hidden sm:block">
+                <CardWithIcon icon={<RiTimeLine />} label={`${formatDistanceToNow(getNextEpochTimestamp())} left`}>
+                    <span className="font-medium text-body">Epoch</span> <span className="text-primary">{currentEpoch}</span>
+                </CardWithIcon>
             </div>
-        </CardWithIcon>
+
+            <div className="block sm:hidden">
+                <RowWithIcon icon={<RiTimeLine />} label="Epoch">
+                    {currentEpoch}
+                </RowWithIcon>
+            </div>
+        </>
     );
 }

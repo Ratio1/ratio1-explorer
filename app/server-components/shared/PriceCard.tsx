@@ -1,6 +1,7 @@
 import { fetchR1Price } from '@/lib/api/blockchain';
 import Image from 'next/image';
 import { CardWithIcon } from './cards/CardWithIcon';
+import { RowWithIcon } from './cards/RowWithIcon';
 
 export default async function PriceCard() {
     const r1Price = await fetchR1Price();
@@ -14,15 +15,42 @@ export default async function PriceCard() {
     const r1PriceUsd = Number((r1Price * scale) / divisor) / Number(scale);
 
     return (
-        <CardWithIcon
-            icon={
-                <Image className="h-[22px] w-[22px] min-w-[22px]" src="/token.svg" width={0} height={0} alt="Logo" priority />
-            }
-            label="Current Price"
-        >
-            <div className="font-semibold leading-none text-primary">
-                {r1PriceUsd ? `$${parseFloat(r1PriceUsd.toFixed(2))}` : '...'}
+        <>
+            <div className="hidden sm:block">
+                <CardWithIcon
+                    icon={
+                        <Image
+                            className="h-[22px] w-[22px] min-w-[22px]"
+                            src="/token.svg"
+                            width={0}
+                            height={0}
+                            alt="Logo"
+                            priority
+                        />
+                    }
+                    label="$R1 Price"
+                >
+                    {r1PriceUsd ? `$${parseFloat(r1PriceUsd.toFixed(2))}` : '...'}
+                </CardWithIcon>
             </div>
-        </CardWithIcon>
+
+            <div className="block sm:hidden">
+                <RowWithIcon
+                    icon={
+                        <Image
+                            className="h-[18px] w-[18px] min-w-[18px]"
+                            src="/token.svg"
+                            width={0}
+                            height={0}
+                            alt="Logo"
+                            priority
+                        />
+                    }
+                    label="$R1 Price"
+                >
+                    {r1PriceUsd ? `$${parseFloat(r1PriceUsd.toFixed(2))}` : '...'}
+                </RowWithIcon>
+            </div>
+        </>
     );
 }

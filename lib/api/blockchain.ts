@@ -8,9 +8,12 @@ import * as types from '@/typedefs/blockchain';
 import { createPublicClient, http } from 'viem';
 import { ETH_EMPTY_ADDR, isEmptyETHAddr } from '../utils';
 
+// TODO: Replace with a paid RPC at some point
 export const publicClient = createPublicClient({
     chain,
-    transport: http('https://base-sepolia.g.alchemy.com/v2/n2UXf8tPtZ242ZpCzspVBPVE_sQhe6S3'), // TODO: Replace
+    transport: http(
+        `https://base-${config.environment === 'mainnet' ? 'mainnet' : 'sepolia'}.g.alchemy.com/v2/n2UXf8tPtZ242ZpCzspVBPVE_sQhe6S3`,
+    ),
 });
 
 export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Promise<types.NodeLicenseDetailsResponse> {

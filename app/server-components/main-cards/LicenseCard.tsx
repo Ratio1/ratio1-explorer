@@ -27,8 +27,8 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
     const getTitle = () => (
         <div
             className={clsx('font-bold', {
-                'text-2xl': hasLink,
-                'text-[26px]': !hasLink,
+                'card-title': hasLink,
+                'card-title-big': !hasLink,
             })}
         >
             License #{licenseId}

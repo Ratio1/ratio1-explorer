@@ -10,8 +10,6 @@ export default async function Hero({ nodesTotalItems }) {
     return (
         <div className="w-full">
             <CardBordered>
-                <div className="text-[26px] font-bold">Nodes</div>
-
                 <div className="col gap-3">
                     <div className="flexible-row">
                         <CardHorizontal label="Active Nodes" value={nodesTotalItems} isFlexible />

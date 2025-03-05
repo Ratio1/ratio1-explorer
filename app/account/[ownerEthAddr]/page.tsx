@@ -56,7 +56,7 @@ export default async function OwnerPage({ params }) {
     return (
         <div className="col w-full flex-1 gap-6">
             <CardBordered>
-                <div className="text-[26px] font-bold">
+                <div className="card-title-big font-bold">
                     Account •{' '}
                     {ensName ? (
                         <span>{ensName}</span>

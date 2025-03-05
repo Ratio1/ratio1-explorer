@@ -14,7 +14,7 @@ export const CardWithIcon: FunctionComponent<PropsWithChildren<Props>> = ({ chil
                     <div className="center-all rounded-full bg-blue-100 p-2 text-2xl text-primary">{icon}</div>
 
                     <div className="col gap-[3px]">
-                        {children}
+                        <div className="font-semibold leading-none text-primary">{children}</div>
                         <div className="whitespace-nowrap text-[13px] font-medium leading-none text-slate-500">{label}</div>
                     </div>
                 </div>

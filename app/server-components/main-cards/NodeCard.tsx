@@ -20,8 +20,8 @@ export default async function NodeCard({
     const getTitle = () => (
         <div
             className={clsx('font-bold', {
-                'text-2xl': hasLink,
-                'text-[26px]': !hasLink,
+                'card-title': hasLink,
+                'card-title-big': !hasLink,
             })}
         >
             Node • {nodeResponse.node_alias}

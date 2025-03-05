@@ -5,6 +5,7 @@ import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
 import { RiCpuLine } from 'react-icons/ri';
 import PriceCard from './shared/PriceCard';
+import { RowWithIcon } from './shared/cards/RowWithIcon';
 
 export default async function TopBar() {
     let activeNodes: types.OraclesDefaultResult;
@@ -23,14 +24,24 @@ export default async function TopBar() {
             </div>
 
             <div className="flex-1">
-                <div className="row flex-wrap justify-between gap-2 lg:flex-nowrap lg:justify-end lg:gap-3">
+                <div className="hidden flex-wrap items-center justify-between gap-2 sm:flex lg:flex-nowrap lg:justify-end lg:gap-3">
                     <TopBarEpochCard />
 
                     <PriceCard />
 
                     <CardWithIcon icon={<RiCpuLine />} label="Active Nodes">
-                        <div className="font-semibold leading-none text-primary">{activeNodes.result.nodes_total_items}</div>
+                        {activeNodes.result.nodes_total_items}
                     </CardWithIcon>
+                </div>
+
+                <div className="flex w-full flex-col gap-1.5 rounded-xl bg-slate-100 px-4 py-4 sm:hidden">
+                    <TopBarEpochCard />
+
+                    <PriceCard />
+
+                    <RowWithIcon icon={<RiCpuLine />} label="Active Nodes">
+                        {activeNodes.result.nodes_total_items}
+                    </RowWithIcon>
                 </div>
             </div>
         </div>

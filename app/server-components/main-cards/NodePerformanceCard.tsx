@@ -14,7 +14,7 @@ export default async function NodePerformanceCard({
 }) {
     return (
         <CardBordered>
-            <div className="text-2xl font-bold">Node Performance</div>
+            <div className="card-title font-bold">Node Performance</div>
 
             <div className="col gap-3">
                 <div className="flexible-row">

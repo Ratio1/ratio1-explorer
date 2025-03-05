@@ -22,7 +22,7 @@ export default async function CompactLicenseCard({ license, licenseType, license
         <CardBordered>
             <Link href={`${routePath.license}/${licenseType}/${licenseId}`} className="hover:text-primary">
                 <div className="row gap-2.5">
-                    <div className="text-2xl font-bold">License #{licenseId}</div>
+                    <div className="card-title font-bold">License #{licenseId}</div>
                     <LargeTag variant={licenseType}>{licenseType}</LargeTag>
 
                     {license.isBanned && <LargeTag variant="banned">Banned</LargeTag>}

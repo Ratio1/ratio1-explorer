@@ -35,6 +35,15 @@ body {
     @apply font-[family-name:var(--font-roboto-mono)];
 }
 
+/* Classes */
+.card-title {
+    @apply text-xl lg:text-2xl;
+}
+
+.card-title-big {
+    @apply text-[22px] lg:text-[26px];
+}
+
 /* Responsiveness */
 .web-only-flex {
     @apply hidden md:flex;

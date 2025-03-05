@@ -1,8 +1,8 @@
 import LicenseRewards from '@/app/server-components/Licenses/LicenseRewards';
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
+import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { routePath } from '@/lib/routes';
-import { getShortAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import clsx from 'clsx';
@@ -48,17 +48,14 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
             </div>
 
             <div className="flexible-row">
-                {!!licenseType && <CardHorizontal label="Type" value={licenseType} isSmall />}
+                {!!licenseType && <CardHorizontal label="Type" value={licenseType} isSmall isFlexible />}
 
                 {!!owner && (
                     <CardHorizontal
                         label="Owner"
-                        value={
-                            <Link href={`${routePath.owner}/${owner}`}>
-                                <div className="hover:opacity-50">{getShortAddress(owner)}</div>
-                            </Link>
-                        }
+                        value={<CopyableAddress value={owner} size={4} isLarge link={`${routePath.owner}/${owner}`} />}
                         isSmall
+                        isFlexible
                     />
                 )}
 
@@ -68,11 +65,18 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                         value={new Date(Number(license.assignTimestamp) * 1000).toLocaleString()}
                         isSmaller
                         isFlexible
+                        widthClasses="min-w-[310px]"
                     />
                 )}
 
                 {!!license.lastClaimEpoch && (
-                    <CardHorizontal label="Last claimed epoch" value={license.lastClaimEpoch.toString()} isSmall />
+                    <CardHorizontal
+                        label="Last claimed epoch"
+                        value={license.lastClaimEpoch.toString()}
+                        isSmall
+                        isFlexible
+                        widthClasses="min-w-[250px]"
+                    />
                 )}
 
                 <CardHorizontal

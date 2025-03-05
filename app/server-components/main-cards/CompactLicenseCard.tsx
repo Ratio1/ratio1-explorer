@@ -1,7 +1,8 @@
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
+import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { routePath } from '@/lib/routes';
-import { getShortAddress, isEmptyETHAddr } from '@/lib/utils';
+import { isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import Link from 'next/link';
 import PoA from '../Licenses/PoA';
@@ -34,6 +35,17 @@ export default async function CompactLicenseCard({ license, licenseType, license
                         value={new Date(Number(license.assignTimestamp) * 1000).toLocaleString()}
                         isSmaller
                         isFlexible
+                        widthClasses="min-w-[310px]"
+                    />
+                )}
+
+                {!!license.lastClaimEpoch && (
+                    <CardHorizontal
+                        label="Last claimed epoch"
+                        value={license.lastClaimEpoch.toString()}
+                        isSmall
+                        isFlexible
+                        widthClasses="min-w-[250px]"
                     />
                 )}
 
@@ -50,21 +62,20 @@ export default async function CompactLicenseCard({ license, licenseType, license
                     isSmall
                 />
 
-                {!!license.lastClaimEpoch && (
-                    <CardHorizontal label="Last claimed epoch" value={license.lastClaimEpoch.toString()} isSmall />
-                )}
-
                 <PoA license={license} />
 
                 {!isEmptyETHAddr(nodeEthAddress) && (
                     <CardHorizontal
                         label="Node"
                         value={
-                            <Link href={`${routePath.node}/${nodeEthAddress}`} className="hover:text-primary">
-                                {getShortAddress(nodeEthAddress)}
-                            </Link>
+                            <CopyableAddress
+                                value={nodeEthAddress}
+                                size={4}
+                                isLarge
+                                link={`${routePath.node}/${nodeEthAddress}`}
+                            />
                         }
-                        isSmall
+                        isSmaller
                     />
                 )}
             </div>

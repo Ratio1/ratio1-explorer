@@ -50,7 +50,7 @@ export default async function NodeCard({
             </div>
 
             <div className="flexible-row">
-                <CardFlexible isFlexible minWidthClasses="sm:min-w-[410px]">
+                <CardFlexible isFlexible widthClasses="sm:min-w-[410px]">
                     <div className="col w-full gap-0.5 px-6 py-6">
                         <div className="row justify-between gap-4 font-medium leading-none md:gap-8 lg:gap-12">
                             <div className="text-[15px] text-slate-500">
@@ -62,7 +62,7 @@ export default async function NodeCard({
                                 <CopyableAddress value={nodeResponse.node_eth_address} size={8} isLarge />
                             </span>
                             <span className="mobile-only-block">
-                                <CopyableAddress value={nodeResponse.node_eth_address} size={4} isLarge />
+                                <CopyableAddress value={nodeResponse.node_eth_address} size={4} />
                             </span>
                         </div>
 
@@ -76,7 +76,7 @@ export default async function NodeCard({
                                 <CopyableAddress value={nodeResponse.node as types.R1Address} size={8} isLarge />
                             </span>
                             <span className="mobile-only-block">
-                                <CopyableAddress value={nodeResponse.node as types.R1Address} size={4} isLarge />
+                                <CopyableAddress value={nodeResponse.node as types.R1Address} size={4} />
                             </span>
                         </div>
                     </div>
@@ -110,7 +110,7 @@ export default async function NodeCard({
                     }
                     isSmall
                     isFlexible
-                    minWidthClasses="min-w-[302px]"
+                    widthClasses="min-w-[302px]"
                 />
 
                 <CardHorizontal label="Version" value={nodeResponse.node_version.split('|')[0]} isSmall />

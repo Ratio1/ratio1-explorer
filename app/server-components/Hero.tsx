@@ -11,7 +11,7 @@ export default async function Hero({ nodesTotalItems }) {
         <div className="w-full">
             <CardBordered>
                 <div className="flexible-row">
-                    <CardHorizontal label="Active Nodes" value={nodesTotalItems} isFlexible minWidthClasses="min-w-[192px]" />
+                    <CardHorizontal label="Active Nodes" value={nodesTotalItems} isFlexible widthClasses="min-w-[192px]" />
 
                     <CardHorizontal
                         label={
@@ -21,7 +21,7 @@ export default async function Hero({ nodesTotalItems }) {
                         }
                         value={<R1TotalSupply />}
                         isFlexible
-                        minWidthClasses="min-[420px]:min-w-[346px]"
+                        widthClasses="min-[420px]:min-w-[346px]"
                     />
 
                     <Suspense fallback={<Skeleton className="min-h-[76px] w-full rounded-xl md:max-w-[380px]" />}>
@@ -33,7 +33,7 @@ export default async function Hero({ nodesTotalItems }) {
                             }
                             value={<R1MintedLastEpoch />}
                             isFlexible
-                            minWidthClasses="min-w-[254px]"
+                            widthClasses="min-w-[254px]"
                         />
                     </Suspense>
 

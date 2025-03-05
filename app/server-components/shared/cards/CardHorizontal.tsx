@@ -9,7 +9,7 @@ export const CardHorizontal = ({
     isSmall,
     isSmaller,
     isDarker,
-    minWidthClasses,
+    widthClasses,
 }: {
     label: string | JSX.Element;
     value: number | string | JSX.Element;
@@ -17,17 +17,17 @@ export const CardHorizontal = ({
     isSmall?: boolean;
     isSmaller?: boolean;
     isDarker?: boolean;
-    minWidthClasses?: string;
+    widthClasses?: string;
 }) => {
     return (
-        <CardFlexible isFlexible={isFlexible} isDarker={isDarker} minWidthClasses={minWidthClasses}>
+        <CardFlexible isFlexible={isFlexible} isDarker={isDarker} widthClasses={widthClasses}>
             <div className="row w-full justify-between gap-4 px-4 py-4 sm:gap-6 md:gap-12 lg:px-6 lg:py-6">
                 <div className="text-[15px] font-medium text-slate-500">{label}</div>
                 <div
                     className={clsx('text-right font-semibold', {
                         'text-lg md:text-xl': !isSmall && !isSmaller,
                         'text-base md:text-lg': isSmall,
-                        'text-[15px] sm:text-base md:text-lg': isSmaller,
+                        'text-[15px] sm:text-base': isSmaller,
                     })}
                 >
                     {value}

@@ -2,7 +2,7 @@ import { SmallCard } from '@/app/server-components/shared/Licenses/SmallCard';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getNodeLicenseDetails } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
-import { getShortAddress, isEmptyETHAddr } from '@/lib/utils';
+import { isEmptyETHAddr } from '@/lib/utils';
 import { NodeState, R1Address } from '@/typedefs/blockchain';
 import Link from 'next/link';
 import { RiEye2Line } from 'react-icons/ri';
@@ -59,11 +59,7 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
                 {!isEmptyETHAddr(owner) && (
                     <Item
                         label="Owner"
-                        value={
-                            <Link href={`${routePath.owner}/${owner}`}>
-                                <div className="hover:opacity-50">{getShortAddress(owner)}</div>
-                            </Link>
-                        }
+                        value={<CopyableAddress value={owner} size={4} link={`${routePath.owner}/${owner}`} />}
                     />
                 )}
 

@@ -22,7 +22,7 @@ export default async function NodePerformanceCard({
                     value={`${parseFloat(((nodeResponse.epochs_vals[nodeResponse.epochs_vals.length - 1] * 100) / 255).toFixed(2))}%`}
                     isSmall
                     isFlexible
-                    minWidthClasses="xs:min-w-[316px]"
+                    widthClasses="xs:min-w-[316px]"
                 />
 
                 <CardHorizontal
@@ -30,7 +30,7 @@ export default async function NodePerformanceCard({
                     value={`${parseFloat(((arrayAverage(nodeResponse.epochs_vals.slice(-7)) / 255) * 100).toFixed(2))}%`}
                     isSmall
                     isFlexible
-                    minWidthClasses="xs:min-w-[316px]"
+                    widthClasses="xs:min-w-[316px]"
                 />
 
                 <CardHorizontal
@@ -38,7 +38,7 @@ export default async function NodePerformanceCard({
                     value={`${parseFloat(((arrayAverage(nodeResponse.epochs_vals) / 255) * 100).toFixed(2))}%`}
                     isSmall
                     isFlexible
-                    minWidthClasses="xs:min-w-[316px] min-w-[224px]"
+                    widthClasses="xs:min-w-[316px] min-w-[224px]"
                 />
 
                 <CardHorizontal
@@ -46,7 +46,7 @@ export default async function NodePerformanceCard({
                     value={nodeResponse.epochs_vals.filter((value) => value > 0).length}
                     isSmall
                     isFlexible
-                    minWidthClasses="xs:min-w-[316px] min-w-[224px]"
+                    widthClasses="xs:min-w-[316px] min-w-[224px]"
                 />
 
                 <div className="web-only-block">

@@ -25,8 +25,8 @@ export default async function PoA({ license }: { license: types.License }) {
     );
 
     return (
-        <CardFlexible isFlexible widthClasses="md:max-w-[460px] min-[440px]:min-w-[360px]">
-            <div className="flex w-full flex-col justify-between gap-4 px-4 py-4 sm:h-[76px] sm:flex-row sm:items-center sm:py-2 md:gap-10 md:px-6 lg:gap-16">
+        <CardFlexible isFlexible widthClasses="md:max-w-[460px] min-[440px]:min-w-[436px]">
+            <div className="flex w-full flex-col justify-between gap-4 px-4 py-4 sm:h-[76px] sm:flex-row sm:items-center sm:py-2 md:gap-8 md:px-6 lg:gap-10">
                 <div className="row gap-2">
                     <div className="center-all rounded-full bg-blue-100 p-2.5 text-2xl text-primary">
                         <RiCpuLine />

@@ -45,7 +45,7 @@ export default async function CompactLicenseCard({ license, licenseType, license
                         value={license.lastClaimEpoch.toString()}
                         isSmall
                         isFlexible
-                        widthClasses="min-w-[250px]"
+                        widthClasses="min-w-[256px]"
                     />
                 )}
 

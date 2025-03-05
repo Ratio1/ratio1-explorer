@@ -75,7 +75,7 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                         value={license.lastClaimEpoch.toString()}
                         isSmall
                         isFlexible
-                        widthClasses="min-w-[250px]"
+                        widthClasses="min-w-[256px]"
                     />
                 )}
 

@@ -5,7 +5,7 @@ import { getLicense } from '@/lib/api/blockchain';
 import { getNodeLastEpoch } from '@/lib/api/oracles';
 import { routePath } from '@/lib/routes';
 import useDebounce from '@/lib/useDebounce';
-import { isEmptyETHAddr, isNonZeroInteger } from '@/lib/utils';
+import { cachedGetENSName, isEmptyETHAddr, isNonZeroInteger } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Input } from '@heroui/input';
 import { Modal, ModalContent, useDisclosure } from '@heroui/modal';
@@ -19,7 +19,8 @@ import Identicon from './shared/Identicon';
 
 type SearchResult =
     | { type: 'node'; nodeAddress: types.EthAddress; alias: string; isOnline: boolean }
-    | { type: 'license'; licenseId: number; licenseType: 'ND' | 'MND' | 'GND'; nodeAddress: types.EthAddress };
+    | { type: 'license'; licenseId: number; licenseType: 'ND' | 'MND' | 'GND'; nodeAddress: types.EthAddress }
+    | { type: 'owner'; address: types.EthAddress; ensName?: string };
 
 export const Search = () => {
     const [isLoading, setLoading] = useState<boolean>(false);
@@ -59,26 +60,40 @@ export const Search = () => {
 
         try {
             setLoading(true);
+            const resultsArray: SearchResult[] = [];
 
             if (query.startsWith('0x') && query.length === 42) {
-                const nodeResponse = await getNodeLastEpoch(query as types.EthAddress);
+                const ethAddress = query as types.EthAddress;
+                const ensName = await cachedGetENSName(ethAddress);
 
-                setResults([
-                    {
+                resultsArray.push({
+                    type: 'owner',
+                    address: ethAddress,
+                    ensName,
+                });
+
+                try {
+                    const nodeResponse = await getNodeLastEpoch(ethAddress);
+                    console.log('Search node', nodeResponse);
+
+                    resultsArray.push({
                         type: 'node',
                         nodeAddress: nodeResponse.node_eth_address,
                         alias: nodeResponse.node_alias,
                         isOnline: nodeResponse.node_is_online,
-                    },
-                ]);
-                setError(false);
+                    });
+                } catch (error) {
+                    console.log('Address is not a valid node');
+                } finally {
+                    setResults(resultsArray);
+
+                    setError(false);
+                }
             } else if (isNonZeroInteger(query)) {
                 const licenseId = parseInt(query);
 
                 const ndLicense = await getLicense('ND', licenseId);
                 const mndLicense = await getLicense('MND', licenseId);
-
-                const resultsArray: SearchResult[] = [];
 
                 if (!isEmptyETHAddr(ndLicense.nodeAddress)) {
                     resultsArray.push({
@@ -219,7 +234,7 @@ export const Search = () => {
                                                     >
                                                         <div className="row gap-3">
                                                             <div className="relative h-8 w-8">
-                                                                <Identicon value={node.nodeAddress} />
+                                                                <Identicon value={`node_${node.nodeAddress}`} />
 
                                                                 <div
                                                                     className={clsx(
@@ -277,6 +292,38 @@ export const Search = () => {
                                                                 </div>
 
                                                                 <CopyableAddress value={license.nodeAddress} size={8} />
+                                                            </div>
+                                                        </div>
+                                                    </Link>
+                                                </div>
+                                            ))}
+                                    </div>
+                                )}
+
+                                {results.some((r) => r.type === 'owner') && (
+                                    <div className="col gap-2">
+                                        {getSectionTitle('Accounts')}
+
+                                        {results
+                                            .filter((r): r is Extract<SearchResult, { type: 'owner' }> => r.type === 'owner')
+                                            .map((owner, index) => (
+                                                <div key={index}>
+                                                    <Link
+                                                        href={`${routePath.owner}/${owner.address}`}
+                                                        className="row -mx-4 cursor-pointer px-4 py-2.5 transition-all hover:bg-slate-50"
+                                                        onClick={onClose}
+                                                    >
+                                                        <div className="row gap-3">
+                                                            <div className="relative h-8 w-8">
+                                                                <Identicon value={`owner_${owner.address}`} />
+                                                            </div>
+
+                                                            <div className="col">
+                                                                {!!owner.ensName && (
+                                                                    <div className="text-sm font-medium">{owner.ensName}</div>
+                                                                )}
+
+                                                                <CopyableAddress value={owner.address} size={8} />
                                                             </div>
                                                         </div>
                                                     </Link>

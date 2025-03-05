@@ -4,10 +4,9 @@ import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizon
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import config from '@/config';
 import { fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
-import { fBI, getShortAddress, isEmptyETHAddr } from '@/lib/utils';
+import { cachedGetENSName, fBI, getShortAddress, isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { notFound } from 'next/navigation';
-import { cache } from 'react';
 import { isAddress } from 'viem';
 
 export async function generateMetadata({ params }) {
@@ -31,18 +30,6 @@ export async function generateMetadata({ params }) {
         },
     };
 }
-
-const cachedGetENSName = cache(async (ownerEthAddr: string): Promise<string | undefined> => {
-    try {
-        const response = await fetch(`https://api.ensideas.com/ens/resolve/${ownerEthAddr}`);
-        if (response.ok) {
-            const data = await response.json();
-            return data.name || undefined;
-        }
-    } catch (error) {
-        console.log('Error fetching ENS name');
-    }
-});
 
 export default async function OwnerPage({ params }) {
     const { ownerEthAddr } = await params;

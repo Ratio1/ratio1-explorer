@@ -30,17 +30,16 @@ export const NetworkSelector = () => {
 
     return (
         <Select
-            className={clsx({
-                'w-[128px]': keys.has('mainnet'),
-                'w-[122px]': keys.has('testnet'),
-                'w-[118px]': keys.has('devnet'),
-            })}
             classNames={{
-                trigger: 'min-h-10 lg:min-h-12 bg-primary data-[hover=true]:bg-primary/85 rounded-full ',
+                trigger: 'min-h-10 lg:min-h-12 bg-primary data-[hover=true]:bg-primary/85 rounded-full lg:px-4 px-3',
                 label: 'group-data-[filled=true]:-translate-y-5',
-                value: 'font-medium text-[15px] !text-white pl-1.5',
                 selectorIcon: '!text-white mt-0.5 mr-0.5',
                 innerWrapper: 'gap-0.5',
+                value: clsx('font-medium text-[15px] !text-white pl-1.5', {
+                    'min-w-[86px]': keys.has('mainnet'),
+                    'min-w-[80px]': keys.has('testnet'),
+                    'min-w-[78px]': keys.has('devnet'),
+                }),
             }}
             items={networks.map((network) => ({ key: network }))}
             selectedKeys={keys}

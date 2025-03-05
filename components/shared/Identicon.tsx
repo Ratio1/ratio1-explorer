@@ -1,3 +1,5 @@
+'use client';
+
 import { create } from 'ethereum-blockies';
 import { FunctionComponent, useEffect, useRef } from 'react';
 

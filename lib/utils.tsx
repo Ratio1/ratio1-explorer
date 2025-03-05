@@ -1,7 +1,7 @@
 import config, { domains, getCurrentEpoch, getLicenseFirstCheckEpoch } from '@/config';
 import * as types from '@/typedefs/blockchain';
 import { Metadata } from 'next';
-import { JSX } from 'react';
+import { cache, JSX } from 'react';
 import { getNodeEpochsRange, getNodeLastEpoch } from './api/oracles';
 
 export const ETH_EMPTY_ADDR = '0x0000000000000000000000000000000000000000';
@@ -121,3 +121,15 @@ export const isNonZeroInteger = (value: string): boolean => {
     const int = parseInt(value, 10);
     return !isNaN(int) && isFinite(int) && int > 0;
 };
+
+export const cachedGetENSName = cache(async (ownerEthAddr: string): Promise<string | undefined> => {
+    try {
+        const response = await fetch(`https://api.ensideas.com/ens/resolve/${ownerEthAddr}`);
+        if (response.ok) {
+            const data = await response.json();
+            return data.name || undefined;
+        }
+    } catch (error) {
+        console.log('Error fetching ENS name');
+    }
+});

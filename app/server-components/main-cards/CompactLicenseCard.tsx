@@ -7,7 +7,7 @@ import * as types from '@/typedefs/blockchain';
 import Link from 'next/link';
 import PoA from '../Licenses/PoA';
 import { LargeTag } from '../shared/LargeTag';
-import LicenseUsageStats from '../shared/Licenses/LicenseUsageStats';
+import UsageStats from '../shared/Licenses/UsageStats';
 
 interface Props {
     license: types.License;
@@ -53,7 +53,7 @@ export default async function CompactLicenseCard({ license, licenseType, license
                     label="Usage"
                     value={
                         <div className="w-full min-w-52 xs:min-w-56 md:min-w-60">
-                            <LicenseUsageStats
+                            <UsageStats
                                 totalClaimedAmount={license.totalClaimedAmount}
                                 totalAssignedAmount={license.totalAssignedAmount}
                             />

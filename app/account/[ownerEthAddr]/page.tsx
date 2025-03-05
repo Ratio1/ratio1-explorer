@@ -1,6 +1,7 @@
 import CompactLicenseCard from '@/app/server-components/main-cards/CompactLicenseCard';
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
+import UsageStats from '@/app/server-components/shared/Licenses/UsageStats';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import config from '@/config';
 import { fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
@@ -78,7 +79,7 @@ export default async function OwnerPage({ params }) {
                             isFlexible
                         />
 
-                        <CardHorizontal label="Licenses Owned" value={<div>{licenses.length}</div>} isSmall />
+                        <CardHorizontal label="Licenses Owned" value={<div>{licenses.length}</div>} isSmall isFlexible />
 
                         <CardHorizontal
                             label="Total $R1 Claimed"
@@ -91,6 +92,29 @@ export default async function OwnerPage({ params }) {
                                 </div>
                             }
                             isSmall
+                            isFlexible
+                            widthClasses="min-w-[268px]"
+                        />
+
+                        <CardHorizontal
+                            label="Licenses Usage (Total)"
+                            value={
+                                <div className="w-full min-w-52 xs:min-w-56 md:min-w-60">
+                                    <UsageStats
+                                        totalClaimedAmount={licenses.reduce(
+                                            (acc, license) => acc + license.totalClaimedAmount,
+                                            0n,
+                                        )}
+                                        totalAssignedAmount={licenses.reduce(
+                                            (acc, license) => acc + license.totalAssignedAmount,
+                                            0n,
+                                        )}
+                                    />
+                                </div>
+                            }
+                            isSmall
+                            isFlexible
+                            widthClasses="min-[520px]:min-w-[440px] md:max-w-[500px]"
                         />
 
                         <CardHorizontal

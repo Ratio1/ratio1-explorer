@@ -1,7 +1,7 @@
 import config from '@/config';
 import { fBI } from '@/lib/utils';
 
-export default async function LicenseUsageStats({
+export default async function UsageStats({
     totalClaimedAmount,
     totalAssignedAmount = config.ndLicenseCap,
 }: {

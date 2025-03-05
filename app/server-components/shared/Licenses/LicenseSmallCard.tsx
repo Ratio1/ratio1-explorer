@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { FunctionComponent, PropsWithChildren } from 'react';
 import { RiCpuLine } from 'react-icons/ri';
-import LicenseUsageStats from './LicenseUsageStats';
+import UsageStats from './UsageStats';
 
 interface Props {
     licenseId: number;
@@ -42,7 +42,7 @@ export default async function LicenseSmallCard({
                 </div>
 
                 <div className="w-52">
-                    <LicenseUsageStats totalClaimedAmount={totalClaimedAmount} totalAssignedAmount={totalAssignedAmount} />
+                    <UsageStats totalClaimedAmount={totalClaimedAmount} totalAssignedAmount={totalAssignedAmount} />
                 </div>
             </div>
         </SmallCard>

@@ -110,7 +110,7 @@ export default async function NodeCard({
                     }
                     isSmall
                     isFlexible
-                    minWidthClasses="min-w-[264px]"
+                    minWidthClasses="min-w-[302px]"
                 />
 
                 <CardHorizontal label="Version" value={nodeResponse.node_version.split('|')[0]} isSmall />

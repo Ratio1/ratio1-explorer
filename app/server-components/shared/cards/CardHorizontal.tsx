@@ -7,6 +7,7 @@ export const CardHorizontal = ({
     value,
     isFlexible,
     isSmall,
+    isSmaller,
     isDarker,
     minWidthClasses,
 }: {
@@ -14,6 +15,7 @@ export const CardHorizontal = ({
     value: number | string | JSX.Element;
     isFlexible?: boolean;
     isSmall?: boolean;
+    isSmaller?: boolean;
     isDarker?: boolean;
     minWidthClasses?: string;
 }) => {
@@ -23,8 +25,9 @@ export const CardHorizontal = ({
                 <div className="text-[15px] font-medium text-slate-500">{label}</div>
                 <div
                     className={clsx('font-semibold', {
-                        'text-lg md:text-xl': !isSmall,
+                        'text-lg md:text-xl': !isSmall && !isSmaller,
                         'text-base md:text-lg': isSmall,
+                        'text-[15px] sm:text-base md:text-lg': isSmaller,
                     })}
                 >
                     {value}

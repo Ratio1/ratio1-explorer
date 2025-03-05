@@ -32,7 +32,7 @@ export default async function CompactLicenseCard({ license, licenseType, license
                     <CardHorizontal
                         label="Assign timestamp"
                         value={new Date(Number(license.assignTimestamp) * 1000).toLocaleString()}
-                        isSmall
+                        isSmaller
                         isFlexible
                     />
                 )}

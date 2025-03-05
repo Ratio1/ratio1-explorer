@@ -66,7 +66,7 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                     <CardHorizontal
                         label="Assign timestamp"
                         value={new Date(Number(license.assignTimestamp) * 1000).toLocaleString()}
-                        isSmall
+                        isSmaller
                         isFlexible
                     />
                 )}

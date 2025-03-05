@@ -65,7 +65,7 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                         value={new Date(Number(license.assignTimestamp) * 1000).toLocaleString()}
                         isSmaller
                         isFlexible
-                        widthClasses="min-w-[310px]"
+                        widthClasses="min-w-[310px] md:min-w-[420px]"
                     />
                 )}
 

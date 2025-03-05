@@ -8,7 +8,7 @@ interface Props {
 export const LargeTag: FunctionComponent<PropsWithChildren<Props>> = ({ children, variant }) => (
     <div className="flex">
         <div
-            className={clsx('center-all rounded-md px-2 text-lg font-semibold', {
+            className={clsx('center-all rounded-md px-2 text-base font-semibold lg:text-lg', {
                 'bg-primary-50 text-primary': variant === 'ND',
                 'bg-purple-100 text-purple-600': variant === 'MND',
                 'bg-orange-100 text-orange-600': variant === 'GND',

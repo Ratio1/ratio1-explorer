@@ -122,7 +122,7 @@ export default async function NodePage({ params }) {
     }
 
     return (
-        <div className="col w-full flex-1 gap-6">
+        <div className="responsive-col">
             <NodeCard nodeResponse={nodeResponse} />
 
             <LicenseCard

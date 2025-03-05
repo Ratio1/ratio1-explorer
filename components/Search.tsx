@@ -199,7 +199,7 @@ export const Search = () => {
                                 base: 'group-data-[hover=true]:border-slate-200',
                                 inputWrapper:
                                     'h-[52px] group-data-[hover=true]:border-slate-200 border-slate-100 group-data-[focus=true]:!border-primary px-4 rounded-xl shadow-none',
-                                input: '!pl-2.5 text-[15px]',
+                                input: '!pl-2.5 text-[15px] !pr-6',
                             }}
                             variant="bordered"
                             labelPlacement="outside"
@@ -207,7 +207,7 @@ export const Search = () => {
                             startContent={<RiSearchLine className="text-xl text-slate-400" />}
                             endContent={
                                 isLoading ? (
-                                    <div className="center-all">
+                                    <div className="center-all bg-white">
                                         <Spinner size="sm" />
                                     </div>
                                 ) : null

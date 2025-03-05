@@ -54,7 +54,7 @@ export default async function OwnerPage({ params }) {
     }
 
     return (
-        <div className="col w-full flex-1 gap-6">
+        <div className="responsive-col">
             <CardBordered>
                 <div className="card-title-big font-bold">
                     Account •{' '}

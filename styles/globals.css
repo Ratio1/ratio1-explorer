@@ -19,6 +19,10 @@ body {
     @apply flex flex-col;
 }
 
+.responsive-col {
+    @apply col w-full flex-1 gap-4 lg:gap-6;
+}
+
 .center-all {
     @apply row justify-center;
 }
@@ -37,11 +41,11 @@ body {
 
 /* Classes */
 .card-title {
-    @apply text-xl lg:text-2xl;
+    @apply text-lg lg:text-2xl;
 }
 
 .card-title-big {
-    @apply text-[22px] lg:text-[26px];
+    @apply text-xl lg:text-[26px];
 }
 
 /* Responsiveness */

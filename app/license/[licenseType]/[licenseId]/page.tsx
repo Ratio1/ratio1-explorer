@@ -91,7 +91,7 @@ export default async function LicensePage({ params }) {
     });
 
     return (
-        <div className="col w-full flex-1 gap-6">
+        <div className="responsive-col">
             <LicenseCard
                 license={license}
                 licenseType={licenseType}

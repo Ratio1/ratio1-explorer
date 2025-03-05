@@ -30,7 +30,6 @@ export default async function CompactLicenseCard({ license, licenseType, license
             </Link>
 
             <div className="col gap-3">
-                {/* Row 1 */}
                 <div className="flexible-row">
                     {!!license.assignTimestamp && (
                         <CardHorizontal
@@ -44,7 +43,7 @@ export default async function CompactLicenseCard({ license, licenseType, license
                     <CardHorizontal
                         label="Usage"
                         value={
-                            <div className="w-full min-w-60">
+                            <div className="w-full min-w-52 xs:min-w-56 md:min-w-60">
                                 <LicenseUsageStats
                                     totalClaimedAmount={license.totalClaimedAmount}
                                     totalAssignedAmount={license.totalAssignedAmount}
@@ -57,10 +56,7 @@ export default async function CompactLicenseCard({ license, licenseType, license
                     {!!license.lastClaimEpoch && (
                         <CardHorizontal label="Last claimed epoch" value={license.lastClaimEpoch.toString()} isSmall />
                     )}
-                </div>
 
-                {/* Row 2 */}
-                <div className="flexible-row">
                     <CardFlexible>
                         <div className="row h-[76px] w-full justify-between gap-16 px-6 py-2">
                             <div className="row gap-2">

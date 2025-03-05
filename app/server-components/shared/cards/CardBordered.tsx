@@ -19,7 +19,7 @@ export const CardBordered: FunctionComponent<PropsWithChildren<Props>> = ({
         >
             <div
                 className={clsx('w-full bg-white px-4 lg:px-6', {
-                    'col gap-5 py-4 lg:py-6': !useCustomWrapper,
+                    'col gap-4 py-4 lg:gap-5 lg:py-6': !useCustomWrapper,
                 })}
             >
                 {children}

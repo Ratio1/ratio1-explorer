@@ -1,12 +1,10 @@
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
-import { CardFlexible } from '@/app/server-components/shared/cards/CardFlexible';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import { routePath } from '@/lib/routes';
 import { getShortAddress, isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import Link from 'next/link';
-import { RiCpuLine } from 'react-icons/ri';
-import { formatUnits } from 'viem';
+import PoA from '../Licenses/PoA';
 import { LargeTag } from '../shared/LargeTag';
 import LicenseUsageStats from '../shared/Licenses/LicenseUsageStats';
 
@@ -29,78 +27,46 @@ export default async function CompactLicenseCard({ license, licenseType, license
                 </div>
             </Link>
 
-            <div className="col gap-3">
-                <div className="flexible-row">
-                    {!!license.assignTimestamp && (
-                        <CardHorizontal
-                            label="Assign timestamp"
-                            value={new Date(Number(license.assignTimestamp) * 1000).toLocaleString()}
-                            isSmall
-                            isFlexible
-                        />
-                    )}
-
+            <div className="flexible-row">
+                {!!license.assignTimestamp && (
                     <CardHorizontal
-                        label="Usage"
+                        label="Assign timestamp"
+                        value={new Date(Number(license.assignTimestamp) * 1000).toLocaleString()}
+                        isSmall
+                        isFlexible
+                    />
+                )}
+
+                <CardHorizontal
+                    label="Usage"
+                    value={
+                        <div className="w-full min-w-52 xs:min-w-56 md:min-w-60">
+                            <LicenseUsageStats
+                                totalClaimedAmount={license.totalClaimedAmount}
+                                totalAssignedAmount={license.totalAssignedAmount}
+                            />
+                        </div>
+                    }
+                    isSmall
+                />
+
+                {!!license.lastClaimEpoch && (
+                    <CardHorizontal label="Last claimed epoch" value={license.lastClaimEpoch.toString()} isSmall />
+                )}
+
+                <PoA license={license} />
+
+                {!isEmptyETHAddr(nodeEthAddress) && (
+                    <CardHorizontal
+                        label="Node"
                         value={
-                            <div className="w-full min-w-52 xs:min-w-56 md:min-w-60">
-                                <LicenseUsageStats
-                                    totalClaimedAmount={license.totalClaimedAmount}
-                                    totalAssignedAmount={license.totalAssignedAmount}
-                                />
-                            </div>
+                            <Link href={`${routePath.node}/${nodeEthAddress}`} className="hover:text-primary">
+                                {getShortAddress(nodeEthAddress)}
+                            </Link>
                         }
                         isSmall
                     />
-
-                    {!!license.lastClaimEpoch && (
-                        <CardHorizontal label="Last claimed epoch" value={license.lastClaimEpoch.toString()} isSmall />
-                    )}
-
-                    <CardFlexible>
-                        <div className="row h-[76px] w-full justify-between gap-16 px-6 py-2">
-                            <div className="row gap-2">
-                                <div className="center-all rounded-full bg-blue-100 p-2.5 text-2xl text-primary">
-                                    <RiCpuLine />
-                                </div>
-
-                                <div className="text-[15px] font-medium leading-none text-slate-500">PoA</div>
-                            </div>
-
-                            <div className="col gap-[5px]">
-                                <div className="text-[15px] font-medium leading-none text-slate-500">Remaining</div>
-                                <div className="font-semibold leading-none">
-                                    {parseFloat(
-                                        Number(
-                                            formatUnits(license.totalAssignedAmount - license.totalClaimedAmount, 18),
-                                        ).toFixed(2),
-                                    ).toLocaleString()}
-                                </div>
-                            </div>
-
-                            <div className="col gap-[5px]">
-                                <div className="text-[15px] font-medium leading-none text-slate-500">Initial amount</div>
-                                <div className="font-semibold leading-none">
-                                    {parseFloat(
-                                        Number(formatUnits(license.totalAssignedAmount ?? 0n, 18)).toFixed(2),
-                                    ).toLocaleString()}
-                                </div>
-                            </div>
-                        </div>
-                    </CardFlexible>
-
-                    {!isEmptyETHAddr(nodeEthAddress) && (
-                        <CardHorizontal
-                            label="Node"
-                            value={
-                                <Link href={`${routePath.node}/${nodeEthAddress}`} className="hover:text-primary">
-                                    {getShortAddress(nodeEthAddress)}
-                                </Link>
-                            }
-                            isSmall
-                        />
-                    )}
-                </div>
+                )}
             </div>
         </CardBordered>
     );

@@ -8,17 +8,17 @@ export const CardHorizontal = ({
     isFlexible,
     isSmall,
     isDarker,
-    minWidthClass,
+    minWidthClasses,
 }: {
     label: string | JSX.Element;
     value: number | string | JSX.Element;
     isFlexible?: boolean;
     isSmall?: boolean;
     isDarker?: boolean;
-    minWidthClass?: string;
+    minWidthClasses?: string;
 }) => {
     return (
-        <CardFlexible isFlexible={isFlexible} isDarker={isDarker} minWidthClass={minWidthClass}>
+        <CardFlexible isFlexible={isFlexible} isDarker={isDarker} minWidthClasses={minWidthClasses}>
             <div className="row w-full justify-between gap-4 px-4 py-4 sm:gap-6 md:gap-12 lg:px-6 lg:py-6">
                 <div className="text-[15px] font-medium text-slate-500">{label}</div>
                 <div

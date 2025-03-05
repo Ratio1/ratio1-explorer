@@ -57,6 +57,14 @@ body {
     @apply flex md:hidden;
 }
 
+.web-only-block {
+    @apply hidden md:block;
+}
+
+.mobile-only-block {
+    @apply block md:hidden;
+}
+
 /* Scrollbar */
 *::-webkit-scrollbar {
     width: 8px;

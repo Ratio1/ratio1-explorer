@@ -5,7 +5,7 @@ import { getCurrentEpoch, getEpochStartTimestamp, getNextEpochTimestamp } from '
 import { differenceInSeconds, format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { RiTimeLine } from 'react-icons/ri';
-import { EpochTimer } from './Hero/EpochTimer';
+import { EpochTimer } from './EpochTimer';
 
 export default function HeroEpochCard() {
     const [currentEpoch, setCurrentEpoch] = useState<number>(getCurrentEpoch());
@@ -20,7 +20,7 @@ export default function HeroEpochCard() {
     }, [currentEpoch]);
 
     return (
-        <CardFlexible>
+        <CardFlexible minWidthClasses="sm:min-w-[420px]">
             <div className="row h-[76px] w-full justify-between gap-4 px-4 py-2 lg:gap-16 lg:px-6">
                 <div className="row gap-2">
                     <div className="center-all rounded-full bg-blue-100 p-2.5 text-2xl text-primary">

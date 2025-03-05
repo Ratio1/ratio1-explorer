@@ -1,4 +1,4 @@
-import HeroEpochCard from '@/components/HeroEpochCard';
+import HeroEpochCard from '@/components/Hero/HeroEpochCard';
 import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
 import R1MintedLastEpoch from './R1MintedLastEpoch';
@@ -10,38 +10,34 @@ export default async function Hero({ nodesTotalItems }) {
     return (
         <div className="w-full">
             <CardBordered>
-                <div className="col gap-2 lg:gap-3">
-                    <div className="flexible-row">
-                        <CardHorizontal label="Active Nodes" value={nodesTotalItems} isFlexible minWidthClass="min-w-[192px]" />
+                <div className="flexible-row">
+                    <CardHorizontal label="Active Nodes" value={nodesTotalItems} isFlexible minWidthClasses="min-w-[192px]" />
 
+                    <CardHorizontal
+                        label={
+                            <div>
+                                <span className="font-semibold text-primary">$R1</span> total supply
+                            </div>
+                        }
+                        value={<R1TotalSupply />}
+                        isFlexible
+                        minWidthClasses="min-[420px]:min-w-[346px]"
+                    />
+
+                    <Suspense fallback={<Skeleton className="min-h-[76px] w-full rounded-xl md:max-w-[380px]" />}>
                         <CardHorizontal
                             label={
                                 <div>
-                                    <span className="font-semibold text-primary">$R1</span> total supply
+                                    <span className="font-semibold text-primary">$R1</span> minted last epoch
                                 </div>
                             }
-                            value={<R1TotalSupply />}
+                            value={<R1MintedLastEpoch />}
                             isFlexible
-                            minWidthClass="xs:min-w-[328px]"
+                            minWidthClasses="min-w-[254px]"
                         />
+                    </Suspense>
 
-                        <Suspense fallback={<Skeleton className="min-h-[76px] w-full max-w-[380px] rounded-xl" />}>
-                            <CardHorizontal
-                                label={
-                                    <div>
-                                        <span className="font-semibold text-primary">$R1</span> minted last epoch
-                                    </div>
-                                }
-                                value={<R1MintedLastEpoch />}
-                                isFlexible
-                                minWidthClass="min-w-[254px]"
-                            />
-                        </Suspense>
-                    </div>
-
-                    <div className="flexible-row">
-                        <HeroEpochCard />
-                    </div>
+                    <HeroEpochCard />
                 </div>
             </CardBordered>
         </div>

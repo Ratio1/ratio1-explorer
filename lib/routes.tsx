@@ -1,5 +1,9 @@
 export const routePath = {
-    root: '/',
+    // Lists
+    root: '/', // Nodes
+    licenses: '/licenses',
+    owners: '/accounts',
+    // Individual items
     node: '/node',
     license: '/license',
     owner: '/account',
@@ -7,6 +11,8 @@ export const routePath = {
 
 export const routeTitles = {
     [routePath.root]: 'Nodes',
+    [routePath.licenses]: 'Licenses',
+    [routePath.owners]: 'Accounts',
 };
 
-export const navRoutes = [routePath.root];
+export const navRoutes = [routePath.root, routePath.licenses, routePath.owners];

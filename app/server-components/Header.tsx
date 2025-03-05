@@ -1,4 +1,5 @@
 import { CardRounded } from '@/app/server-components/shared/cards/CardRounded';
+import Navigation from '@/components/Navigation';
 import { NetworkSelector } from '@/components/NetworkSelector';
 import config from '@/config';
 import Image from 'next/image';
@@ -7,12 +8,16 @@ import Link from 'next/link';
 export default async function Header() {
     return (
         <div className="flex w-full justify-between">
-            <div className="row gap-16">
-                <Link href="/">
-                    <div className="flex items-end gap-2.5">
-                        <Image className="h-7 w-auto lg:h-8" src="/logo_explorer.svg" width={0} height={0} alt="Logo" />
-                    </div>
-                </Link>
+            <div className="row gap-10">
+                <div className="row gap-16">
+                    <Link href="/">
+                        <div className="flex items-end gap-2.5">
+                            <Image className="h-7 w-auto lg:h-8" src="/logo_explorer.svg" width={0} height={0} alt="Logo" />
+                        </div>
+                    </Link>
+                </div>
+
+                <Navigation />
             </div>
 
             <div className="row gap-2">

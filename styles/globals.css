@@ -12,7 +12,7 @@ body {
 }
 
 .flexible-row {
-    @apply flex flex-wrap items-stretch gap-3;
+    @apply flex flex-wrap items-stretch gap-2 md:gap-3;
 }
 
 .col {

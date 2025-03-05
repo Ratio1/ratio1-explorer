@@ -18,7 +18,7 @@ export default async function TopBar() {
     }
 
     return (
-        <div className="flex w-full flex-col justify-between gap-6 lg:flex-row lg:gap-12">
+        <div className="flex w-full flex-col justify-between gap-4 md:gap-6 lg:flex-row lg:gap-12">
             <div className="w-full flex-1">
                 <Search />
             </div>

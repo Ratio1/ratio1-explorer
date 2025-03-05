@@ -27,7 +27,7 @@ export default async function R1MintedLastEpoch() {
     }
 
     return (
-        <div className="text-xl text-primary">
+        <div className="text-lg text-primary md:text-xl">
             {!!value ? `${parseFloat(Number(formatUnits(BigInt(value), 18)).toFixed(3)).toLocaleString('en-US')}` : '...'}
         </div>
     );

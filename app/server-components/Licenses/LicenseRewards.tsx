@@ -37,7 +37,8 @@ export default async function LicenseRewards({
             label="Rewards"
             value={
                 <div className="text-primary">
-                    $R1 {rewards === undefined ? '...' : parseFloat(Number(formatUnits(rewards ?? 0n, 18)).toFixed(4))}
+                    {!!rewards ? '$R1 ' : ''}
+                    {rewards === undefined ? '...' : parseFloat(Number(formatUnits(rewards ?? 0n, 18)).toFixed(4))}
                 </div>
             }
             isSmall

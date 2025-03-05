@@ -24,7 +24,7 @@ export const CardHorizontal = ({
             <div className="row w-full justify-between gap-4 px-4 py-4 sm:gap-6 md:gap-12 lg:px-6 lg:py-6">
                 <div className="text-[15px] font-medium text-slate-500">{label}</div>
                 <div
-                    className={clsx('font-semibold', {
+                    className={clsx('text-right font-semibold', {
                         'text-lg md:text-xl': !isSmall && !isSmaller,
                         'text-base md:text-lg': isSmall,
                         'text-[15px] sm:text-base md:text-lg': isSmaller,

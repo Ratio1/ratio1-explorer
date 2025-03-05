@@ -35,7 +35,7 @@ export default async function Footer() {
     return (
         <div className="col center-all w-full gap-8 rounded-3xl bg-slate-100 px-8 py-10">
             <div className="col gap-4">
-                <Image className="h-8 w-auto" src="/logo.svg" width={0} height={0} alt="Logo" priority />
+                <Image className="h-7 w-auto" src="/logo_explorer.svg" width={0} height={0} alt="Logo" priority />
 
                 <div className="text-center text-sm font-medium text-slate-500">
                     Ratio1 - The Ultimate AI OS Powered by Blockchain Technology

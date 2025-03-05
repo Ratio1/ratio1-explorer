@@ -27,7 +27,12 @@ export async function generateMetadata({ params }) {
         }
     } catch (error) {
         console.error(error);
-        notFound();
+        return {
+            title: 'Error',
+            openGraph: {
+                title: 'Error',
+            },
+        };
     }
 
     return {
@@ -108,7 +113,7 @@ export default async function NodePage({ params }) {
 
         if (error.message.includes('Oracle state is not valid')) {
             return (
-                <div className="center-all flex-1">
+                <div className="center-all flex-1 py-4">
                     <DetailedAlert
                         icon={<RiCloseLine />}
                         title="Unexpected Error"

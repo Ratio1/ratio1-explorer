@@ -21,7 +21,7 @@ export default function NodesPagination({ total }: { total: number }) {
     }
 
     return (
-        <div className="mx-auto pb-2">
+        <div className="mx-auto pb-4 md:pb-2">
             <Pagination
                 page={currentPage}
                 onChange={(value) => {

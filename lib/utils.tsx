@@ -18,6 +18,8 @@ export const getShortAddress = (address: string, size = 4, asString = false): st
     return <div className="roboto">{str}</div>;
 };
 
+export const getHostUrl = (): string => `https://${domains[config.environment]}`;
+
 export const buildMetadata = (title: string, description: string): Metadata => ({
     title: {
         template: `%s | ${title}`,
@@ -36,7 +38,7 @@ export const buildMetadata = (title: string, description: string): Metadata => (
     openGraph: {
         title,
         description,
-        url: `https://${domains[config.environment]}`,
+        url: getHostUrl(),
         siteName: title,
         images: [
             {
@@ -60,6 +62,7 @@ export const buildMetadata = (title: string, description: string): Metadata => (
             'max-snippet': -1,
         },
     },
+    manifest: '/manifest.json',
     twitter: {
         card: 'summary_large_image',
         title,
@@ -67,7 +70,7 @@ export const buildMetadata = (title: string, description: string): Metadata => (
         creator: '@nextjs',
         images: [`https://${domains[config.environment]}/card.jpg`],
     },
-    metadataBase: new URL(`https://${domains[config.environment]}`),
+    metadataBase: new URL(getHostUrl()),
 });
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

@@ -16,7 +16,7 @@ export default async function List({
 }) {
     return (
         <div className="col flex-1 justify-between gap-8">
-            <div className="col w-full gap-2">
+            <div className="group/list col w-full gap-2 overflow-x-auto pb-4 lg:pb-0">
                 {Object.entries(nodes)
 
                     .map(([ratio1Addr, node]) => (

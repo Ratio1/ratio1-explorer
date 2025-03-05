@@ -275,7 +275,9 @@ export const Search = () => {
                                                     >
                                                         <div className="row gap-3">
                                                             <div className="relative h-8 w-8">
-                                                                <Identicon value={`${license.licenseId}`} />
+                                                                <Identicon
+                                                                    value={`${license.licenseType}${license.licenseId}`}
+                                                                />
                                                             </div>
 
                                                             <div className="col">

@@ -8,7 +8,7 @@ export const SmallCard: FunctionComponent<
 > = ({ children, isHoverable }) => (
     <div
         className={clsx(
-            'flex w-full min-w-24 items-center rounded-2xl border-2 border-slate-100 px-4 py-2.5 sm:w-auto sm:justify-center',
+            'flex w-auto min-w-24 items-center rounded-2xl border-2 border-slate-100 px-4 py-2.5 sm:justify-center',
             {
                 'cursor-pointer hover:border-slate-200': isHoverable,
             },

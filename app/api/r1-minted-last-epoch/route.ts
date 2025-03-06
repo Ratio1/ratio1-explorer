@@ -1,6 +1,7 @@
 import { ERC20Abi } from '@/blockchain/ERC20';
 import config, { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
-import { getBlockByTimestamp, publicClient } from '@/lib/api/blockchain';
+import { getBlockByTimestamp } from '@/lib/api/blockchain';
+import { publicClient } from '@/lib/api/client';
 import { ETH_EMPTY_ADDR } from '@/lib/utils';
 import { NextResponse } from 'next/server';
 

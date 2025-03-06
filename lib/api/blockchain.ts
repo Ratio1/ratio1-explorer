@@ -1,20 +1,14 @@
+'use server';
+
 import { ERC20Abi } from '@/blockchain/ERC20';
 import { LiquidityManagerAbi } from '@/blockchain/LiquidityManager';
 import { MNDContractAbi } from '@/blockchain/MNDContract';
 import { NDContractAbi } from '@/blockchain/NDContract';
 import { ReaderAbi } from '@/blockchain/Reader';
-import config, { chain, getCurrentEpoch, getEpochStartTimestamp } from '@/config';
+import config, { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
 import * as types from '@/typedefs/blockchain';
-import { createPublicClient, http } from 'viem';
 import { ETH_EMPTY_ADDR, isEmptyETHAddr } from '../utils';
-
-// TODO: Replace with a paid RPC at some point
-export const publicClient = createPublicClient({
-    chain,
-    transport: http(
-        `https://base-${config.environment === 'mainnet' ? 'mainnet' : 'sepolia'}.g.alchemy.com/v2/n2UXf8tPtZ242ZpCzspVBPVE_sQhe6S3`,
-    ),
-});
+import { publicClient } from './client';
 
 export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Promise<types.NodeLicenseDetailsResponse> {
     return await publicClient
@@ -162,7 +156,7 @@ export const fetchR1MintedLastEpoch = async () => {
     return value;
 };
 
-export const fetchErc20Balance = (address: types.EthAddress, tokenAddress: types.EthAddress): Promise<bigint> => {
+export const fetchErc20Balance = async (address: types.EthAddress, tokenAddress: types.EthAddress): Promise<bigint> => {
     return publicClient.readContract({
         address: tokenAddress,
         abi: ERC20Abi,
@@ -225,6 +219,19 @@ export const getLicenseRewards = async (
             return getGndLicenseRewards(license, epochs, epochs_vals);
     }
 };
+
+// TODO: Ale add to Reader
+export async function getLicensesTotalSupply(licenseType: 'ND' | 'MND' | 'GND'): Promise<bigint> {
+    const address = licenseType === 'ND' ? config.ndContractAddress : config.mndContractAddress;
+    const abi = licenseType === 'ND' ? NDContractAbi : MNDContractAbi;
+
+    return await publicClient.readContract({
+        address,
+        abi,
+        functionName: 'totalSupply',
+        args: [],
+    });
+}
 
 const getNdLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {
     return calculateLicenseRewards(license, epochs, epochs_vals, config.ndVestingEpochs);

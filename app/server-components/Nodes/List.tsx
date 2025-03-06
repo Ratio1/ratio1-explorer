@@ -1,4 +1,4 @@
-import NodesPagination from '@/components/Nodes/NodesPagination';
+import ParamsPagination from '@/components/Nodes/ParamsPagination';
 import * as types from '@/typedefs/blockchain';
 import { R1Address } from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
@@ -26,7 +26,7 @@ export default async function List({
                 ))}
             </div>
 
-            <NodesPagination total={pagesCount} />
+            <ParamsPagination total={pagesCount} />
         </div>
     );
 }

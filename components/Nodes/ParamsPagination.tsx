@@ -3,7 +3,7 @@
 import { Pagination } from '@heroui/pagination';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export default function NodesPagination({ total }: { total: number }) {
+export default function ParamsPagination({ total }: { total: number }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const { replace } = useRouter();

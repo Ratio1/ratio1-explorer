@@ -13,6 +13,7 @@ interface Props {
     totalClaimedAmount: bigint;
     isBanned: boolean;
     isLink?: boolean;
+    hideType?: boolean;
 }
 
 export default async function LicenseSmallCard({
@@ -22,6 +23,7 @@ export default async function LicenseSmallCard({
     totalAssignedAmount,
     isBanned,
     isLink,
+    hideType,
 }: Props) {
     const getContent = () => (
         <SmallCard isHoverable={isLink}>
@@ -34,7 +36,7 @@ export default async function LicenseSmallCard({
 
                     {isBanned ? (
                         <SmallTag variant="banned">Banned</SmallTag>
-                    ) : !!licenseType ? (
+                    ) : !!licenseType && !hideType ? (
                         <SmallTag>{licenseType}</SmallTag>
                     ) : (
                         <></>

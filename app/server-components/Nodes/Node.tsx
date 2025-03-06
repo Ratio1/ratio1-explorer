@@ -33,7 +33,7 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
                     </div>
                 </Link>
 
-                {/* Node addresses */}
+                {/* Node Addresses */}
                 <SmallCard>
                     <div className="row gap-2.5">
                         <div className="h-9 w-1 rounded-full bg-primary-500"></div>

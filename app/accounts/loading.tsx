@@ -6,10 +6,10 @@ export default function Loading() {
             <Skeleton className="min-h-[176px] w-full rounded-2xl" />
 
             <div className="col w-full gap-2">
-                <Skeleton className="min-h-[92px] w-full rounded-2xl" />
-                <Skeleton className="min-h-[92px] w-full rounded-2xl" />
-                <Skeleton className="min-h-[92px] w-full rounded-2xl" />
-                <Skeleton className="min-h-[92px] w-full rounded-2xl" />
+                <Skeleton className="min-h-[68px] w-full rounded-2xl" />
+                <Skeleton className="min-h-[68px] w-full rounded-2xl" />
+                <Skeleton className="min-h-[68px] w-full rounded-2xl" />
+                <Skeleton className="min-h-[68px] w-full rounded-2xl" />
             </div>
         </div>
     );

@@ -25,7 +25,7 @@ export default function MobileTabs() {
                                 )}
                             >
                                 <div className="text-[24px]">{routeIcons[routePath]}</div>
-                                <div className="text-sm font-medium">{routeTitles[routePath]}</div>
+                                <div className="text-sm font-semibold">{routeTitles[routePath]}</div>
                             </Link>
                         </div>
                     ))}

@@ -7,6 +7,7 @@ import { NDContractAbi } from '@/blockchain/NDContract';
 import { ReaderAbi } from '@/blockchain/Reader';
 import config, { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
 import * as types from '@/typedefs/blockchain';
+import { stringify } from 'qs';
 import { ETH_EMPTY_ADDR, isEmptyETHAddr } from '../utils';
 import { publicClient } from './client';
 
@@ -231,6 +232,53 @@ export async function getLicensesTotalSupply(licenseType: 'ND' | 'MND' | 'GND'):
         functionName: 'totalSupply',
         args: [],
     });
+}
+
+export async function getLicenseHolders(licenseType: 'ND' | 'MND' | 'GND') {
+    const address = licenseType === 'ND' ? config.ndContractAddress : config.mndContractAddress;
+    const apikey = process.env.BASESCAN_API_KEY;
+
+    const url = `https://api${config.environment === 'mainnet' ? '' : '-sepolia'}.basescan.org/api`;
+
+    const query = stringify(
+        {
+            module: 'account',
+            action: 'addresstokennftbalance',
+            address,
+            page: 1,
+            offset: 10,
+            apikey,
+        },
+        { encodeValuesOnly: true },
+    );
+
+    console.log('getLicenseHolders', `${url}?${query}`);
+
+    const res = await fetch(`${url}?${query}`);
+
+    return await res.json();
+}
+
+export async function getERC20TokenTotalSupply() {
+    const contractaddress = config.r1ContractAddress;
+    const apikey = process.env.BASESCAN_API_KEY;
+    const url = `https://api${config.environment === 'mainnet' ? '' : '-sepolia'}.basescan.org/api`;
+
+    const query = stringify(
+        {
+            module: 'stats',
+            action: 'tokensupply',
+            contractaddress,
+            apikey,
+        },
+        { encodeValuesOnly: true },
+    );
+
+    console.log('getERC20TokenTotalSupply', `${url}?${query}`);
+
+    const res = await fetch(`${url}?${query}`);
+
+    return await res.json();
 }
 
 const getNdLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {

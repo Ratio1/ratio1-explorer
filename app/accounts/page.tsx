@@ -64,7 +64,6 @@ export default async function AccountsPage(props: {
 
     try {
         ({ ndHolders, mndHolders } = await fetchCachedLicenseHolders());
-        console.log(ndHolders, mndHolders);
 
         ndHolders.forEach((holder) => {
             if (!holders[holder.ethAddress]) {
@@ -91,7 +90,7 @@ export default async function AccountsPage(props: {
             }))
             .sort((a, b) => b.licenses.length - a.licenses.length);
 
-        console.log(sortedHolders);
+        // console.log(sortedHolders);
     } catch (error) {
         console.error(error);
         notFound();

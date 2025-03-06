@@ -29,6 +29,7 @@
         "date-fns": "^4.1.0",
         "ethereum-blockies": "^0.1.1",
         "framer-motion": "^12.0.11",
+        "moralis": "^2.27.2",
         "next": "15.1.6",
         "node-cron": "^3.0.3",
         "qs": "^6.14.0",

@@ -7,9 +7,21 @@ import { NDContractAbi } from '@/blockchain/NDContract';
 import { ReaderAbi } from '@/blockchain/Reader';
 import config, { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
 import * as types from '@/typedefs/blockchain';
-import { stringify } from 'qs';
+import console from 'console';
+import Moralis from 'moralis';
+import { EvmAddress, EvmChain } from 'moralis/common-evm-utils';
 import { ETH_EMPTY_ADDR, isEmptyETHAddr } from '../utils';
 import { publicClient } from './client';
+
+async function startMoralis() {
+    await Moralis.start({
+        apiKey: process.env.MORALIS_API_KEY,
+    });
+
+    console.log('Moralis started');
+}
+
+startMoralis();
 
 export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Promise<types.NodeLicenseDetailsResponse> {
     return await publicClient
@@ -234,51 +246,35 @@ export async function getLicensesTotalSupply(licenseType: 'ND' | 'MND' | 'GND'):
     });
 }
 
-export async function getLicenseHolders(licenseType: 'ND' | 'MND' | 'GND') {
+export async function getLicenseHolders(licenseType: 'ND' | 'MND' | 'GND'): Promise<
+    {
+        ownerOf: EvmAddress | undefined;
+        tokenId: string | number;
+    }[]
+> {
     const address = licenseType === 'ND' ? config.ndContractAddress : config.mndContractAddress;
-    const apikey = process.env.BASESCAN_API_KEY;
+    const chain = config.environment === 'mainnet' ? EvmChain.BASE : EvmChain.BASE_SEPOLIA;
 
-    const url = `https://api${config.environment === 'mainnet' ? '' : '-sepolia'}.basescan.org/api`;
+    const holders: {
+        ownerOf: EvmAddress | undefined;
+        tokenId: string | number;
+    }[] = [];
+    let cursor: string | undefined = undefined;
 
-    const query = stringify(
-        {
-            module: 'account',
-            action: 'addresstokennftbalance',
+    do {
+        const response = await Moralis.EvmApi.nft.getNFTOwners({
+            chain,
+            format: 'decimal',
+            cursor,
             address,
-            page: 1,
-            offset: 10,
-            apikey,
-        },
-        { encodeValuesOnly: true },
-    );
+            limit: 100,
+        });
 
-    console.log('getLicenseHolders', `${url}?${query}`);
+        holders.push(...response.result);
+        cursor = response.pagination.cursor;
+    } while (!!cursor);
 
-    const res = await fetch(`${url}?${query}`);
-
-    return await res.json();
-}
-
-export async function getERC20TokenTotalSupply() {
-    const contractaddress = config.r1ContractAddress;
-    const apikey = process.env.BASESCAN_API_KEY;
-    const url = `https://api${config.environment === 'mainnet' ? '' : '-sepolia'}.basescan.org/api`;
-
-    const query = stringify(
-        {
-            module: 'stats',
-            action: 'tokensupply',
-            contractaddress,
-            apikey,
-        },
-        { encodeValuesOnly: true },
-    );
-
-    console.log('getERC20TokenTotalSupply', `${url}?${query}`);
-
-    const res = await fetch(`${url}?${query}`);
-
-    return await res.json();
+    return holders;
 }
 
 const getNdLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {

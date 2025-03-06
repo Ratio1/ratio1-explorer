@@ -1,5 +1,7 @@
-import { getERC20TokenTotalSupply } from '@/lib/api/blockchain';
+import { getSSURL } from '@/lib/actions';
+import * as types from '@/typedefs/blockchain';
 import { notFound } from 'next/navigation';
+import { cache } from 'react';
 import { CardBordered } from '../server-components/shared/cards/CardBordered';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
 
@@ -12,6 +14,26 @@ export async function generateMetadata() {
     };
 }
 
+const fetchCachedLicenseHolders = cache(async () => {
+    const url = await getSSURL('license-holders');
+
+    const res = await fetch(url, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+
+    const data: {
+        ndHolders: {
+            ethAddress: types.EthAddress;
+            licenseId: number;
+        }[];
+        mndHolders: {
+            ethAddress: types.EthAddress;
+            licenseId: number;
+        }[];
+    } = await res.json();
+    return data;
+});
+
 export default async function AccountsPage(props: {
     searchParams?: Promise<{
         page?: string;
@@ -20,14 +42,18 @@ export default async function AccountsPage(props: {
     const searchParams = await props.searchParams;
     const currentPage = Number(searchParams?.page) || 1;
 
-    let ndHolders: any, mndHolders: any;
+    let ndHolders: {
+            ethAddress: types.EthAddress;
+            licenseId: number;
+        }[],
+        mndHolders: {
+            ethAddress: types.EthAddress;
+            licenseId: number;
+        }[];
 
     try {
-        // [ndHolders, mndHolders] = await Promise.all([getLicenseHolders('ND'), getLicenseHolders('MND')]);
-        // console.log({ ndHolders, mndHolders });
-
-        const supply = await getERC20TokenTotalSupply();
-        console.log({ supply });
+        ({ ndHolders, mndHolders } = await fetchCachedLicenseHolders());
+        console.log(ndHolders, mndHolders);
     } catch (error) {
         console.error(error);
         notFound();

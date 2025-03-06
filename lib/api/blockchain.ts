@@ -92,6 +92,7 @@ export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: n
     };
 }
 
+// TODO: Ale add to Reader
 export const getLicenses = async (address: types.EthAddress): Promise<types.LicenseInfo[]> => {
     const [mndLicense, ndLicenses] = await Promise.all([
         publicClient

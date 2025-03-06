@@ -1,13 +1,15 @@
-import { SmallCard } from '@/app/server-components/shared/Licenses/SmallCard';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getLicense, getOwnerOfLicense } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
 import { isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
+import { Skeleton } from '@heroui/skeleton';
 import clsx from 'clsx';
+import { Suspense } from 'react';
 import { CardBordered } from '../shared/cards/CardBordered';
 import { Item } from '../shared/Item';
 import LicenseSmallCard from '../shared/Licenses/LicenseSmallCard';
+import NodeSmallCard from './NodeSmallCard';
 
 interface Props {
     licenseType: 'ND' | 'MND' | 'GND';
@@ -19,24 +21,14 @@ export default async function License({ licenseType, licenseId }: Props) {
     let nodeAddress: types.EthAddress;
     let totalAssignedAmount: bigint;
     let totalClaimedAmount: bigint;
-    let lastClaimEpoch: bigint;
     let assignTimestamp: bigint;
-    let lastClaimOracle: types.EthAddress;
     let isBanned: boolean;
 
     try {
-        [
-            owner,
-            {
-                nodeAddress,
-                totalAssignedAmount,
-                totalClaimedAmount,
-                lastClaimEpoch,
-                assignTimestamp,
-                lastClaimOracle,
-                isBanned,
-            },
-        ] = await Promise.all([getOwnerOfLicense(licenseType, licenseId), getLicense(licenseType, licenseId)]);
+        [owner, { nodeAddress, totalAssignedAmount, totalClaimedAmount, assignTimestamp, isBanned }] = await Promise.all([
+            getOwnerOfLicense(licenseType, licenseId),
+            getLicense(licenseType, licenseId),
+        ]);
     } catch (error: any) {
         if (!error.message.includes('ERC721: invalid token ID')) {
             console.error({ licenseType, licenseId }, error);
@@ -82,21 +74,24 @@ export default async function License({ licenseType, licenseId }: Props) {
                 )}
 
                 <div className="min-w-[150px]">
-                    <Item label="Assign Timestamp" value={new Date(Number(assignTimestamp) * 1000).toLocaleString()} />
+                    <Item
+                        label="Assign Timestamp"
+                        value={
+                            !assignTimestamp ? (
+                                <div>Not assigned</div>
+                            ) : (
+                                <>{new Date(Number(assignTimestamp) * 1000).toLocaleString()}</>
+                            )
+                        }
+                    />
                 </div>
 
                 {/* Node */}
-                <div className="min-w-[164px]">
+                <div className="flex min-w-[256px] justify-end">
                     {!isEmptyETHAddr(nodeAddress) && (
-                        <SmallCard>
-                            <div className="row gap-2.5">
-                                <div className="h-9 w-1 rounded-full bg-primary-500"></div>
-
-                                <div className="col font-medium">
-                                    <CopyableAddress value={nodeAddress} />
-                                </div>
-                            </div>
-                        </SmallCard>
+                        <Suspense fallback={<Skeleton className="min-h-[64px] w-[256px] rounded-xl" />}>
+                            <NodeSmallCard nodeEthAddr={nodeAddress} />
+                        </Suspense>
                     )}
                 </div>
             </div>

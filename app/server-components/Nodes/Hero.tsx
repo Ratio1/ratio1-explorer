@@ -1,15 +1,17 @@
 import HeroEpochCard from '@/components/Hero/HeroEpochCard';
 import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
-import R1MintedLastEpoch from './R1MintedLastEpoch';
-import { CardBordered } from './shared/cards/CardBordered';
-import { CardHorizontal } from './shared/cards/CardHorizontal';
-import R1TotalSupply from './shared/R1TotalSupply';
+import R1MintedLastEpoch from '../R1MintedLastEpoch';
+import { CardBordered } from '../shared/cards/CardBordered';
+import { CardHorizontal } from '../shared/cards/CardHorizontal';
+import R1TotalSupply from '../shared/R1TotalSupply';
 
 export default async function Hero({ nodesTotalItems }) {
     return (
         <div className="w-full">
             <CardBordered>
+                <div className="card-title-big font-bold">Nodes</div>
+
                 <div className="flexible-row">
                     <CardHorizontal label="Active Nodes" value={nodesTotalItems} isFlexible widthClasses="min-w-[192px]" />
 

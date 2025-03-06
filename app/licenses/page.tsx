@@ -38,8 +38,6 @@ export default async function LicensesPage(props: {
                 licenseType: 'ND' as const,
             })),
         ];
-
-        console.log('[LicensesPage]', licenses);
     } catch (error) {
         console.error(error);
         notFound();
@@ -49,6 +47,8 @@ export default async function LicensesPage(props: {
         <>
             <div className="w-full">
                 <CardBordered>
+                    <div className="card-title-big font-bold">Licenses</div>
+
                     <div className="flexible-row">
                         <CardHorizontal
                             label="Total"

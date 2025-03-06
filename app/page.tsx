@@ -1,7 +1,7 @@
 import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
 import { Suspense } from 'react';
-import Hero from './server-components/Hero';
+import Hero from './server-components/Nodes/Hero';
 import List from './server-components/Nodes/List';
 import NodesListSkeleton from './server-components/Skeletons/NodesListSkeleton';
 

@@ -13,8 +13,6 @@ export default async function List({ licenses, currentPage }: { licenses: Licens
         return licenses.slice(startIndex, endIndex);
     };
 
-    console.log('[List]', { currentPage, array: getPage() });
-
     return (
         <div className="col flex-1 justify-between gap-8">
             <div className="group/list col w-full gap-2 overflow-x-auto">

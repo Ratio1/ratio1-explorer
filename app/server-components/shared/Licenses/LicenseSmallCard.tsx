@@ -1,9 +1,8 @@
 import { SmallCard } from '@/app/server-components/shared/Licenses/SmallCard';
 import { routePath } from '@/lib/routes';
-import clsx from 'clsx';
 import Link from 'next/link';
-import { FunctionComponent, PropsWithChildren } from 'react';
 import { RiCpuLine } from 'react-icons/ri';
+import { SmallTag } from '../SmallTag';
 import UsageStats from './UsageStats';
 
 interface Props {
@@ -60,20 +59,3 @@ export default async function LicenseSmallCard({
 
     return <Link href={`${routePath.license}/${licenseType}/${licenseId}`}>{getContent()}</Link>;
 }
-
-const SmallTag: FunctionComponent<
-    PropsWithChildren<{
-        variant?: 'default' | 'banned';
-    }>
-> = ({ children, variant = 'default' }) => (
-    <div className="flex">
-        <div
-            className={clsx('center-all rounded-md px-1.5 py-0.5 text-xs font-medium', {
-                'bg-slate-100': variant === 'default',
-                'bg-red-100 text-red-600': variant === 'banned',
-            })}
-        >
-            {children}
-        </div>
-    </div>
-);

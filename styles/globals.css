@@ -65,6 +65,11 @@ body {
     @apply block md:hidden;
 }
 
+/* Safe padding for mobile devices */
+.nav-safe-padding {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
 /* Scrollbar */
 *::-webkit-scrollbar {
     width: 8px;

@@ -1,3 +1,4 @@
+import MobileTabs from '@/components/MobileTabs';
 import '@/lib/cron';
 import { buildMetadata } from '@/lib/utils';
 import { monaSans, robotoMono } from '@/styles/fonts';
@@ -48,9 +49,9 @@ export default async function RootLayout({
                 <meta name="apple-mobile-web-app-title" content="Ratio1 Explorer" />
             </head>
 
-            <body className={`${monaSans.variable} ${robotoMono.variable} antialiased`}>
+            <body className={`${monaSans.variable} ${robotoMono.variable} relative antialiased`}>
                 <HeroUIProvider>
-                    <div className="col layout min-h-screen gap-4 py-6 md:gap-6">
+                    <div className="col layout layoutBreak:mb-0 mb-[76px] min-h-screen gap-4 py-6 md:gap-6">
                         <div className="lg:pb-4">
                             <Header />
                         </div>
@@ -64,6 +65,10 @@ export default async function RootLayout({
                         <Suspense fallback={<Skeleton className="min-h-[298px] w-full rounded-3xl" />}>
                             <Footer />
                         </Suspense>
+
+                        <div className="layoutBreak:hidden block">
+                            <MobileTabs />
+                        </div>
                     </div>
                 </HeroUIProvider>
             </body>

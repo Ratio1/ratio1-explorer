@@ -1,13 +1,17 @@
-import { getLicenses } from '@/lib/api/blockchain';
+import config from '@/config';
+import { fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
 import { fBI } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Item } from '../shared/Item';
 
 export default async function AccountLincenseStats({ ethAddress }: { ethAddress: types.EthAddress }) {
-    let licenses: types.LicenseInfo[];
+    let licenses: types.LicenseInfo[], r1Balance: bigint;
 
     try {
-        licenses = await getLicenses(ethAddress);
+        [licenses, r1Balance] = await Promise.all([
+            getLicenses(ethAddress),
+            fetchErc20Balance(ethAddress, config.r1ContractAddress),
+        ]);
     } catch (error: any) {
         console.error(ethAddress, error);
         return null;
@@ -15,21 +19,7 @@ export default async function AccountLincenseStats({ ethAddress }: { ethAddress:
 
     return (
         <>
-            <Item
-                label="Total Claimed Amount"
-                value={
-                    <div className="text-primary">
-                        {licenses.length > 0
-                            ? fBI(
-                                  licenses
-                                      .map((license) => license.totalClaimedAmount)
-                                      .reduce((sum, current) => sum + current, 0n),
-                                  18,
-                              )
-                            : '-'}
-                    </div>
-                }
-            />
+            <Item label="Wallet $R1 Balance" value={<div className="text-primary">{fBI(r1Balance, 18)}</div>} />
 
             <Item
                 label="Last Claim Epoch"

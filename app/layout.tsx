@@ -1,4 +1,5 @@
 import MobileTabs from '@/components/MobileTabs';
+import '@/lib/api/blockchain';
 import '@/lib/cron';
 import { buildMetadata } from '@/lib/utils';
 import { monaSans, robotoMono } from '@/styles/fonts';

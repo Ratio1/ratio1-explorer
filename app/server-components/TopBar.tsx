@@ -1,11 +1,13 @@
 import { CardWithIcon } from '@/app/server-components/shared/cards/CardWithIcon';
 import { Search } from '@/components/Search';
-import TopBarEpochCard from '@/components/TopBarEpochCard';
 import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
+import { lazy } from 'react';
 import { RiCpuLine } from 'react-icons/ri';
 import PriceCard from './shared/PriceCard';
 import { RowWithIcon } from './shared/cards/RowWithIcon';
+
+const LazyTopBarEpochCard = lazy(() => import('@/components/TopBarEpochCard'));
 
 export default async function TopBar() {
     let activeNodes: types.OraclesDefaultResult;
@@ -25,7 +27,7 @@ export default async function TopBar() {
 
             <div className="flex-1">
                 <div className="hidden flex-wrap items-center justify-between gap-2 sm:flex lg:flex-nowrap lg:justify-end lg:gap-3">
-                    <TopBarEpochCard />
+                    <LazyTopBarEpochCard />
 
                     <PriceCard />
 
@@ -35,7 +37,7 @@ export default async function TopBar() {
                 </div>
 
                 <div className="flex w-full flex-col gap-1.5 rounded-xl bg-slate-100 px-4 py-4 sm:hidden">
-                    <TopBarEpochCard />
+                    <LazyTopBarEpochCard />
 
                     <PriceCard />
 

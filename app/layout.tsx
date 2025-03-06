@@ -1,20 +1,18 @@
-import MobileTabs from '@/components/MobileTabs';
 import '@/lib/api/blockchain';
-import '@/lib/cron';
 import { buildMetadata } from '@/lib/utils';
 import { monaSans, robotoMono } from '@/styles/fonts';
 import '@/styles/globals.css';
 import { Skeleton } from '@heroui/skeleton';
 import { HeroUIProvider } from '@heroui/system';
 import { Metadata, Viewport } from 'next';
-import { Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import Footer from './server-components/Footer';
 import Header from './server-components/Header';
 import TopBarSkeleton from './server-components/Skeletons/TopBarSkeleton';
 import TopBar from './server-components/TopBar';
 
 export const viewport: Viewport = {
-    themeColor: '#000000',
+    themeColor: '#1b47f7',
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -23,6 +21,8 @@ export async function generateMetadata(): Promise<Metadata> {
         'Experience the power of Ratio1 AI OS, built on Ratio1 Protocol and powered by blockchain, democratizing AI to empower limitless innovation.',
     );
 }
+
+const LazyMobileTabs = lazy(() => import('@/components/MobileTabs'));
 
 export default async function RootLayout({
     children,
@@ -50,11 +50,13 @@ export default async function RootLayout({
                 <meta name="apple-mobile-web-app-title" content="Ratio1 Explorer" />
             </head>
 
-            <body className={`${monaSans.variable} ${robotoMono.variable} relative antialiased`}>
+            <body className={`${monaSans.variable} ${robotoMono.variable} relative min-h-screen antialiased`}>
                 <HeroUIProvider>
                     <div className="col layout layoutBreak:mb-0 mb-[76px] min-h-screen gap-4 py-6 md:gap-6">
                         <div className="lg:pb-4">
-                            <Header />
+                            <Suspense>
+                                <Header />
+                            </Suspense>
                         </div>
 
                         <Suspense fallback={<TopBarSkeleton />}>
@@ -67,9 +69,11 @@ export default async function RootLayout({
                             <Footer />
                         </Suspense>
 
-                        <div className="layoutBreak:hidden block">
-                            <MobileTabs />
-                        </div>
+                        <Suspense>
+                            <div className="layoutBreak:hidden block">
+                                <LazyMobileTabs />
+                            </div>
+                        </Suspense>
                     </div>
                 </HeroUIProvider>
             </body>

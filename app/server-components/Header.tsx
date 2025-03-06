@@ -12,7 +12,14 @@ export default async function Header() {
                 <div className="row gap-16">
                     <Link href="/">
                         <div className="flex items-end gap-2.5">
-                            <Image className="h-7 w-auto lg:h-8" src="/logo_explorer.svg" width={0} height={0} alt="Logo" />
+                            <Image
+                                className="h-7 w-auto lg:h-8"
+                                src="/logo_explorer.svg"
+                                width={0}
+                                height={0}
+                                alt="Logo"
+                                priority
+                            />
                         </div>
                     </Link>
                 </div>

@@ -1,29 +1,39 @@
 import ParamsPagination from '@/components/Nodes/ParamsPagination';
+import * as types from '@/typedefs/blockchain';
 import { LicenseItem } from '@/typedefs/general';
 import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
-import License from './License';
+import Account from './Account';
 
 const PAGE_SIZE = 10;
 
-export default async function List({ licenses, currentPage }: { licenses: LicenseItem[]; currentPage: number }) {
+export default async function List({
+    owners,
+    currentPage,
+}: {
+    owners: {
+        ethAddress: types.EthAddress;
+        licenses: LicenseItem[];
+    }[];
+    currentPage: number;
+}) {
     const getPage = () => {
         const startIndex = (currentPage - 1) * PAGE_SIZE;
         const endIndex = startIndex + PAGE_SIZE;
-        return licenses.slice(startIndex, endIndex);
+        return owners.slice(startIndex, endIndex);
     };
 
     return (
         <div className="col flex-1 justify-between gap-8">
             <div className="group/list col w-full gap-2 overflow-x-auto">
-                {getPage().map((license, index) => (
+                {getPage().map((item, index) => (
                     <Suspense key={index} fallback={<Skeleton className="min-h-[92px] w-full rounded-2xl" />}>
-                        <License licenseType={license.licenseType} licenseId={license.licenseId.toString()} />
+                        <Account ethAddress={item.ethAddress} licenses={item.licenses} />
                     </Suspense>
                 ))}
             </div>
 
-            <ParamsPagination total={Math.ceil(licenses.length / PAGE_SIZE)} />
+            <ParamsPagination total={Math.ceil(owners.length / PAGE_SIZE)} />
         </div>
     );
 }

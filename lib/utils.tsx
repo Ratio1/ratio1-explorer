@@ -96,6 +96,7 @@ export function fN(num: number): string | number {
 
 export function fBI(num: bigint, decimals: number): string {
     num = num / 10n ** BigInt(decimals);
+
     if (num >= 1_000_000n) {
         const formattedNum = Number(num) / 1_000_000;
         return formattedNum % 1 === 0 ? `${formattedNum}M` : `${parseFloat(formattedNum.toFixed(2))}M`;

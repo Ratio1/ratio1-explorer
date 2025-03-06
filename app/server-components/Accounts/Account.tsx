@@ -2,8 +2,11 @@ import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { routePath } from '@/lib/routes';
 import * as types from '@/typedefs/blockchain';
 import { LicenseItem } from '@/typedefs/general';
+import { Skeleton } from '@heroui/skeleton';
+import { Suspense } from 'react';
 import { CardBordered } from '../shared/cards/CardBordered';
 import { Item } from '../shared/Item';
+import AccountLincenseStats from './AccountLincenseStats';
 
 interface Props {
     ethAddress: types.EthAddress;
@@ -19,25 +22,27 @@ export default async function Account({ ethAddress, licenses }: Props) {
                     value={<CopyableAddress value={ethAddress} size={4} link={`${routePath.owner}/${ethAddress}`} />}
                 />
 
-                <Item label="Licenses Owned (Total)" value={<div className="font-medium">{licenses.length}</div>} />
+                <Item label="Licenses Owned" value={<div>{licenses.length}</div>} />
 
                 <Item
-                    label="ND Licenses Owned"
+                    label="Licenses Owned (ND)"
                     value={
-                        <div className="font-medium text-primary">
-                            {licenses.filter((license) => license.licenseType === 'ND').length}
-                        </div>
+                        <div className="text-primary">{licenses.filter((license) => license.licenseType === 'ND').length}</div>
                     }
                 />
 
                 <Item
-                    label="MND Licenses Owned"
+                    label="Licenses Owned (MND)"
                     value={
-                        <div className="font-medium text-purple-600">
+                        <div className="text-purple-600">
                             {licenses.filter((license) => license.licenseType !== 'ND').length}
                         </div>
                     }
                 />
+
+                <Suspense fallback={<Skeleton className="min-h-[40px] min-w-[346px] rounded-xl" />}>
+                    <AccountLincenseStats ethAddress={ethAddress} />
+                </Suspense>
             </div>
         </CardBordered>
     );

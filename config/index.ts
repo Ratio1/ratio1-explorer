@@ -38,9 +38,9 @@ export const getLicenseFirstCheckEpoch = (assignTimestamp: bigint) =>
     Math.floor((Number(assignTimestamp) - config.genesisDate.getTime() / 1000) / config.epochDurationInSeconds);
 
 export const domains = {
-    mainnet: 'ratio1-explorer.vercel.app',
-    testnet: 'ratio1-testnet-explorer.vercel.app',
-    devnet: 'ratio1-devnet-explorer.vercel.app',
+    mainnet: 'explorer.ratio1.ai',
+    testnet: 'testnet-explorer.ratio1.ai',
+    devnet: 'devnet-explorer.ratio1.ai',
 };
 
 const environment = process.env.NEXT_PUBLIC_ENVIRONMENT as 'mainnet' | 'testnet' | 'devnet';

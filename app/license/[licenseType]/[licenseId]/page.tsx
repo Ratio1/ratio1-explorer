@@ -1,7 +1,7 @@
 import LicensePageNodeCardWrapper from '@/app/server-components/LicensePage/LicensePageNodeCardWrapper';
 import LicensePageNodePerformanceCardWrapper from '@/app/server-components/LicensePage/LicensePageNodePerformanceCardWrapper';
 import LicenseCard from '@/app/server-components/main-cards/LicenseCard';
-import { getLicense, getOwnerOfLicense } from '@/lib/api/blockchain';
+import { getLicense } from '@/lib/api/blockchain';
 import { getNodeAvailability, isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }) {
     }
 
     try {
-        await cachedGetOwnerOfLicense(licenseType, licenseId);
+        await cachedGetLicense(licenseType, licenseId);
     } catch (error) {
         return {
             title: 'Error',
@@ -50,8 +50,8 @@ export async function generateMetadata({ params }) {
     };
 }
 
-const cachedGetOwnerOfLicense = cache(async (licenseType: 'ND' | 'MND' | 'GND', licenseId: string) => {
-    return await getOwnerOfLicense(licenseType, licenseId);
+const cachedGetLicense = cache(async (licenseType: 'ND' | 'MND' | 'GND', licenseId: string) => {
+    return await getLicense(licenseType, licenseId);
 });
 
 export default async function LicensePage({ params }) {
@@ -67,10 +67,10 @@ export default async function LicensePage({ params }) {
         notFound();
     }
 
-    let owner: types.EthAddress, license: types.License;
+    let license: types.License;
 
     try {
-        [owner, license] = await Promise.all([getOwnerOfLicense(licenseType, licenseId), getLicense(licenseType, licenseId)]);
+        license = await cachedGetLicense(licenseType, licenseId);
     } catch (error) {
         console.error(error);
         notFound();
@@ -96,7 +96,7 @@ export default async function LicensePage({ params }) {
                 license={license}
                 licenseType={licenseType}
                 licenseId={licenseId}
-                owner={owner}
+                owner={license.owner}
                 getNodeAvailability={cachedGetNodeAvailability}
             />
 

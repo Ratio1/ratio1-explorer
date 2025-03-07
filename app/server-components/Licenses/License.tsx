@@ -1,5 +1,5 @@
 import { CopyableAddress } from '@/components/shared/CopyableValue';
-import { getLicense, getOwnerOfLicense } from '@/lib/api/blockchain';
+import { getLicense } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
 import { isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
@@ -25,10 +25,10 @@ export default async function License({ licenseType, licenseId }: Props) {
     let isBanned: boolean;
 
     try {
-        [owner, { nodeAddress, totalAssignedAmount, totalClaimedAmount, assignTimestamp, isBanned }] = await Promise.all([
-            getOwnerOfLicense(licenseType, licenseId),
-            getLicense(licenseType, licenseId),
-        ]);
+        ({ nodeAddress, totalAssignedAmount, totalClaimedAmount, assignTimestamp, isBanned, owner } = await getLicense(
+            licenseType,
+            licenseId,
+        ));
     } catch (error: any) {
         if (!error.message.includes('ERC721: invalid token ID')) {
             console.error({ licenseType, licenseId }, error);

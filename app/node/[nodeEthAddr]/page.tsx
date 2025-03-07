@@ -78,6 +78,7 @@ const getCachedLicenseDetailsAndNodeAvailability = cache(
             assignTimestamp,
             lastClaimOracle,
             isBanned,
+            owner,
         };
 
         const nodeResponse = await getNodeAvailability(nodeEthAddr, assignTimestamp);

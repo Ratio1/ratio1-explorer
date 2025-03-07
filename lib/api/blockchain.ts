@@ -2,8 +2,6 @@
 
 import { ERC20Abi } from '@/blockchain/ERC20';
 import { LiquidityManagerAbi } from '@/blockchain/LiquidityManager';
-import { MNDContractAbi } from '@/blockchain/MNDContract';
-import { NDContractAbi } from '@/blockchain/NDContract';
 import { ReaderAbi } from '@/blockchain/Reader';
 import config, { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
 import * as types from '@/typedefs/blockchain';
@@ -35,22 +33,6 @@ export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Prom
             ...result,
             licenseType: [undefined, 'ND', 'MND', 'GND'][result.licenseType] as 'ND' | 'MND' | 'GND' | undefined,
         }));
-}
-
-// TODO: Ale add to Reader (TODO wzrd: now is returned from getLicense)
-export async function getOwnerOfLicense(
-    licenseType: 'ND' | 'MND' | 'GND',
-    licenseId: number | string,
-): Promise<types.EthAddress> {
-    const address = licenseType === 'ND' ? config.ndContractAddress : config.mndContractAddress;
-    const abi = licenseType === 'ND' ? NDContractAbi : MNDContractAbi;
-
-    return await publicClient.readContract({
-        address,
-        abi,
-        functionName: 'ownerOf',
-        args: [BigInt(licenseId)],
-    });
 }
 
 export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: number | string): Promise<types.License> {

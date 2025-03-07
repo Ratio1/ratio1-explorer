@@ -9,6 +9,7 @@ type License = {
     assignTimestamp: bigint;
     lastClaimOracle: EthAddress;
     isBanned: boolean;
+    owner: EthAddress;
 };
 
 type NodeLicenseDetailsResponse = License & {

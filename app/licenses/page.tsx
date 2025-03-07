@@ -26,8 +26,7 @@ export default async function LicensesPage(props: {
     let licenses: LicenseItem[];
 
     try {
-        [ndTotalSupply, mndTotalSupply] = await Promise.all([getLicensesTotalSupply('ND'), getLicensesTotalSupply('MND')]);
-
+        ({ ndTotalSupply, mndTotalSupply } = await getLicensesTotalSupply());
         licenses = [
             ...Array.from({ length: Number(mndTotalSupply) }, (_, i) => ({
                 licenseId: i + 1,

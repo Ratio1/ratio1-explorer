@@ -37,7 +37,7 @@ export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Prom
         }));
 }
 
-// TODO: Ale add to Reader
+// TODO: Ale add to Reader (TODO wzrd: now is returned from getLicense)
 export async function getOwnerOfLicense(
     licenseType: 'ND' | 'MND' | 'GND',
     licenseId: number | string,
@@ -53,99 +53,80 @@ export async function getOwnerOfLicense(
     });
 }
 
-// TODO: Ale add to Reader
 export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: number | string): Promise<types.License> {
-    let nodeAddress: types.EthAddress,
-        totalAssignedAmount: bigint = config.ndLicenseCap,
-        totalClaimedAmount: bigint,
-        lastClaimEpoch: bigint,
-        assignTimestamp: bigint,
-        lastClaimOracle: types.EthAddress,
-        isBanned: boolean = false;
-
     if (licenseType === 'ND') {
-        [nodeAddress, totalClaimedAmount, lastClaimEpoch, assignTimestamp, lastClaimOracle, isBanned] =
-            await publicClient.readContract({
-                address: config.ndContractAddress,
-                abi: NDContractAbi,
-                functionName: 'licenses',
-                args: [BigInt(licenseId)],
-            });
-    } else {
-        [nodeAddress, totalAssignedAmount, totalClaimedAmount, lastClaimEpoch, assignTimestamp, lastClaimOracle] =
-            await publicClient.readContract({
-                address: config.mndContractAddress,
-                abi: MNDContractAbi,
-                functionName: 'licenses',
-                args: [BigInt(licenseId)],
-            });
-    }
-
-    return {
-        nodeAddress,
-        totalAssignedAmount,
-        totalClaimedAmount,
-        lastClaimEpoch,
-        assignTimestamp,
-        lastClaimOracle,
-        isBanned,
-    };
-}
-
-// TODO: Ale add to Reader
-export const getLicenses = async (address: types.EthAddress): Promise<types.LicenseInfo[]> => {
-    const [mndLicense, ndLicenses] = await Promise.all([
-        publicClient
+        return await publicClient
             .readContract({
-                address: config.mndContractAddress,
-                abi: MNDContractAbi,
-                functionName: 'getUserLicense',
-                args: [address],
+                address: config.readerContractAddress,
+                abi: ReaderAbi,
+                functionName: 'getNdLicenseDetails',
+                args: [BigInt(licenseId)],
             })
             .then((license) => {
-                const isLinked = license.nodeAddress !== '0x0000000000000000000000000000000000000000';
-                const licenseType: 'MND' | 'GND' = license.licenseId === 1n ? 'GND' : 'MND';
-
-                if (!isLinked) {
-                    return { ...license, licenseType, isLinked, isBanned: false };
+                const isLinked = !isEmptyETHAddr(license.nodeAddress);
+                const licenseType = [undefined, 'ND', 'MND', 'GND'][license.licenseType] as 'ND' | 'MND' | 'GND' | undefined;
+                if (licenseType === undefined) {
+                    throw new Error('License does not exist');
+                }
+                if (licenseType !== 'ND') {
+                    throw new Error('Invalid license type');
                 }
 
                 return {
                     ...license,
                     licenseType,
                     isLinked,
-                    isBanned: false,
                 };
-            }),
-        publicClient
+            });
+    } else {
+        return await publicClient
             .readContract({
-                address: config.ndContractAddress,
-                abi: NDContractAbi,
-                functionName: 'getLicenses',
-                args: [address],
+                address: config.readerContractAddress,
+                abi: ReaderAbi,
+                functionName: 'getMndLicenseDetails',
+                args: [BigInt(licenseId)],
             })
-            .then((licenses) => {
-                return licenses.map((license) => {
-                    const licenseType: 'ND' | 'MND' | 'GND' = 'ND';
-                    const isLinked = !isEmptyETHAddr(license.nodeAddress);
-                    const totalAssignedAmount = config.ndLicenseCap;
+            .then((license) => {
+                const isLinked = !isEmptyETHAddr(license.nodeAddress);
+                const licenseType = [undefined, 'ND', 'MND', 'GND'][license.licenseType] as 'ND' | 'MND' | 'GND' | undefined;
+                if (licenseType === undefined) {
+                    throw new Error('License does not exist');
+                }
+                if (licenseType !== 'MND' && licenseType !== 'GND') {
+                    throw new Error('Invalid license type');
+                }
 
-                    if (!isLinked) {
-                        return { ...license, licenseType, totalAssignedAmount, isLinked };
-                    }
+                return {
+                    ...license,
+                    licenseType,
+                    isLinked,
+                };
+            });
+    }
+}
 
-                    return {
-                        ...license,
-                        licenseType,
-                        totalAssignedAmount,
-                        isLinked,
-                    };
-                });
-            }),
-    ]);
+export const getLicenses = async (address: types.EthAddress): Promise<types.LicenseInfo[]> => {
+    const licenses = await publicClient
+        .readContract({
+            address: config.readerContractAddress,
+            abi: ReaderAbi,
+            functionName: 'getUserLicenses',
+            args: [address],
+        })
+        .then((licenses) => {
+            return licenses.map((license) => {
+                const isLinked = !isEmptyETHAddr(license.nodeAddress);
+                const licenseType = [undefined, 'ND', 'MND', 'GND'][license.licenseType] as 'ND' | 'MND' | 'GND';
 
-    const licenses = mndLicense.totalAssignedAmount ? [mndLicense, ...ndLicenses] : ndLicenses;
-    return licenses;
+                return {
+                    ...license,
+                    licenseType,
+                    isLinked,
+                };
+            });
+        });
+
+    return [...licenses];
 };
 
 export const fetchR1MintedLastEpoch = async () => {
@@ -234,17 +215,19 @@ export const getLicenseRewards = async (
     }
 };
 
-// TODO: Ale add to Reader
-export async function getLicensesTotalSupply(licenseType: 'ND' | 'MND' | 'GND'): Promise<bigint> {
-    const address = licenseType === 'ND' ? config.ndContractAddress : config.mndContractAddress;
-    const abi = licenseType === 'ND' ? NDContractAbi : MNDContractAbi;
-
-    return await publicClient.readContract({
-        address,
-        abi,
-        functionName: 'totalSupply',
-        args: [],
+export async function getLicensesTotalSupply(): Promise<{
+    mndTotalSupply: bigint;
+    ndTotalSupply: bigint;
+}> {
+    const [mndTotalSupply, ndTotalSupply] = await publicClient.readContract({
+        address: config.readerContractAddress,
+        abi: ReaderAbi,
+        functionName: 'getLicensesTotalSupply',
     });
+    return {
+        mndTotalSupply,
+        ndTotalSupply,
+    };
 }
 
 export async function getLicenseHolders(licenseType: 'ND' | 'MND' | 'GND'): Promise<

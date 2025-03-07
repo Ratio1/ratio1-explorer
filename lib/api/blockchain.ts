@@ -165,8 +165,10 @@ export const getBlockByTimestamp = async (targetTimestamp: number) => {
     let latestBlock = await publicClient.getBlock();
     let earliestBlock = await publicClient.getBlock({ blockNumber: config.contractsGenesisBlock });
 
-    while (earliestBlock.number < latestBlock.number) {
-        const middleBlockNumber = earliestBlock.number + (latestBlock.number - earliestBlock.number) / 2n;
+    while (earliestBlock.number < latestBlock.number - 1n) {
+        const middleBlockNumber = (earliestBlock.number + latestBlock.number) / 2n;
+        if (middleBlockNumber === earliestBlock.number) break;
+
         const middleBlock = await publicClient.getBlock({ blockNumber: middleBlockNumber });
 
         if (middleBlock.timestamp === BigInt(targetTimestamp)) {

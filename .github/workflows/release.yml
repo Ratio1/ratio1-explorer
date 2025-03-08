@@ -1,4 +1,4 @@
-name: Create Single Release with Multi-Builds
+name: Build and Release Ratio1 Explorer
 
 on:
     push:
@@ -53,14 +53,19 @@ jobs:
                   NODE_ENV: production
                   MORALIS_API_KEY: ${{ secrets.MORALIS_API_KEY }}
 
+            - name: Copy required assets
+              run: |
+                  cp -r .next/static .next/standalone/.next/static
+                  cp -r public .next/standalone/public
+
             - name: Archive standalone build
-              run: tar -czvf nextjs-build-${{ matrix.network }}.tar.gz .next/standalone .next/static
+              run: tar -czvf ratio1-explorer-${{ matrix.network }}.tar.gz .next/standalone
 
             - name: Upload Build as Artifact
               uses: actions/upload-artifact@v4
               with:
-                  name: nextjs-build-${{ matrix.network }}
-                  path: nextjs-build-${{ matrix.network }}.tar.gz
+                  name: ratio1-explorer-${{ matrix.network }}
+                  path: ratio1-explorer-${{ matrix.network }}.tar.gz
 
     release:
         name: Create Single GitHub Release

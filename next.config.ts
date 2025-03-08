@@ -13,6 +13,7 @@ const nextConfig: NextConfig = withBundleAnalyzer({
         config.optimization.chunkIds = 'deterministic';
         return config;
     },
+    output: "standalone"
 });
 
 export default nextConfig;

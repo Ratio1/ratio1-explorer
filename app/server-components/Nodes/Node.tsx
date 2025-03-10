@@ -23,7 +23,7 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
     return (
         <CardBordered useCustomWrapper hasFixedWidth>
             <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6">
-                <Link href={`${routePath.node}/${node.eth_addr}`} className="group w-[200px] py-3 lg:w-[228px]">
+                <Link href={`${routePath.node}/${node.eth_addr}`} className="group min-w-[200px] py-3 lg:min-w-[228px]">
                     <div className="row gap-1.5">
                         <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium group-hover:text-primary lg:text-[15px]">
                             {node.alias}
@@ -34,16 +34,18 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
                 </Link>
 
                 {/* Node Addresses */}
-                <SmallCard>
-                    <div className="row gap-2.5">
-                        <div className="h-9 w-1 rounded-full bg-primary-500"></div>
+                <div className="flex min-w-[164px]">
+                    <SmallCard>
+                        <div className="row gap-2.5">
+                            <div className="h-9 w-1 rounded-full bg-primary-500"></div>
 
-                        <div className="col font-medium">
-                            <CopyableAddress value={node.eth_addr} />
-                            <CopyableAddress value={ratio1Addr} />
+                            <div className="col font-medium">
+                                <CopyableAddress value={node.eth_addr} />
+                                <CopyableAddress value={ratio1Addr} />
+                            </div>
                         </div>
-                    </div>
-                </SmallCard>
+                    </SmallCard>
+                </div>
 
                 {/* License */}
                 <LicenseSmallCard
@@ -57,20 +59,28 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
 
                 {/* Owner */}
                 {!isEmptyETHAddr(owner) && (
-                    <Item
-                        label="Owner"
-                        value={<CopyableAddress value={owner} size={4} link={`${routePath.owner}/${owner}`} />}
-                    />
+                    <div className="flex min-w-[112px]">
+                        <Item
+                            label="Owner"
+                            value={<CopyableAddress value={owner} size={4} link={`${routePath.owner}/${owner}`} />}
+                        />
+                    </div>
                 )}
 
                 <div className="min-w-[50px]">
                     <Item label="Version" value={<>{node.ver.split('|')[0]}</>} />
                 </div>
 
-                <Item
-                    label="Last Epoch Availability"
-                    value={<>{parseFloat((node.recent_history.last_epoch_avail * 100).toFixed(2))}%</>}
-                />
+                <div className="min-w-[152px]">
+                    <Item
+                        label="Last Epoch Availability"
+                        value={
+                            <div className="text-left lg:text-right">
+                                {parseFloat((node.recent_history.last_epoch_avail * 100).toFixed(2))}%
+                            </div>
+                        }
+                    />
+                </div>
             </div>
         </CardBordered>
     );

@@ -17,7 +17,7 @@ export default async function NodeSmallCard({ nodeEthAddr }: { nodeEthAddr: type
     }
 
     return (
-        <Link href={`${routePath.node}/${nodeEthAddr}`}>
+        <Link href={`${routePath.node}/${nodeEthAddr}`} className="w-full">
             <SmallCard isHoverable>
                 <div className="row gap-2.5">
                     <div

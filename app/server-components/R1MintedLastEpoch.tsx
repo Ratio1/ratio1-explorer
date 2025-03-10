@@ -25,7 +25,7 @@ export default async function R1MintedLastEpoch() {
         value = await fetchCachedR1MintedLastEpoch();
     } catch (error) {
         console.error(error);
-        return null;
+        return <div className="text-lg md:text-xl">—</div>;
     }
 
     return (

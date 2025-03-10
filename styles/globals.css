@@ -48,6 +48,14 @@ body {
     @apply text-xl lg:text-[26px];
 }
 
+.list-wrapper {
+    @apply col flex-1 justify-between gap-8;
+}
+
+.list {
+    @apply group/list col w-full gap-2 overflow-x-auto pb-2 min-[1190px]:pb-0;
+}
+
 /* Responsiveness */
 .web-only-flex {
     @apply hidden md:flex;
@@ -63,6 +71,10 @@ body {
 
 .mobile-only-block {
     @apply block md:hidden;
+}
+
+.only-lg {
+    @apply hidden lg:block;
 }
 
 /* Safe padding for mobile devices */

@@ -17,39 +17,40 @@ interface Props {
 export default async function Account({ ethAddress, licenses }: Props) {
     return (
         <CardBordered useCustomWrapper hasFixedWidth>
-            <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6">
+            <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6 lg:py-4">
                 <div className="min-w-[180px]">
                     <Item
                         label={
-                            <div className="row gap-1.5">
-                                <div>Owner</div>
-                                {licenses.findIndex((license) => license.licenseType === 'GND') !== -1 && (
-                                    <SmallTag>Foundation Wallet</SmallTag>
-                                )}
-                            </div>
+                            licenses.findIndex((license) => license.licenseType === 'GND') !== -1 ? (
+                                <SmallTag>Foundation Wallet</SmallTag>
+                            ) : (
+                                <></>
+                            )
                         }
                         value={<CopyableAddress value={ethAddress} size={4} link={`${routePath.owner}/${ethAddress}`} />}
                     />
                 </div>
 
-                <Item
-                    label="Licenses Owned (ND / MND)"
-                    value={
-                        <div>
-                            <span className="text-body">{licenses.length}</span> (
-                            <span className="text-primary">
-                                {licenses.filter((license) => license.licenseType === 'ND').length}
-                            </span>{' '}
-                            /{' '}
-                            <span className="text-purple-600">
-                                {licenses.filter((license) => license.licenseType !== 'ND').length}
-                            </span>
-                            )
-                        </div>
-                    }
-                />
+                <div className="flex min-w-[188px]">
+                    <Item
+                        label="Licenses Owned (ND / MND)"
+                        value={
+                            <div>
+                                <span className="text-body">{licenses.length}</span> (
+                                <span className="text-primary">
+                                    {licenses.filter((license) => license.licenseType === 'ND').length}
+                                </span>{' '}
+                                /{' '}
+                                <span className="text-purple-600">
+                                    {licenses.filter((license) => license.licenseType !== 'ND').length}
+                                </span>
+                                )
+                            </div>
+                        }
+                    />
+                </div>
 
-                <Suspense fallback={<Skeleton className="min-h-[40px] min-w-[346px] rounded-xl" />}>
+                <Suspense fallback={<Skeleton className="min-h-[40px] min-w-[396px] rounded-xl lg:min-h-[20px]" />}>
                     <AccountLincenseStats ethAddress={ethAddress} />
                 </Suspense>
             </div>

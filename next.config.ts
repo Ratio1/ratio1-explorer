@@ -7,13 +7,16 @@ const nextConfig: NextConfig = withBundleAnalyzer({
     generateBuildId: async () => {
         return 'ratio1-explorer';
     },
-    webpack: (config) => {
-        config.output.filename = config.output.filename.replace('[chunkhash]', '[contenthash]');
-        config.optimization.moduleIds = 'deterministic';
-        config.optimization.chunkIds = 'deterministic';
+    webpack: (config, { dev }) => {
+        if (!dev) {
+            // Only apply these settings in production
+            config.output.filename = config.output.filename.replace('[chunkhash]', '[contenthash]');
+            config.optimization.moduleIds = 'deterministic';
+            config.optimization.chunkIds = 'deterministic';
+        }
         return config;
     },
-    output: "standalone"
+    output: 'standalone',
 });
 
 export default nextConfig;

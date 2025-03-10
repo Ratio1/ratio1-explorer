@@ -11,7 +11,8 @@
         "build:testnet": "dotenv -e .env.production.testnet next build",
         "build:devnet": "dotenv -e .env.production.devnet next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "patch": "./scripts/patch.sh"
     },
     "dependencies": {
         "@heroui/button": "^2.2.10",

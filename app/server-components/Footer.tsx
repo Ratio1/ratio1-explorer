@@ -1,5 +1,6 @@
 import ApiStatusCard from '@/app/server-components/shared/ApiStatusCard';
 import { getCurrentEpoch } from '@/lib/api/oracles';
+import { getGitVersion } from '@/lib/git';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import Image from 'next/image';
@@ -18,6 +19,7 @@ const keys = ['server_alias', 'server_version', 'server_time', 'server_current_e
 
 export default async function Footer() {
     let response: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined;
+    const version = getGitVersion();
 
     try {
         response = await getCurrentEpoch();
@@ -63,9 +65,13 @@ export default async function Footer() {
                 </div>
             )}
 
-            <Suspense fallback={<Skeleton className="min-h-[40px] w-full max-w-[116px] rounded-xl" />}>
-                <ApiStatusCard />
-            </Suspense>
+            <div className="col items-center gap-2">
+                <Suspense fallback={<Skeleton className="min-h-[40px] w-full max-w-[116px] rounded-xl" />}>
+                    <ApiStatusCard />
+                </Suspense>
+
+                <div className="text-sm font-medium text-slate-500">{process.env.NEXT_PUBLIC_APP_VERSION}</div>
+            </div>
         </div>
     );
 }

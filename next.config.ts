@@ -1,5 +1,13 @@
 import withBundleAnalyzer from '@next/bundle-analyzer';
+import { execSync } from 'child_process';
 import type { NextConfig } from 'next';
+
+let gitVersion = 'unknown';
+try {
+    gitVersion = execSync('git describe --tags --abbrev=0').toString().trim();
+} catch (error) {
+    console.warn('Failed to get git version:', error);
+}
 
 const nextConfig: NextConfig = withBundleAnalyzer({
     enabled: false,
@@ -17,6 +25,9 @@ const nextConfig: NextConfig = withBundleAnalyzer({
         return config;
     },
     output: 'standalone',
+    env: {
+        NEXT_PUBLIC_APP_VERSION: gitVersion,
+    },
 });
 
 export default nextConfig;

@@ -9,6 +9,7 @@ import { Suspense } from 'react';
 import { CardBordered } from '../shared/cards/CardBordered';
 import { Item } from '../shared/Item';
 import LicenseSmallCard from '../shared/Licenses/LicenseSmallCard';
+import { SmallTag } from '../shared/SmallTag';
 import NodeSmallCard from './NodeSmallCard';
 
 interface Props {
@@ -82,7 +83,15 @@ export default async function License({ licenseType, licenseId }: Props) {
                         label="Assign Timestamp"
                         value={
                             !assignTimestamp ? (
-                                <div className="text-slate-400">Not assigned</div>
+                                <>
+                                    <div className="block lg:hidden">
+                                        <div className="text-slate-400">Not assigned</div>
+                                    </div>
+
+                                    <div className="hidden lg:block">
+                                        <SmallTag>Not assigned</SmallTag>
+                                    </div>
+                                </>
                             ) : (
                                 <>{new Date(Number(assignTimestamp) * 1000).toLocaleString()}</>
                             )

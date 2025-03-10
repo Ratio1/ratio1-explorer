@@ -23,7 +23,7 @@ export default async function AccountLincenseStats({ ethAddress }: { ethAddress:
                 <Item label="Wallet $R1 Balance" value={<div className="text-primary">{fBI(r1Balance, 18)}</div>} />
             </div>
 
-            <div className="flex min-w-[118px]">
+            <div className="flex min-w-[118px] justify-start lg:justify-end">
                 <Item
                     label="Last Claim Epoch"
                     value={

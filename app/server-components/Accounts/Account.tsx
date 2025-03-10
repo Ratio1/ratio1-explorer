@@ -50,7 +50,7 @@ export default async function Account({ ethAddress, licenses }: Props) {
                     />
                 </div>
 
-                <Suspense fallback={<Skeleton className="min-h-[40px] min-w-[346px] rounded-xl" />}>
+                <Suspense fallback={<Skeleton className="min-h-[40px] min-w-[396px] rounded-xl lg:min-h-[20px]" />}>
                     <AccountLincenseStats ethAddress={ethAddress} />
                 </Suspense>
             </div>

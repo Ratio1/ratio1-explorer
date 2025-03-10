@@ -53,7 +53,7 @@ body {
 }
 
 .list {
-    @apply col w-full gap-2 overflow-x-auto pb-2 min-[1190px]:pb-0;
+    @apply group/list col w-full gap-2 overflow-x-auto pb-2 min-[1190px]:pb-0;
 }
 
 /* Responsiveness */
@@ -71,6 +71,10 @@ body {
 
 .mobile-only-block {
     @apply block md:hidden;
+}
+
+.only-lg {
+    @apply hidden lg:block;
 }
 
 /* Safe padding for mobile devices */

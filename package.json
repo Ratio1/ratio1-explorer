@@ -12,7 +12,7 @@
         "build:devnet": "dotenv -e .env.production.devnet next build",
         "start": "next start",
         "lint": "next lint",
-        "patch": "./scripts/patch.sh"
+        "patch": "bash scripts/patch.sh"
     },
     "dependencies": {
         "@heroui/button": "^2.2.10",

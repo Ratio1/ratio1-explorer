@@ -50,27 +50,31 @@ export default async function License({ licenseType, licenseId }: Props) {
                     hideType
                 />
 
-                <Item
-                    label="License Type"
-                    value={
-                        <div
-                            className={clsx('font-medium', {
-                                'text-primary': licenseType === 'ND',
-                                'text-purple-600': licenseType === 'MND',
-                                'text-orange-600': licenseType === 'GND',
-                            })}
-                        >
-                            {licenseType}
-                        </div>
-                    }
-                />
+                <div className="flex min-w-[34px]">
+                    <Item
+                        label="License Type"
+                        value={
+                            <div
+                                className={clsx('font-medium', {
+                                    'text-primary': licenseType === 'ND',
+                                    'text-purple-600': licenseType === 'MND',
+                                    'text-orange-600': licenseType === 'GND',
+                                })}
+                            >
+                                {licenseType}
+                            </div>
+                        }
+                    />
+                </div>
 
                 {/* Owner */}
                 {!isEmptyETHAddr(owner) && (
-                    <Item
-                        label="Owner"
-                        value={<CopyableAddress value={owner} size={4} link={`${routePath.owner}/${owner}`} />}
-                    />
+                    <div className="flex min-w-[112px]">
+                        <Item
+                            label="Owner"
+                            value={<CopyableAddress value={owner} size={4} link={`${routePath.owner}/${owner}`} />}
+                        />
+                    </div>
                 )}
 
                 <div className="min-w-[150px]">
@@ -78,7 +82,7 @@ export default async function License({ licenseType, licenseId }: Props) {
                         label="Assign Timestamp"
                         value={
                             !assignTimestamp ? (
-                                <div>Not assigned</div>
+                                <div className="text-slate-400">Not assigned</div>
                             ) : (
                                 <>{new Date(Number(assignTimestamp) * 1000).toLocaleString()}</>
                             )

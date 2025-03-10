@@ -19,21 +19,25 @@ export default async function AccountLincenseStats({ ethAddress }: { ethAddress:
 
     return (
         <>
-            <Item label="Wallet $R1 Balance" value={<div className="text-primary">{fBI(r1Balance, 18)}</div>} />
+            <div className="flex min-w-[128px]">
+                <Item label="Wallet $R1 Balance" value={<div className="text-primary">{fBI(r1Balance, 18)}</div>} />
+            </div>
 
-            <Item
-                label="Last Claim Epoch"
-                value={
-                    <div>
-                        {licenses.length > 0
-                            ? licenses.reduce(
-                                  (max, license) => (license.lastClaimEpoch > max ? license.lastClaimEpoch : max),
-                                  licenses[0].lastClaimEpoch,
-                              ) || '-'
-                            : '-'}
-                    </div>
-                }
-            />
+            <div className="flex min-w-[118px]">
+                <Item
+                    label="Last Claim Epoch"
+                    value={
+                        <div>
+                            {licenses.length > 0
+                                ? licenses.reduce(
+                                      (max, license) => (license.lastClaimEpoch > max ? license.lastClaimEpoch : max),
+                                      licenses[0].lastClaimEpoch,
+                                  ) || '-'
+                                : '-'}
+                        </div>
+                    }
+                />
+            </div>
         </>
     );
 }

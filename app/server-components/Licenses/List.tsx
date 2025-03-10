@@ -2,6 +2,7 @@ import ParamsPagination from '@/components/Nodes/ParamsPagination';
 import { LicenseItem } from '@/typedefs/general';
 import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
+import ListHeader from '../shared/ListHeader';
 import License from './License';
 
 const PAGE_SIZE = 10;
@@ -14,8 +15,16 @@ export default async function List({ licenses, currentPage }: { licenses: Licens
     };
 
     return (
-        <div className="col flex-1 justify-between gap-8">
-            <div className="group/list col w-full gap-2 overflow-x-auto">
+        <div className="list-wrapper">
+            <div className="list">
+                <ListHeader>
+                    <div className="min-w-[244px]">License</div>
+                    <div className="min-w-[34px]">Type</div>
+                    <div className="min-w-[112px]">Owner</div>
+                    <div className="min-w-[150px]">Assign Timestamp</div>
+                    <div className="min-w-[256px]">Node</div>
+                </ListHeader>
+
                 {getPage().map((license, index) => (
                     <Suspense key={index} fallback={<Skeleton className="min-h-[92px] w-full rounded-2xl" />}>
                         <License licenseType={license.licenseType} licenseId={license.licenseId.toString()} />

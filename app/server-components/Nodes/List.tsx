@@ -16,8 +16,8 @@ export default async function List({
     pagesCount: number;
 }) {
     return (
-        <div className="col flex-1 justify-between gap-8">
-            <div className="group/list col w-full gap-2 overflow-x-auto">
+        <div className="list-wrapper">
+            <div className="list">
                 <ListHeader>
                     <div className="min-w-[200px] lg:min-w-[228px]">Alias</div>
                     <div className="min-w-[164px]">Addresses</div>

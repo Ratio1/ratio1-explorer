@@ -1,6 +1,5 @@
 import ApiStatusCard from '@/app/server-components/shared/ApiStatusCard';
 import { getCurrentEpoch } from '@/lib/api/oracles';
-import { getGitVersion } from '@/lib/git';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import Image from 'next/image';
@@ -19,7 +18,6 @@ const keys = ['server_alias', 'server_version', 'server_time', 'server_current_e
 
 export default async function Footer() {
     let response: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined;
-    const version = getGitVersion();
 
     try {
         response = await getCurrentEpoch();

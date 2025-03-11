@@ -36,6 +36,10 @@ jobs:
         strategy:
             matrix:
                 network: [devnet, testnet, mainnet]
+        outputs:
+            version: ${{ steps.version.outputs.version }}
+            version_tag: ${{ steps.version.outputs.version_tag }}
+
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
@@ -47,11 +51,21 @@ jobs:
                   key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
                   restore-keys: npm-${{ runner.os }}-
 
+            - name: Generate Semantic Version
+              id: version
+              uses: PaulHatch/semantic-version@v5.4.0
+              with:
+                  tag_prefix: 'v'
+                  major_pattern: '(MAJOR)'
+                  minor_pattern: '(feat|feature)'
+                  version_format: '${major}.${minor}.${patch}'
+
             - name: Build Next.js app for ${{ matrix.network }}
               run: npm run build:${{ matrix.network }}
               env:
                   NODE_ENV: production
                   MORALIS_API_KEY: ${{ secrets.MORALIS_API_KEY }}
+                  NEXT_PUBLIC_APP_VERSION: ${{ steps.version.outputs.version }}
 
             - name: Copy required assets
               run: |
@@ -80,23 +94,14 @@ jobs:
               with:
                   path: builds
 
-            - name: Generate Semantic Version
-              id: version
-              uses: PaulHatch/semantic-version@v5.4.0
-              with:
-                  tag_prefix: 'v'
-                  major_pattern: '(MAJOR)'
-                  minor_pattern: '(feat|feature)'
-                  version_format: '${major}.${minor}.${patch}'
-
             - name: List downloaded files
               run: ls -R builds
 
             - name: Create GitHub Release
               uses: softprops/action-gh-release@v2
               with:
-                  tag_name: ${{ steps.version.outputs.version_tag }}
-                  name: Release ${{ steps.version.outputs.version }}
+                  tag_name: ${{ needs.build.outputs.version_tag }}
+                  name: Release ${{ needs.build.outputs.version }}
                   draft: false
                   prerelease: false
                   files: builds/**/*

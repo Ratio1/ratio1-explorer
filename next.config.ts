@@ -10,7 +10,7 @@ const nextConfig: NextConfig = withBundleAnalyzer({
     },
     webpack: (config, { dev }) => {
         if (!dev) {
-            // Only apply these settings in production
+            // Only apply these settings in production, as they cause hot reloading to break
             config.output.filename = config.output.filename.replace('[chunkhash]', '[contenthash]');
             config.optimization.moduleIds = 'deterministic';
             config.optimization.chunkIds = 'deterministic';

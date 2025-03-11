@@ -80,11 +80,14 @@ jobs:
               with:
                   path: builds
 
-            - name: Generate version from commit hash
+            - name: Generate Semantic Version
               id: version
-              run: |
-                  echo "VERSION=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-                  echo "VERSION=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+              uses: PaulHatch/semantic-version@v5.4.0
+              with:
+                  tag_prefix: 'v'
+                  major_pattern: '(MAJOR)'
+                  minor_pattern: '(feat|feature)'
+                  version_format: '${major}.${minor}.${patch}'
 
             - name: List downloaded files
               run: ls -R builds
@@ -92,8 +95,8 @@ jobs:
             - name: Create GitHub Release
               uses: softprops/action-gh-release@v2
               with:
-                  tag_name: latest
-                  name: Release v-${{ steps.version.outputs.VERSION }}
+                  tag_name: ${{ steps.version.outputs.version_tag }}
+                  name: Release ${{ steps.version.outputs.version }}
                   draft: false
                   prerelease: false
                   files: builds/**/*

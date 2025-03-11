@@ -26,6 +26,7 @@ jobs:
                   major_pattern: '(MAJOR)'
                   minor_pattern: '(feat|feature)'
                   version_format: '${major}.${minor}.${patch}'
+                  bump_each_commit: true
 
     install-dependencies:
         name: Install Dependencies

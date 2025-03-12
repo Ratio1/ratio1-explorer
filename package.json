@@ -1,6 +1,6 @@
 {
     "name": "ratio1-explorer",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "private": true,
     "scripts": {
         "dev": "dotenv -e .env.production.devnet next dev --turbopack",

@@ -92,25 +92,32 @@ export const Search = () => {
             } else if (isNonZeroInteger(query)) {
                 const licenseId = parseInt(query);
 
-                const ndLicense = await getLicense('ND', licenseId);
-                const mndLicense = await getLicense('MND', licenseId);
-
-                if (!isEmptyETHAddr(ndLicense.nodeAddress)) {
-                    resultsArray.push({
-                        type: 'license',
-                        licenseId,
-                        licenseType: 'ND',
-                        nodeAddress: ndLicense.nodeAddress,
-                    });
+                try {
+                    const ndLicense = await getLicense('ND', licenseId);
+                    if (ndLicense && !isEmptyETHAddr(ndLicense.nodeAddress)) {
+                        resultsArray.push({
+                            type: 'license',
+                            licenseId,
+                            licenseType: 'ND',
+                            nodeAddress: ndLicense.nodeAddress,
+                        });
+                    }
+                } catch (error) {
+                    console.log('ND License not found', licenseId);
                 }
 
-                if (!isEmptyETHAddr(mndLicense.nodeAddress)) {
-                    resultsArray.push({
-                        type: 'license',
-                        licenseId,
-                        licenseType: licenseId === 1 ? 'GND' : 'MND',
-                        nodeAddress: mndLicense.nodeAddress,
-                    });
+                try {
+                    const mndLicense = await getLicense('MND', licenseId);
+                    if (!isEmptyETHAddr(mndLicense.nodeAddress)) {
+                        resultsArray.push({
+                            type: 'license',
+                            licenseId,
+                            licenseType: licenseId === 1 ? 'GND' : 'MND',
+                            nodeAddress: mndLicense.nodeAddress,
+                        });
+                    }
+                } catch (error) {
+                    console.log('MND/GND License not found', licenseId);
                 }
 
                 setResults(resultsArray);

@@ -30,6 +30,10 @@ async function _doGet<T>(endpoint: string) {
 
     const { data } = response;
 
+    if (!data.result) {
+        throw new Error('Invalid response from oracles API');
+    }
+
     if ('error' in data.result) {
         throw new Error(data.result.error);
     }

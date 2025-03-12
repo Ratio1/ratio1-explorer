@@ -5,9 +5,6 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = withBundleAnalyzer({
     enabled: false,
 })({
-    generateBuildId: async () => {
-        return 'ratio1-explorer';
-    },
     webpack: (config, { dev }) => {
         if (!dev) {
             // Only apply these settings in production, as they cause hot reloading to break

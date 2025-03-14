@@ -48,7 +48,24 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
             </div>
 
             <div className="flexible-row">
-                {!!licenseType && <CardHorizontal label="Type" value={licenseType} isSmall isFlexible />}
+                {!!licenseType && (
+                    <CardHorizontal
+                        label="Type"
+                        value={
+                            <div
+                                className={clsx({
+                                    'text-primary': licenseType === 'ND',
+                                    'text-purple-600': licenseType === 'MND',
+                                    'text-orange-600': licenseType === 'GND',
+                                })}
+                            >
+                                {licenseType}
+                            </div>
+                        }
+                        isSmall
+                        isFlexible
+                    />
+                )}
 
                 {!!owner && (
                     <CardHorizontal

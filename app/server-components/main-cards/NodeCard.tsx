@@ -51,7 +51,7 @@ export default async function NodeCard({
 
             <div className="flexible-row">
                 <CardFlexible isFlexible widthClasses="sm:min-w-[410px]">
-                    <div className="col w-full gap-0.5 px-6 py-6">
+                    <div className="col w-full gap-0.5 px-4 py-4 lg:px-6 lg:py-6">
                         <div className="row justify-between gap-4 font-medium leading-none md:gap-8 lg:gap-12">
                             <div className="text-[15px] text-slate-500">
                                 <span className="web-only-block">ETH Address</span>

@@ -1,7 +1,7 @@
 'use client';
 
 import config, { domains } from '@/config';
-import { ping } from '@/lib/api/backend';
+import { pingBackend } from '@/lib/api';
 import { Select, SelectItem } from '@heroui/select';
 import { SharedSelection } from '@heroui/system';
 import clsx from 'clsx';
@@ -11,20 +11,12 @@ const networks = ['mainnet', 'testnet', 'devnet'];
 
 export const NetworkSelector = () => {
     const [keys, setKeys] = useState(new Set<'mainnet' | 'testnet' | 'devnet'>([config.environment]));
-    const [pingError, setPingError] = useState<boolean>();
+    const [isApiWorking, setApiWorking] = useState<boolean>();
 
     // Init
     useEffect(() => {
         (async () => {
-            try {
-                const pingResponse = await ping();
-
-                if (pingResponse) {
-                    setPingError(false);
-                }
-            } catch (error) {
-                setPingError(true);
-            }
+            setApiWorking(await pingBackend());
         })();
     }, []);
 
@@ -77,13 +69,13 @@ export const NetworkSelector = () => {
             }}
             variant="flat"
             startContent={
-                pingError === undefined ? (
+                isApiWorking === undefined ? (
                     <></>
                 ) : (
                     <div
                         className={clsx('ml-1 mt-0.5 h-2 min-h-2 w-2 min-w-2 rounded-full', {
-                            'bg-green-500': !pingError,
-                            'bg-red-500': !!pingError,
+                            'bg-green-500': isApiWorking,
+                            'bg-red-500': !isApiWorking,
                         })}
                     ></div>
                 )

@@ -2,10 +2,14 @@ import { CardRounded } from '@/app/server-components/shared/cards/CardRounded';
 import Navigation from '@/components/Navigation';
 import { NetworkSelector } from '@/components/NetworkSelector';
 import config from '@/config';
+import { getEnvServer } from '@/config/actions';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default async function Header() {
+    const env = await getEnvServer();
+    console.log('[Header] env', env);
+
     return (
         <div className="flex w-full justify-between">
             <div className="row gap-10">

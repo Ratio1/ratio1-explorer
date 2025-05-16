@@ -12,6 +12,10 @@ async function fetchR1MintedLastEpoch() {
     const lastEpochStartTimestamp = getEpochStartTimestamp(currentEpoch - 1);
     const lastEpochEndTimestamp = getEpochStartTimestamp(currentEpoch);
 
+    console.log(
+        `Fetching R1 minted in last epoch: ${lastEpochStartTimestamp.toISOString()} - ${lastEpochEndTimestamp.toISOString()}`,
+    );
+
     const fromBlock = await getBlockByTimestamp(lastEpochStartTimestamp.getTime() / 1000);
     const toBlock = await getBlockByTimestamp(lastEpochEndTimestamp.getTime() / 1000);
 
@@ -30,6 +34,14 @@ async function fetchR1MintedLastEpoch() {
 }
 
 export async function GET() {
-    const value = await fetchR1MintedLastEpoch();
+    let value: bigint;
+
+    try {
+        value = await fetchR1MintedLastEpoch();
+    } catch (error) {
+        console.error('Error fetching R1 minted in last epoch:', error);
+        return NextResponse.json({ error: 'Failed to fetch minted R1 data' }, { status: 500 });
+    }
+
     return NextResponse.json({ value: value.toString() });
 }

@@ -4,6 +4,8 @@ import config from '@/config';
 import * as types from '@/typedefs/blockchain';
 
 const oraclesApiURL = config.oraclesUrl;
+const backendApiURL = config.backendUrl;
+
 const PAGE_SIZE = 10;
 
 export async function getActiveNodes(page: number = 1): Promise<types.OraclesDefaultResult> {
@@ -16,4 +18,17 @@ export async function getActiveNodes(page: number = 1): Promise<types.OraclesDef
     }
 
     return response.json();
+}
+
+export async function pingBackend(): Promise<boolean> {
+    let response: Response | undefined;
+
+    try {
+        response = await fetch(`${backendApiURL}/auth/nodeData`);
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+
+    return !!response && response.status === 200;
 }

@@ -1,7 +1,7 @@
 import { ERC20Abi } from '@/blockchain/ERC20';
 import config, { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
 import { getBlockByTimestamp } from '@/lib/api/blockchain';
-import { publicClient } from '@/lib/api/client';
+import { getPublicClient } from '@/lib/api/client';
 import { ETH_EMPTY_ADDR } from '@/lib/utils';
 import { NextResponse } from 'next/server';
 
@@ -18,6 +18,8 @@ async function fetchR1MintedLastEpoch() {
 
     const fromBlock = await getBlockByTimestamp(lastEpochStartTimestamp.getTime() / 1000);
     const toBlock = await getBlockByTimestamp(lastEpochEndTimestamp.getTime() / 1000);
+
+    const publicClient = await getPublicClient();
 
     const logs = await publicClient.getLogs({
         address: config.r1ContractAddress,

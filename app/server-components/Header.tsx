@@ -2,12 +2,12 @@ import { CardRounded } from '@/app/server-components/shared/cards/CardRounded';
 import Navigation from '@/components/Navigation';
 import { NetworkSelector } from '@/components/NetworkSelector';
 import config from '@/config';
-import { getEnvServer } from '@/config/actions';
+import { getServerConfig } from '@/config/getServerConfig';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default async function Header() {
-    const env = await getEnvServer();
+    const env = await getServerConfig();
     console.log('[Header] env', env);
 
     return (

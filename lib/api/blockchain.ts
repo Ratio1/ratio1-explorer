@@ -4,12 +4,13 @@ import { ERC20Abi } from '@/blockchain/ERC20';
 import { LiquidityManagerAbi } from '@/blockchain/LiquidityManager';
 import { ReaderAbi } from '@/blockchain/Reader';
 import config, { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
+import { getServerConfig } from '@/config/getServerConfig';
 import * as types from '@/typedefs/blockchain';
 import console from 'console';
 import Moralis from 'moralis';
 import { EvmAddress, EvmChain } from 'moralis/common-evm-utils';
 import { ETH_EMPTY_ADDR, isEmptyETHAddr } from '../utils';
-import { publicClient } from './client';
+import { getPublicClient } from './client';
 
 async function startMoralis() {
     await Moralis.start({
@@ -22,6 +23,8 @@ async function startMoralis() {
 startMoralis();
 
 export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Promise<types.NodeLicenseDetailsResponse> {
+    const publicClient = await getPublicClient();
+
     return await publicClient
         .readContract({
             address: config.readerContractAddress,
@@ -36,6 +39,8 @@ export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Prom
 }
 
 export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: number | string): Promise<types.License> {
+    const publicClient = await getPublicClient();
+
     if (licenseType === 'ND') {
         return await publicClient
             .readContract({
@@ -88,6 +93,8 @@ export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: n
 }
 
 export const getLicenses = async (address: types.EthAddress): Promise<types.LicenseInfo[]> => {
+    const publicClient = await getPublicClient();
+
     const licenses = await publicClient
         .readContract({
             address: config.readerContractAddress,
@@ -119,6 +126,8 @@ export const fetchR1MintedLastEpoch = async () => {
     const fromBlock = await getBlockByTimestamp(lastEpochStartTimestamp.getTime() / 1000);
     const toBlock = await getBlockByTimestamp(lastEpochEndTimestamp.getTime() / 1000);
 
+    const publicClient = await getPublicClient();
+
     const logs = await publicClient.getLogs({
         address: config.r1ContractAddress,
         event: ERC20Abi.find((v) => v.name === 'Transfer' && v.type === 'event')!,
@@ -134,6 +143,8 @@ export const fetchR1MintedLastEpoch = async () => {
 };
 
 export const fetchErc20Balance = async (address: types.EthAddress, tokenAddress: types.EthAddress): Promise<bigint> => {
+    const publicClient = await getPublicClient();
+
     return publicClient.readContract({
         address: tokenAddress,
         abi: ERC20Abi,
@@ -143,6 +154,8 @@ export const fetchErc20Balance = async (address: types.EthAddress, tokenAddress:
 };
 
 export const fetchR1Price = async () => {
+    const publicClient = await getPublicClient();
+
     if (config.liquidityManagerContractAddress.length === 42) {
         return await publicClient.readContract({
             address: config.liquidityManagerContractAddress,
@@ -153,6 +166,8 @@ export const fetchR1Price = async () => {
 };
 
 export const fetchR1TotalSupply = async () => {
+    const publicClient = await getPublicClient();
+
     return await publicClient.readContract({
         address: config.r1ContractAddress,
         abi: ERC20Abi,
@@ -162,6 +177,8 @@ export const fetchR1TotalSupply = async () => {
 
 // Binary search for the block with the closest timestamp to the target timestamp
 export const getBlockByTimestamp = async (targetTimestamp: number) => {
+    const publicClient = await getPublicClient();
+
     let latestBlock = await publicClient.getBlock();
     let earliestBlock = await publicClient.getBlock({ blockNumber: config.contractsGenesisBlock });
 
@@ -203,6 +220,8 @@ export async function getLicensesTotalSupply(): Promise<{
     mndTotalSupply: bigint;
     ndTotalSupply: bigint;
 }> {
+    const publicClient = await getPublicClient();
+
     const [mndTotalSupply, ndTotalSupply] = await publicClient.readContract({
         address: config.readerContractAddress,
         abi: ReaderAbi,
@@ -221,7 +240,9 @@ export async function getLicenseHolders(licenseType: 'ND' | 'MND' | 'GND'): Prom
     }[]
 > {
     const address = licenseType === 'ND' ? config.ndContractAddress : config.mndContractAddress;
-    const chain = config.environment === 'mainnet' ? EvmChain.BASE : EvmChain.BASE_SEPOLIA;
+    const { environment } = await getServerConfig();
+
+    const evmChain: EvmChain = environment === 'mainnet' ? EvmChain.BASE : EvmChain.BASE_SEPOLIA;
 
     const holders: {
         ownerOf: EvmAddress | undefined;
@@ -231,7 +252,7 @@ export async function getLicenseHolders(licenseType: 'ND' | 'MND' | 'GND'): Prom
 
     do {
         const response = await Moralis.EvmApi.nft.getNFTOwners({
-            chain,
+            chain: evmChain,
             format: 'decimal',
             cursor,
             address,

@@ -1,14 +1,14 @@
 'use server';
 
-import config from '@/config';
+import { getServerConfig } from '@/config/getServerConfig';
 import * as types from '@/typedefs/blockchain';
-
-const oraclesApiURL = config.oraclesUrl;
-const backendApiURL = config.backendUrl;
 
 const PAGE_SIZE = 10;
 
 export async function getActiveNodes(page: number = 1): Promise<types.OraclesDefaultResult> {
+    const { config } = await getServerConfig();
+    const oraclesApiURL = config.oraclesUrl;
+
     const response: Response = await fetch(`${oraclesApiURL}/active_nodes_list?items_per_page=${PAGE_SIZE}&page=${page}`, {
         next: { revalidate: 60 }, // Revalidate every 1 minute
     });
@@ -21,6 +21,11 @@ export async function getActiveNodes(page: number = 1): Promise<types.OraclesDef
 }
 
 export async function pingBackend(): Promise<boolean> {
+    const { config } = await getServerConfig();
+    const backendApiURL = config.backendUrl;
+
+    console.log(`Pinging backend at ${backendApiURL}/auth/nodeData`);
+
     let response: Response | undefined;
 
     try {

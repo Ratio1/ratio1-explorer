@@ -23,16 +23,16 @@ export type Config = {
 
 export const projectId = 'b0be1322e97542cc32eb568b37173a1c'; // Ratio1 Explorer
 
-export const getCurrentEpoch = () =>
+export const getCurrentEpoch = (config: Config) =>
     Math.floor((Date.now() / 1000 - config.genesisDate.getTime() / 1000) / config.epochDurationInSeconds);
 
-export const getNextEpochTimestamp = (): Date =>
-    addSeconds(config.genesisDate, (getCurrentEpoch() + 1) * config.epochDurationInSeconds);
+export const getNextEpochTimestamp = (config: Config): Date =>
+    addSeconds(config.genesisDate, (getCurrentEpoch(config) + 1) * config.epochDurationInSeconds);
 
-export const getEpochStartTimestamp = (epoch: number): Date =>
+export const getEpochStartTimestamp = (config: Config, epoch: number): Date =>
     addSeconds(config.genesisDate, epoch * config.epochDurationInSeconds);
 
-export const getLicenseFirstCheckEpoch = (assignTimestamp: bigint) =>
+export const getLicenseFirstCheckEpoch = (config: Config, assignTimestamp: bigint) =>
     Math.floor((Number(assignTimestamp) - config.genesisDate.getTime() / 1000) / config.epochDurationInSeconds);
 
 export const domains = {
@@ -54,7 +54,7 @@ const config: Config = {
     mndContractAddress: process.env.NEXT_PUBLIC_MND_CA as EthAddress,
     r1ContractAddress: process.env.NEXT_PUBLIC_R1_CA as EthAddress,
     readerContractAddress: process.env.NEXT_PUBLIC_READER_CA as EthAddress,
-    explorerUrl: process.env.NEXT_PUBLIC_EXPLORER_URL as string,
+    explorerUrl: process.env.NEXT_PUBLIC_EXPLORER_URL as string, // TODO Check if used
     genesisDate: new Date(process.env.NEXT_PUBLIC_GENESIS_DATE as string),
     contractsGenesisBlock: BigInt(process.env.NEXT_PUBLIC_CONTRACTS_GENESIS_BLOCK as string),
     epochDurationInSeconds: Number(process.env.NEXT_PUBLIC_EPOCH_DURATION_SECONDS),

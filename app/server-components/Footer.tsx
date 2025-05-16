@@ -1,5 +1,5 @@
 import ApiStatusCard from '@/app/server-components/shared/ApiStatusCard';
-import { getCurrentEpoch } from '@/lib/api/oracles';
+import { getCurrentEpochServer } from '@/lib/api/oracles';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import Image from 'next/image';
@@ -20,7 +20,7 @@ export default async function Footer() {
     let response: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined;
 
     try {
-        response = await getCurrentEpoch();
+        response = await getCurrentEpochServer();
     } catch (error) {
         console.log(error);
     }

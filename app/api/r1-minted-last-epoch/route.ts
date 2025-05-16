@@ -1,5 +1,6 @@
 import { ERC20Abi } from '@/blockchain/ERC20';
-import config, { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
+import { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
+import { getServerConfig } from '@/config/getServerConfig';
 import { getBlockByTimestamp } from '@/lib/api/blockchain';
 import { getPublicClient } from '@/lib/api/client';
 import { ETH_EMPTY_ADDR } from '@/lib/utils';
@@ -8,9 +9,11 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic'; // Ensure API route is not cached
 
 async function fetchR1MintedLastEpoch() {
-    const currentEpoch = getCurrentEpoch();
-    const lastEpochStartTimestamp = getEpochStartTimestamp(currentEpoch - 1);
-    const lastEpochEndTimestamp = getEpochStartTimestamp(currentEpoch);
+    const { config } = await getServerConfig();
+
+    const currentEpoch = getCurrentEpoch(config);
+    const lastEpochStartTimestamp = getEpochStartTimestamp(config, currentEpoch - 1);
+    const lastEpochEndTimestamp = getEpochStartTimestamp(config, currentEpoch);
 
     console.log(
         `Fetching R1 minted in last epoch: ${lastEpochStartTimestamp.toISOString()} - ${lastEpochEndTimestamp.toISOString()}`,

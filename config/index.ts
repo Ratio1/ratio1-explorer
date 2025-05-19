@@ -41,30 +41,6 @@ export const domains = {
     devnet: 'devnet-explorer.ratio1.ai',
 };
 
-// TODO: Remove
-const environment = process.env.NEXT_PUBLIC_ENVIRONMENT as 'mainnet' | 'testnet' | 'devnet';
-
-// TODO: Remove
-const config: Config = {
-    environment,
-    backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL as string,
-    oraclesUrl: process.env.NEXT_PUBLIC_ORACLES_URL as string,
-    liquidityManagerContractAddress: process.env.NEXT_PUBLIC_LIQUIDITY_MANAGER_CA as EthAddress,
-    ndContractAddress: process.env.NEXT_PUBLIC_ND_CA as EthAddress,
-    mndContractAddress: process.env.NEXT_PUBLIC_MND_CA as EthAddress,
-    r1ContractAddress: process.env.NEXT_PUBLIC_R1_CA as EthAddress,
-    readerContractAddress: process.env.NEXT_PUBLIC_READER_CA as EthAddress,
-    explorerUrl: process.env.NEXT_PUBLIC_EXPLORER_URL as string, // TODO Check if used
-    genesisDate: new Date(process.env.NEXT_PUBLIC_GENESIS_DATE as string),
-    contractsGenesisBlock: BigInt(process.env.NEXT_PUBLIC_CONTRACTS_GENESIS_BLOCK as string),
-    epochDurationInSeconds: Number(process.env.NEXT_PUBLIC_EPOCH_DURATION_SECONDS),
-    ndLicenseCap: BigInt(process.env.NEXT_PUBLIC_ND_LICENSE_CAP as string),
-    mndCliffEpochs: 120,
-    gndVestingEpochs: 365,
-    mndVestingEpochs: 900,
-    ndVestingEpochs: 1080,
-};
-
 export const configs: {
     [key in 'mainnet' | 'testnet' | 'devnet']: Config;
 } = {
@@ -77,7 +53,7 @@ export const configs: {
         ndContractAddress: '0xE20198EE2B76eED916A568a47cdea9681f7c79BF',
         mndContractAddress: '0xfD52a7958088dF734D523d618e583e4d53cD7420',
         readerContractAddress: '0xd9a9B7fd2De5fFAF50695d2f489a56771CA28123',
-        explorerUrl: 'https://basescan.org',
+        explorerUrl: 'https://basescan.org', // TODO Check if used
         genesisDate: new Date('2025-02-05T16:00:00.000Z'),
         contractsGenesisBlock: 26045030n,
         epochDurationInSeconds: 86400,
@@ -134,5 +110,3 @@ export const getEnvironment = (hostname: string | null): 'mainnet' | 'testnet' |
           ? ('testnet' as const)
           : ('devnet' as const);
 };
-
-export default config;

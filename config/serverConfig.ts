@@ -15,3 +15,11 @@ export async function getServerConfig(): Promise<{
         environment,
     };
 }
+
+export async function getServerURL(): Promise<string> {
+    const hostname: string = (await headers()).get('host') || 'localhost:3000';
+    const protocol = hostname.startsWith('localhost') ? 'http' : 'https';
+    const url = `${protocol}://${hostname}`;
+
+    return url;
+}

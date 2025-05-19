@@ -4,7 +4,7 @@ import { ERC20Abi } from '@/blockchain/ERC20';
 import { LiquidityManagerAbi } from '@/blockchain/LiquidityManager';
 import { ReaderAbi } from '@/blockchain/Reader';
 import { getCurrentEpoch } from '@/config';
-import { getServerConfig } from '@/config/getServerConfig';
+import { getServerConfig } from '@/config/serverConfig';
 import * as types from '@/typedefs/blockchain';
 import console from 'console';
 import Moralis from 'moralis';

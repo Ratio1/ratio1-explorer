@@ -1,10 +1,12 @@
-import { getHostUrl } from '@/lib/utils';
+import { getServerURL } from '@/config/serverConfig';
 import { MetadataRoute } from 'next';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+    const url = await getServerURL();
+
     return [
         {
-            url: getHostUrl(),
+            url,
             lastModified: new Date().toISOString(),
         },
     ];

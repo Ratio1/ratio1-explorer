@@ -1,6 +1,7 @@
 'use client';
 
-import config, { domains } from '@/config';
+import { Config, domains } from '@/config';
+import { getClientConfig } from '@/config/clientConfig';
 import { pingBackend } from '@/lib/api';
 import { Select, SelectItem } from '@heroui/select';
 import { SharedSelection } from '@heroui/system';
@@ -10,15 +11,26 @@ import { useEffect, useState } from 'react';
 const networks = ['mainnet', 'testnet', 'devnet'];
 
 export const NetworkSelector = () => {
-    const [keys, setKeys] = useState(new Set<'mainnet' | 'testnet' | 'devnet'>([config.environment]));
+    const [config, setConfig] = useState<Config>();
+
+    const [keys, setKeys] = useState<Set<'mainnet' | 'testnet' | 'devnet'>>();
     const [isApiWorking, setApiWorking] = useState<boolean>();
 
     // Init
     useEffect(() => {
+        const { config } = getClientConfig();
+        setConfig(config);
+
         (async () => {
             setApiWorking(await pingBackend());
         })();
     }, []);
+
+    useEffect(() => {
+        if (config) {
+            setKeys(new Set<'mainnet' | 'testnet' | 'devnet'>([config.environment]));
+        }
+    }, [config]);
 
     return (
         <Select
@@ -27,10 +39,10 @@ export const NetworkSelector = () => {
                 label: 'group-data-[filled=true]:-translate-y-5',
                 selectorIcon: '!text-white mt-0.5 mr-0.5',
                 innerWrapper: 'gap-0.5',
-                value: clsx('font-medium text-[15px] !text-white pl-1.5', {
-                    'min-w-[86px]': keys.has('mainnet'),
-                    'min-w-[80px]': keys.has('testnet'),
-                    'min-w-[78px]': keys.has('devnet'),
+                value: clsx('font-medium text-[15px] !text-white pl-1.5 min-w-[78px]', {
+                    'min-w-[86px]': keys?.has('mainnet'),
+                    'min-w-[80px]': keys?.has('testnet'),
+                    // 'min-w-[78px]': keys?.has('devnet'),
                 }),
             }}
             items={networks.map((network) => ({ key: network }))}

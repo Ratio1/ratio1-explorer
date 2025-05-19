@@ -1,8 +1,5 @@
-import config, { domains, getCurrentEpoch, getLicenseFirstCheckEpoch } from '@/config';
-import * as types from '@/typedefs/blockchain';
 import { Metadata } from 'next';
 import { cache, JSX } from 'react';
-import { getNodeEpochsRange, getNodeLastEpoch } from './api/oracles';
 
 export const ETH_EMPTY_ADDR = '0x0000000000000000000000000000000000000000';
 
@@ -18,9 +15,7 @@ export const getShortAddress = (address: string, size = 4, asString = false): st
     return <div className="roboto">{str}</div>;
 };
 
-export const getHostUrl = (): string => `https://${domains[config.environment]}`;
-
-export const buildMetadata = (title: string, description: string): Metadata => ({
+export const buildMetadata = (title: string, description: string, url: string): Metadata => ({
     title: {
         template: `%s | ${title}`,
         default: `${title}`,
@@ -38,11 +33,11 @@ export const buildMetadata = (title: string, description: string): Metadata => (
     openGraph: {
         title,
         description,
-        url: getHostUrl(),
+        url,
         siteName: title,
         images: [
             {
-                url: `https://${domains[config.environment]}/card.jpg`,
+                url: `${url}/card.jpg`,
                 width: 852,
                 height: 500,
             },
@@ -68,9 +63,9 @@ export const buildMetadata = (title: string, description: string): Metadata => (
         title,
         description,
         creator: '@nextjs',
-        images: [`https://${domains[config.environment]}/card.jpg`],
+        images: [`${url}/card.jpg`],
     },
-    metadataBase: new URL(getHostUrl()),
+    metadataBase: new URL(url),
 });
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -107,18 +102,6 @@ export function fBI(num: bigint, decimals: number): string {
     }
     return num.toString();
 }
-
-export const getNodeAvailability = async (
-    nodeEthAddr: types.EthAddress,
-    assignTimestamp: bigint,
-): Promise<types.OraclesAvailabilityResult & types.OraclesDefaultResult> => {
-    const currentEpoch: number = getCurrentEpoch();
-    const firstCheckEpoch: number = getLicenseFirstCheckEpoch(assignTimestamp);
-
-    return firstCheckEpoch === currentEpoch
-        ? await getNodeLastEpoch(nodeEthAddr)
-        : await getNodeEpochsRange(nodeEthAddr, firstCheckEpoch, currentEpoch - 1);
-};
 
 export const isNonZeroInteger = (value: string): boolean => {
     if (!/^\d+$/.test(value)) return false;

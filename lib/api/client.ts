@@ -1,6 +1,6 @@
 'use server';
 
-import { getServerConfig } from '@/config/getServerConfig';
+import { getServerConfig } from '@/config/serverConfig';
 import { createPublicClient, http, PublicClient } from 'viem';
 import { base, baseSepolia } from 'viem/chains';
 

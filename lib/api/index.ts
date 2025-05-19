@@ -1,6 +1,6 @@
 'use server';
 
-import { getServerConfig } from '@/config/getServerConfig';
+import { getServerConfig } from '@/config/serverConfig';
 import * as types from '@/typedefs/blockchain';
 
 const PAGE_SIZE = 10;
@@ -23,8 +23,6 @@ export async function getActiveNodes(page: number = 1): Promise<types.OraclesDef
 export async function pingBackend(): Promise<boolean> {
     const { config } = await getServerConfig();
     const backendApiURL = config.backendUrl;
-
-    console.log(`Pinging backend at ${backendApiURL}/auth/nodeData`);
 
     let response: Response | undefined;
 

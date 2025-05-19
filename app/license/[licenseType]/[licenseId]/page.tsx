@@ -1,8 +1,9 @@
 import LicensePageNodeCardWrapper from '@/app/server-components/LicensePage/LicensePageNodeCardWrapper';
 import LicensePageNodePerformanceCardWrapper from '@/app/server-components/LicensePage/LicensePageNodePerformanceCardWrapper';
 import LicenseCard from '@/app/server-components/main-cards/LicenseCard';
+import { getNodeAvailability } from '@/lib/actions';
 import { getLicense } from '@/lib/api/blockchain';
-import { getNodeAvailability, isEmptyETHAddr } from '@/lib/utils';
+import { isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import { notFound } from 'next/navigation';

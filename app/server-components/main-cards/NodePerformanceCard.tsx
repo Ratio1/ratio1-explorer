@@ -1,5 +1,6 @@
 import EpochsChart from '@/components/Nodes/EpochsChart';
 import { getCurrentEpoch } from '@/config';
+import { getServerConfig } from '@/config/serverConfig';
 import { arrayAverage } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Tooltip } from '@heroui/tooltip';
@@ -12,6 +13,8 @@ export default async function NodePerformanceCard({
 }: {
     nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
 }) {
+    const { config } = await getServerConfig();
+
     return (
         <CardBordered>
             <div className="card-title font-bold">Node Performance</div>
@@ -64,7 +67,7 @@ export default async function NodePerformanceCard({
                                                             {parseFloat(((val * 100) / 255).toFixed(2))}%
                                                         </div>
                                                         <div className="text-slate-500">
-                                                            Epoch {getCurrentEpoch() - 10 + index}
+                                                            Epoch {getCurrentEpoch(config) - 10 + index}
                                                         </div>
                                                     </div>
                                                 }
@@ -86,7 +89,7 @@ export default async function NodePerformanceCard({
                                     <EpochsChart
                                         data={nodeResponse.epochs_vals.slice(-10).map((value, index, array) => ({
                                             Availability: (100 * value) / 255,
-                                            Epoch: getCurrentEpoch() - array.length + index + 1,
+                                            Epoch: getCurrentEpoch(config) - array.length + index + 1,
                                         }))}
                                     />
                                 </div>
@@ -110,7 +113,9 @@ export default async function NodePerformanceCard({
                                                     <div className="font-semibold">
                                                         {parseFloat(((val * 100) / 255).toFixed(2))}%
                                                     </div>
-                                                    <div className="text-slate-500">Epoch {getCurrentEpoch() - 10 + index}</div>
+                                                    <div className="text-slate-500">
+                                                        Epoch {getCurrentEpoch(config) - 10 + index}
+                                                    </div>
                                                 </div>
                                             }
                                             closeDelay={0}

@@ -1,10 +1,12 @@
-import config from '@/config';
+import { getServerConfig } from '@/config/serverConfig';
 import { fetchR1Price } from '@/lib/api/blockchain';
 import Image from 'next/image';
 import { CardWithIcon } from './cards/CardWithIcon';
 import { RowWithIcon } from './cards/RowWithIcon';
 
 export default async function PriceCard() {
+    const { config } = await getServerConfig();
+
     // TODO: Remove after the liquidity manager is deployed
     if (config.environment === 'mainnet') {
         return null;

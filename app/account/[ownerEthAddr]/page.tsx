@@ -3,7 +3,7 @@ import { CardBordered } from '@/app/server-components/shared/cards/CardBordered'
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import UsageStats from '@/app/server-components/shared/Licenses/UsageStats';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
-import config from '@/config';
+import { getServerConfig } from '@/config/serverConfig';
 import { fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
 import { cachedGetENSName, fBI, getShortAddress, isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
@@ -34,6 +34,7 @@ export async function generateMetadata({ params }) {
 
 export default async function OwnerPage({ params }) {
     const { ownerEthAddr } = await params;
+    const { config } = await getServerConfig();
 
     if (!ownerEthAddr || !isAddress(ownerEthAddr) || isEmptyETHAddr(ownerEthAddr)) {
         notFound();

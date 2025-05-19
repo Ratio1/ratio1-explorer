@@ -1,3 +1,4 @@
+import { getServerURL } from '@/config/serverConfig';
 import '@/lib/api/blockchain';
 import { buildMetadata } from '@/lib/utils';
 import { monaSans, robotoMono } from '@/styles/fonts';
@@ -16,9 +17,12 @@ export const viewport: Viewport = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
+    const url = await getServerURL();
+
     return buildMetadata(
         'Ratio1 Explorer',
         'Experience the power of Ratio1 AI OS, built on Ratio1 Protocol and powered by blockchain, democratizing AI to empower limitless innovation.',
+        url,
     );
 }
 
@@ -52,7 +56,7 @@ export default async function RootLayout({
 
             <body className={`${monaSans.variable} ${robotoMono.variable} relative min-h-screen antialiased`}>
                 <HeroUIProvider>
-                    <div className="col layout layoutBreak:mb-0 mb-[63px] min-h-screen gap-4 py-6 md:gap-6">
+                    <div className="col layout mb-[63px] min-h-screen gap-4 py-6 md:gap-6 layoutBreak:mb-0">
                         <div className="lg:pb-4">
                             <Suspense>
                                 <Header />
@@ -70,7 +74,7 @@ export default async function RootLayout({
                         </Suspense>
 
                         <Suspense>
-                            <div className="layoutBreak:hidden block">
+                            <div className="block layoutBreak:hidden">
                                 <LazyMobileTabs />
                             </div>
                         </Suspense>

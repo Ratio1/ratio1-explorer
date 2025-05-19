@@ -1,4 +1,5 @@
 import { getNextEpochTimestamp } from '@/config';
+import { getServerConfig } from '@/config/serverConfig';
 import { getSSURL } from '@/lib/actions';
 import { differenceInSeconds } from 'date-fns';
 import { cache } from 'react';
@@ -6,9 +7,10 @@ import { formatUnits } from 'viem';
 
 const fetchCachedR1MintedLastEpoch = cache(async () => {
     const url = await getSSURL('r1-minted-last-epoch');
+    const { config } = await getServerConfig();
 
     const res = await fetch(url, {
-        next: { revalidate: differenceInSeconds(getNextEpochTimestamp(), new Date()) + 1 },
+        next: { revalidate: differenceInSeconds(getNextEpochTimestamp(config), new Date()) + 1 },
     });
 
     const data: {

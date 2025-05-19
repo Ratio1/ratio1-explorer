@@ -104,5 +104,5 @@ export const getEnvironment = (hostname: string | null): 'mainnet' | 'testnet' |
         ? ('mainnet' as const)
         : hostname === domains.testnet
           ? ('testnet' as const)
-          : ('testnet' as const); // TODO:
+          : ('devnet' as const);
 };

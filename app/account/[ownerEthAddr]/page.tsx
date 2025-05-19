@@ -48,8 +48,6 @@ export default async function OwnerPage({ params }) {
             cachedGetENSName(ownerEthAddr),
             fetchErc20Balance(ownerEthAddr, config.r1ContractAddress),
         ]);
-
-        console.log('[OwnerPage]', licenses);
     } catch (error) {
         console.error(error);
         notFound();

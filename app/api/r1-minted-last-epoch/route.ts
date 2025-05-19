@@ -15,12 +15,14 @@ async function fetchR1MintedLastEpoch() {
     const lastEpochStartTimestamp = getEpochStartTimestamp(config, currentEpoch - 1);
     const lastEpochEndTimestamp = getEpochStartTimestamp(config, currentEpoch);
 
-    console.log(
-        `Fetching R1 minted in last epoch: ${lastEpochStartTimestamp.toISOString()} - ${lastEpochEndTimestamp.toISOString()}`,
-    );
-
     const fromBlock = await getBlockByTimestamp(lastEpochStartTimestamp.getTime() / 1000);
     const toBlock = await getBlockByTimestamp(lastEpochEndTimestamp.getTime() / 1000);
+
+    console.log(
+        `Fetching R1 minted in last epoch: ${lastEpochStartTimestamp.toISOString()} - ${lastEpochEndTimestamp.toISOString()}, Block`,
+        fromBlock,
+        toBlock,
+    );
 
     const publicClient = await getPublicClient();
 

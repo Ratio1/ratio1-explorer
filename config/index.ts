@@ -10,7 +10,6 @@ export type Config = {
     mndContractAddress: EthAddress;
     r1ContractAddress: EthAddress;
     readerContractAddress: EthAddress;
-    explorerUrl: string;
     genesisDate: Date;
     contractsGenesisBlock: bigint;
     epochDurationInSeconds: number;
@@ -53,7 +52,6 @@ export const configs: {
         ndContractAddress: '0xE20198EE2B76eED916A568a47cdea9681f7c79BF',
         mndContractAddress: '0xfD52a7958088dF734D523d618e583e4d53cD7420',
         readerContractAddress: '0xd9a9B7fd2De5fFAF50695d2f489a56771CA28123',
-        explorerUrl: 'https://basescan.org', // TODO Check if used
         genesisDate: new Date('2025-02-05T16:00:00.000Z'),
         contractsGenesisBlock: 26045030n,
         epochDurationInSeconds: 86400,
@@ -72,7 +70,6 @@ export const configs: {
         ndContractAddress: '0xE20198EE2B76eED916A568a47cdea9681f7c79BF',
         mndContractAddress: '0xfD52a7958088dF734D523d618e583e4d53cD7420',
         readerContractAddress: '0xDcD3a13208aA23b00a568d00268e0aE4d94216bf',
-        explorerUrl: 'https://sepolia.basescan.org',
         genesisDate: new Date('2025-02-05T16:00:00.000Z'),
         contractsGenesisBlock: 21552072n,
         epochDurationInSeconds: 86400,
@@ -91,7 +88,6 @@ export const configs: {
         ndContractAddress: '0x9f49fc29366F1C8285d42e7E82cA0bb668B32CeA',
         mndContractAddress: '0x909d33Ab74d5A85F1fc963ae63af7B97eAe76f40',
         readerContractAddress: '0xd8f48C730d85E65aE0fBF8B6a8Cc0cdA5D900103',
-        explorerUrl: 'https://sepolia.basescan.org',
         genesisDate: new Date('2025-02-12T16:00:00.000Z'),
         contractsGenesisBlock: 21805660n,
         epochDurationInSeconds: 3600,
@@ -108,5 +104,5 @@ export const getEnvironment = (hostname: string | null): 'mainnet' | 'testnet' |
         ? ('mainnet' as const)
         : hostname === domains.testnet
           ? ('testnet' as const)
-          : ('devnet' as const);
+          : ('testnet' as const); // TODO:
 };

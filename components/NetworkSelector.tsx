@@ -50,7 +50,7 @@ export const NetworkSelector = () => {
             onSelectionChange={(value: SharedSelection) => {
                 const network = value.anchorKey as 'mainnet' | 'testnet' | 'devnet';
 
-                if (network) {
+                if (network && window) {
                     window.location.href = `https://${domains[network]}`;
                     setKeys(new Set([network]));
                 }

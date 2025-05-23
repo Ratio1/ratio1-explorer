@@ -1,7 +1,4 @@
 import HeroEpochCard from '@/components/Hero/HeroEpochCard';
-import { Skeleton } from '@heroui/skeleton';
-import { Suspense } from 'react';
-import R1MintedLastEpoch from '../R1MintedLastEpoch';
 import { CardBordered } from '../shared/cards/CardBordered';
 import { CardHorizontal } from '../shared/cards/CardHorizontal';
 import R1TotalSupply from '../shared/R1TotalSupply';
@@ -26,7 +23,7 @@ export default async function Hero({ nodesTotalItems }) {
                         widthClasses="min-[420px]:min-w-[346px]"
                     />
 
-                    <Suspense fallback={<Skeleton className="min-h-[76px] w-full rounded-xl md:max-w-[380px]" />}>
+                    {/* <Suspense fallback={<Skeleton className="min-h-[76px] w-full rounded-xl md:max-w-[380px]" />}>
                         <CardHorizontal
                             label={
                                 <div>
@@ -37,7 +34,7 @@ export default async function Hero({ nodesTotalItems }) {
                             isFlexible
                             widthClasses="min-w-[254px]"
                         />
-                    </Suspense>
+                    </Suspense> */}
 
                     <HeroEpochCard />
                 </div>

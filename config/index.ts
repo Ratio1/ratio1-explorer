@@ -5,7 +5,6 @@ export type Config = {
     environment: 'mainnet' | 'testnet' | 'devnet';
     backendUrl: string;
     oraclesUrl: string;
-    liquidityManagerContractAddress: EthAddress;
     ndContractAddress: EthAddress;
     mndContractAddress: EthAddress;
     r1ContractAddress: EthAddress;
@@ -47,16 +46,15 @@ export const configs: {
         environment: 'mainnet',
         backendUrl: 'https://dapp-api.ratio1.ai',
         oraclesUrl: 'https://oracle.ratio1.ai',
-        liquidityManagerContractAddress: '0x5F4553e231649adD7dfF5e3063357Fd73927e465',
-        r1ContractAddress: '0xc992dcab6d3f8783fbf0c935e7bceb20aa50a6f1',
-        ndContractAddress: '0xE20198EE2B76eED916A568a47cdea9681f7c79BF',
-        mndContractAddress: '0xfD52a7958088dF734D523d618e583e4d53cD7420',
-        readerContractAddress: '0xd9a9B7fd2De5fFAF50695d2f489a56771CA28123',
-        genesisDate: new Date('2025-02-05T16:00:00.000Z'),
-        contractsGenesisBlock: 26045030n,
+        r1ContractAddress: '0x6444C6c2D527D85EA97032da9A7504d6d1448ecF',
+        ndContractAddress: '0xE658DF6dA3FB5d4FBa562F1D5934bd0F9c6bd423',
+        mndContractAddress: '0x0C431e546371C87354714Fcc1a13365391A549E2',
+        readerContractAddress: '0x0fC093d5f4B7a3fb752884397F4878f097E5Be1E',
+        genesisDate: new Date('2025-05-23T16:00:00.000Z'),
+        contractsGenesisBlock: 26045030n, // Obsolete, used by fetchR1MintedLastEpoch
         epochDurationInSeconds: 86400,
         ndLicenseCap: 1575188843457943924200n,
-        mndCliffEpochs: 120,
+        mndCliffEpochs: 223,
         gndVestingEpochs: 365,
         mndVestingEpochs: 900,
         ndVestingEpochs: 1080,
@@ -65,16 +63,15 @@ export const configs: {
         environment: 'testnet',
         backendUrl: 'https://testnet-dapp-api.ratio1.ai',
         oraclesUrl: 'https://testnet-oracle.ratio1.ai',
-        liquidityManagerContractAddress: '0x5F4553e231649adD7dfF5e3063357Fd73927e465',
-        r1ContractAddress: '0xc992dcab6d3f8783fbf0c935e7bceb20aa50a6f1',
-        ndContractAddress: '0xE20198EE2B76eED916A568a47cdea9681f7c79BF',
-        mndContractAddress: '0xfD52a7958088dF734D523d618e583e4d53cD7420',
-        readerContractAddress: '0xDcD3a13208aA23b00a568d00268e0aE4d94216bf',
-        genesisDate: new Date('2025-02-05T16:00:00.000Z'),
-        contractsGenesisBlock: 21552072n,
+        r1ContractAddress: '0xCC96f389F45Fc08b4fa8e2bC4C7DA9920292ec64',
+        ndContractAddress: '0x18E86a5829CA1F02226FA123f30d90dCd7cFd0ED',
+        mndContractAddress: '0xa8d7FFCE91a888872A9f5431B4Dd6c0c135055c1',
+        readerContractAddress: '0xF94b53855Fde16cbF3f9C3e300e2E6A495AE0A0A',
+        genesisDate: new Date('2025-05-23T16:00:00.000Z'),
+        contractsGenesisBlock: 21552072n, // Obsolete, used by fetchR1MintedLastEpoch
         epochDurationInSeconds: 86400,
         ndLicenseCap: 1575188843457943924200n,
-        mndCliffEpochs: 120,
+        mndCliffEpochs: 223,
         gndVestingEpochs: 365,
         mndVestingEpochs: 900,
         ndVestingEpochs: 1080,
@@ -83,16 +80,15 @@ export const configs: {
         environment: 'devnet',
         backendUrl: 'https://devnet-dapp-api.ratio1.ai',
         oraclesUrl: 'https://devnet-oracle.ratio1.ai',
-        liquidityManagerContractAddress: '0xE5C61ADEeE7850a8656A10f3963036e5c045B508',
-        r1ContractAddress: '0xEF38a3d84D3E3111fb7b794Ba3240187b8B32825',
-        ndContractAddress: '0x9f49fc29366F1C8285d42e7E82cA0bb668B32CeA',
-        mndContractAddress: '0x909d33Ab74d5A85F1fc963ae63af7B97eAe76f40',
-        readerContractAddress: '0xd8f48C730d85E65aE0fBF8B6a8Cc0cdA5D900103',
-        genesisDate: new Date('2025-02-12T16:00:00.000Z'),
-        contractsGenesisBlock: 21805660n,
+        r1ContractAddress: '0x07C5678F0f4aC347496eAA8D6031b37FF3402CE5',
+        ndContractAddress: '0x8D0CE4933728FF7C04388f0bEcC9a45676E232F7',
+        mndContractAddress: '0x7A14Be75135a7ebdef99339CCc700C25Cda60c6E',
+        readerContractAddress: '0x746aaB0a8bcFB92094Acc371D7D6A2F69DaA23E3',
+        genesisDate: new Date('2025-05-23T16:00:00.000Z'),
+        contractsGenesisBlock: 21805660n, // Obsolete, used by fetchR1MintedLastEpoch
         epochDurationInSeconds: 3600,
         ndLicenseCap: 1575188843457943924200n,
-        mndCliffEpochs: 120,
+        mndCliffEpochs: 223,
         gndVestingEpochs: 365,
         mndVestingEpochs: 900,
         ndVestingEpochs: 1080,
@@ -104,5 +100,5 @@ export const getEnvironment = (hostname: string | null): 'mainnet' | 'testnet' |
         ? ('mainnet' as const)
         : hostname === domains.testnet
           ? ('testnet' as const)
-          : ('devnet' as const);
+          : ('mainnet' as const); // TODO:
 };

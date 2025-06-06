@@ -41,11 +41,11 @@ body {
 
 /* Classes */
 .card-title {
-    @apply text-lg lg:text-2xl;
+    @apply text-lg lg:text-[22px];
 }
 
 .card-title-big {
-    @apply text-xl lg:text-[26px];
+    @apply text-xl lg:text-2xl;
 }
 
 .list-wrapper {

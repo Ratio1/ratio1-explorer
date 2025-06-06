@@ -1,7 +1,7 @@
 'use server';
 
 import { ERC20Abi } from '@/blockchain/ERC20';
-import { LiquidityManagerAbi } from '@/blockchain/LiquidityManager';
+import { NDContractAbi } from '@/blockchain/NDContract';
 import { ReaderAbi } from '@/blockchain/Reader';
 import { getCurrentEpoch } from '@/config';
 import { getServerConfig } from '@/config/serverConfig';
@@ -136,13 +136,11 @@ export const fetchR1Price = async () => {
     const publicClient = await getPublicClient();
     const { config } = await getServerConfig();
 
-    if (config.liquidityManagerContractAddress.length === 42) {
-        return await publicClient.readContract({
-            address: config.liquidityManagerContractAddress,
-            abi: LiquidityManagerAbi,
-            functionName: 'getTokenPrice',
-        });
-    }
+    return await publicClient.readContract({
+        address: config.ndContractAddress,
+        abi: NDContractAbi,
+        functionName: 'getTokenPrice',
+    });
 };
 
 export const fetchR1TotalSupply = async () => {

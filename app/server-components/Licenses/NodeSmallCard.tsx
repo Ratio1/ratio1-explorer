@@ -12,7 +12,10 @@ export default async function NodeSmallCard({ nodeEthAddr }: { nodeEthAddr: type
     try {
         nodeResponse = await getNodeLastEpoch(nodeEthAddr);
     } catch (error: any) {
-        console.error({ nodeEthAddr }, error);
+        if (!error?.message?.includes('No internal node address')) {
+            console.error(nodeEthAddr, error);
+        }
+
         return null;
     }
 

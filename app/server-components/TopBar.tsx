@@ -1,5 +1,5 @@
 import { CardWithIcon } from '@/app/server-components/shared/cards/CardWithIcon';
-import { Search } from '@/components/Search';
+import Search from '@/components/Search';
 import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
 import { lazy } from 'react';

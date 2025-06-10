@@ -22,8 +22,6 @@ interface Props {
 }
 
 export default async function LicenseCard({ license, licenseType, licenseId, owner, getNodeAvailability, hasLink }: Props) {
-    console.log(license);
-
     const getTitle = () => (
         <div
             className={clsx('font-bold', {

@@ -26,7 +26,7 @@ export default async function License({ licenseType, licenseId }: Props) {
     let isBanned: boolean;
 
     try {
-        ({ nodeAddress, totalAssignedAmount, totalClaimedAmount, assignTimestamp, isBanned, owner } = await getLicense(
+        ({ owner, nodeAddress, totalAssignedAmount, totalClaimedAmount, assignTimestamp, isBanned } = await getLicense(
             licenseType,
             licenseId,
         ));
@@ -36,6 +36,8 @@ export default async function License({ licenseType, licenseId }: Props) {
         }
         return null;
     }
+
+    console.log({ owner, nodeAddress, totalAssignedAmount, totalClaimedAmount, assignTimestamp, isBanned });
 
     return (
         <CardBordered useCustomWrapper hasFixedWidth>

@@ -49,7 +49,7 @@ export const configs: {
         r1ContractAddress: '0x6444C6c2D527D85EA97032da9A7504d6d1448ecF',
         ndContractAddress: '0xE658DF6dA3FB5d4FBa562F1D5934bd0F9c6bd423',
         mndContractAddress: '0x0C431e546371C87354714Fcc1a13365391A549E2',
-        readerContractAddress: '0x0fC093d5f4B7a3fb752884397F4878f097E5Be1E',
+        readerContractAddress: '0xa2fDD4c7E93790Ff68a01f01AA789D619F12c6AC',
         genesisDate: new Date('2025-05-23T16:00:00.000Z'),
         contractsGenesisBlock: 26045030n, // Obsolete, used by fetchR1MintedLastEpoch
         epochDurationInSeconds: 86400,
@@ -66,7 +66,7 @@ export const configs: {
         r1ContractAddress: '0xCC96f389F45Fc08b4fa8e2bC4C7DA9920292ec64',
         ndContractAddress: '0x18E86a5829CA1F02226FA123f30d90dCd7cFd0ED',
         mndContractAddress: '0xa8d7FFCE91a888872A9f5431B4Dd6c0c135055c1',
-        readerContractAddress: '0xF94b53855Fde16cbF3f9C3e300e2E6A495AE0A0A',
+        readerContractAddress: '0xd1c7Dca934B37FAA402EB2EC64F6644d6957bE3b',
         genesisDate: new Date('2025-05-23T16:00:00.000Z'),
         contractsGenesisBlock: 21552072n, // Obsolete, used by fetchR1MintedLastEpoch
         epochDurationInSeconds: 86400,
@@ -83,7 +83,7 @@ export const configs: {
         r1ContractAddress: '0x07C5678F0f4aC347496eAA8D6031b37FF3402CE5',
         ndContractAddress: '0x8D0CE4933728FF7C04388f0bEcC9a45676E232F7',
         mndContractAddress: '0x7A14Be75135a7ebdef99339CCc700C25Cda60c6E',
-        readerContractAddress: '0x746aaB0a8bcFB92094Acc371D7D6A2F69DaA23E3',
+        readerContractAddress: '0x2c62a818967D3396b535De3d1EC47aF1f2B1282D',
         genesisDate: new Date('2025-05-23T16:00:00.000Z'),
         contractsGenesisBlock: 21805660n, // Obsolete, used by fetchR1MintedLastEpoch
         epochDurationInSeconds: 3600,

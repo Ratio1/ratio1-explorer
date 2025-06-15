@@ -39,6 +39,7 @@ export default async function LicensesPage(props: {
         ];
     } catch (error) {
         console.error(error);
+        console.log('[Licenses Page] Failed to fetch license data');
         notFound();
     }
 

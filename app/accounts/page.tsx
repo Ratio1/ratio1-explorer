@@ -89,10 +89,9 @@ export default async function AccountsPage(props: {
                 licenses,
             }))
             .sort((a, b) => b.licenses.length - a.licenses.length);
-
-        // console.log(sortedHolders);
     } catch (error) {
         console.error(error);
+        console.log('[Accounts Page] Failed to fetch account data');
         notFound();
     }
 

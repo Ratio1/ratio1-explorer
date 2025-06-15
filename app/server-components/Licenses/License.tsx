@@ -37,8 +37,6 @@ export default async function License({ licenseType, licenseId }: Props) {
         return null;
     }
 
-    console.log({ owner, nodeAddress, totalAssignedAmount, totalClaimedAmount, assignTimestamp, isBanned });
-
     return (
         <CardBordered useCustomWrapper hasFixedWidth>
             <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6">

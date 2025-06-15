@@ -59,12 +59,14 @@ export default async function LicensePage({ params }) {
     const { licenseType, licenseId } = await params;
 
     if (!licenseType || !['ND', 'MND', 'GND'].includes(licenseType)) {
+        console.log(`[License Page] Invalid license type: ${licenseType}`);
         notFound();
     }
 
     const licenseIdNum = parseInt(licenseId);
 
     if (isNaN(licenseIdNum) || licenseIdNum < 0 || licenseIdNum > 10000) {
+        console.log(`[License Page] Invalid license ID: ${licenseId}`);
         notFound();
     }
 
@@ -74,6 +76,7 @@ export default async function LicensePage({ params }) {
         license = await cachedGetLicense(licenseType, licenseId);
     } catch (error) {
         console.error(error);
+        console.log(`[License Page] Failed to fetch license: ${licenseType}-${licenseId}`);
         notFound();
     }
 

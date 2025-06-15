@@ -37,6 +37,7 @@ export default async function OwnerPage({ params }) {
     const { config } = await getServerConfig();
 
     if (!ownerEthAddr || !isAddress(ownerEthAddr) || isEmptyETHAddr(ownerEthAddr)) {
+        console.log(`[Account Page] Invalid owner address: ${ownerEthAddr}`);
         notFound();
     }
 
@@ -50,6 +51,7 @@ export default async function OwnerPage({ params }) {
         ]);
     } catch (error) {
         console.error(error);
+        console.log(`[Account Page] Failed to fetch account data for address: ${ownerEthAddr}`);
         notFound();
     }
 

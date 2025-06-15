@@ -15,6 +15,7 @@ export async function generateMetadata({ params }) {
     const { nodeEthAddr } = await params;
 
     if (!nodeEthAddr || !isAddress(nodeEthAddr) || isEmptyETHAddr(nodeEthAddr)) {
+        console.log(`[Node Page] Invalid node address: ${nodeEthAddr}`);
         notFound();
     }
 
@@ -24,6 +25,7 @@ export async function generateMetadata({ params }) {
         ({ nodeResponse } = await getCachedLicenseDetailsAndNodeAvailability(nodeEthAddr));
 
         if (!nodeResponse) {
+            console.log(`[Node Page] No node response found for address: ${nodeEthAddr}`);
             notFound();
         }
     } catch (error) {
@@ -98,6 +100,7 @@ export default async function NodePage({ params }) {
     const { nodeEthAddr } = await params;
 
     if (!nodeEthAddr || !isAddress(nodeEthAddr) || isEmptyETHAddr(nodeEthAddr)) {
+        console.log(`[Node Page] Invalid node address in page component: ${nodeEthAddr}`);
         notFound();
     }
 
@@ -124,6 +127,7 @@ export default async function NodePage({ params }) {
                 </div>
             );
         } else {
+            console.log(`[Node Page] Error fetching node details for address: ${nodeEthAddr}`, error.message);
             notFound();
         }
     }

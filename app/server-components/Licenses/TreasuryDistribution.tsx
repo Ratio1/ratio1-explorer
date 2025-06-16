@@ -76,7 +76,7 @@ export default async function TreasuryDistribution({ license }: Props) {
             <div className="card-title font-bold">Treasury Distribution</div>
 
             <div className="list">
-                <ListHeader>
+                <ListHeader useFixedWidthSmall>
                     <div className="min-w-[70px]">Wallet</div>
                     <div className="min-w-[112px]">% of GND</div>
                     <div className="min-w-[210px]">Mined/To be mined</div>

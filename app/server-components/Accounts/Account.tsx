@@ -4,8 +4,8 @@ import * as types from '@/typedefs/blockchain';
 import { LicenseItem } from '@/typedefs/general';
 import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
-import { CardBordered } from '../shared/cards/CardBordered';
-import { Item } from '../shared/Item';
+import { CardItem } from '../shared/CardItem';
+import { BorderedCard } from '../shared/cards/BorderedCard';
 import { SmallTag } from '../shared/SmallTag';
 import AccountLincenseStats from './AccountLincenseStats';
 
@@ -16,10 +16,10 @@ interface Props {
 
 export default async function Account({ ethAddress, licenses }: Props) {
     return (
-        <CardBordered useCustomWrapper hasFixedWidth>
+        <BorderedCard useCustomWrapper hasFixedWidth>
             <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6 lg:py-4">
                 <div className="min-w-[180px]">
-                    <Item
+                    <CardItem
                         label={
                             licenses.findIndex((license) => license.licenseType === 'GND') !== -1 ? (
                                 <SmallTag>Foundation Wallet</SmallTag>
@@ -32,7 +32,7 @@ export default async function Account({ ethAddress, licenses }: Props) {
                 </div>
 
                 <div className="flex min-w-[188px]">
-                    <Item
+                    <CardItem
                         label="Licenses Owned (ND / MND)"
                         value={
                             <div>
@@ -54,6 +54,6 @@ export default async function Account({ ethAddress, licenses }: Props) {
                     <AccountLincenseStats ethAddress={ethAddress} />
                 </Suspense>
             </div>
-        </CardBordered>
+        </BorderedCard>
     );
 }

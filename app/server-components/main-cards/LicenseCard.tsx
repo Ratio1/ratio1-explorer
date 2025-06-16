@@ -1,5 +1,5 @@
 import LicenseRewards from '@/app/server-components/Licenses/LicenseRewards';
-import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
+import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getServerEnvironment } from '@/config/serverConfig';
@@ -30,7 +30,7 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
     const getTitle = () => <CardTitle hasLink={hasLink}>License #{licenseId}</CardTitle>;
 
     return (
-        <CardBordered>
+        <BorderedCard>
             <div className="row gap-3">
                 {!hasLink ? (
                     getTitle()
@@ -120,6 +120,6 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
             {environment === 'mainnet' && licenseId === '1' && licenseType === 'GND' && (
                 <TreasuryDistribution license={license} />
             )}
-        </CardBordered>
+        </BorderedCard>
     );
 }

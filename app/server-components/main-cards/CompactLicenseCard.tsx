@@ -1,4 +1,4 @@
-import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
+import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { routePath } from '@/lib/routes';
@@ -18,7 +18,7 @@ interface Props {
 
 export default async function CompactLicenseCard({ license, licenseType, licenseId, nodeEthAddress }: Props) {
     return (
-        <CardBordered>
+        <BorderedCard>
             <Link href={`${routePath.license}/${licenseType}/${licenseId}`} className="hover:text-primary">
                 <div className="row gap-2.5">
                     <div className="card-title font-bold">License #{licenseId}</div>
@@ -79,6 +79,6 @@ export default async function CompactLicenseCard({ license, licenseType, license
                     />
                 )}
             </div>
-        </CardBordered>
+        </BorderedCard>
     );
 }

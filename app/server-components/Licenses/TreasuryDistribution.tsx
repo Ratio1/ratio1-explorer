@@ -3,6 +3,9 @@ import { getServerConfig } from '@/config/serverConfig';
 import { fetchErc20Balance } from '@/lib/api/blockchain';
 import { fBI, fN } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
+import { CardItem } from '../shared/CardItem';
+import { BorderedCard } from '../shared/cards/BorderedCard';
+import ListHeader from '../shared/ListHeader';
 
 interface Props {
     license: types.License;
@@ -72,26 +75,108 @@ export default async function TreasuryDistribution({ license }: Props) {
         <>
             <div className="card-title font-bold">Treasury Distribution</div>
 
-            <div className="col gap-2">
-                {balances.map((wallet) => (
-                    <div className="row gap-4 text-sm font-medium" key={wallet.address}>
-                        <div className="text-slate-500">{wallet.name}</div>
-                        <div className="font-medium text-primary">{wallet.percentage}%</div>
+            <div className="col gap-3">
+                <ListHeader>
+                    <div className="min-w-[100px]">Wallet</div>
+                    <div className="min-w-[100px]">Allocation (%)</div>
+                    <div className="min-w-[220px]">Usage</div>
+                    <div className="min-w-[120px]">$R1 Balance</div>
+                    <div className="min-w-[120px]">Transferred Out</div>
+                </ListHeader>
 
-                        <div className="row gap-2">
-                            <div className="">
-                                {fBI((license.totalClaimedAmount * BigInt(Math.round(wallet.percentage * 100))) / 10000n, 18)}/
-                                {fBI((license.totalAssignedAmount * BigInt(Math.round(wallet.percentage * 100))) / 10000n, 18)}
+                <div className="col gap-1.5">
+                    {balances
+                        .sort((a, b) => b.percentage - a.percentage)
+                        .map((wallet) => (
+                            <div key={wallet.address}>
+                                <BorderedCard useCustomWrapper roundedSmall>
+                                    <div className="row justify-between gap-3 py-3 lg:gap-6">
+                                        <div className="min-w-[100px]">
+                                            <CardItem
+                                                label="Wallet"
+                                                value={<div className="text-slate-500">{wallet.name}</div>}
+                                            />
+                                        </div>
+
+                                        <div className="min-w-[100px]">
+                                            <CardItem
+                                                label="Allocation"
+                                                value={<div className="font-medium">{wallet.percentage}%</div>}
+                                            />
+                                        </div>
+
+                                        <div className="min-w-[220px]">
+                                            <CardItem
+                                                label="Usage"
+                                                value={
+                                                    <div>
+                                                        {fBI(
+                                                            (license.totalClaimedAmount *
+                                                                BigInt(Math.round(wallet.percentage * 100))) /
+                                                                10000n,
+                                                            18,
+                                                        )}
+                                                        /
+                                                        {fBI(
+                                                            (license.totalAssignedAmount *
+                                                                BigInt(Math.round(wallet.percentage * 100))) /
+                                                                10000n,
+                                                            18,
+                                                        )}
+                                                    </div>
+                                                }
+                                            />
+                                        </div>
+
+                                        <div className="min-w-[120px]">
+                                            <CardItem
+                                                label="$R1 Balance"
+                                                value={
+                                                    <div className="font-medium text-primary">{fBI(wallet.balance, 18)}</div>
+                                                }
+                                            />
+                                        </div>
+
+                                        <div className="min-w-[120px]">
+                                            <CardItem
+                                                label="Transferred Out"
+                                                value={
+                                                    wallet.transferredOut ? (
+                                                        <div className="text-red-600">{fN(wallet.transferredOut)}</div>
+                                                    ) : (
+                                                        <>—</>
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                </BorderedCard>
+
+                                {/* <div className="text-slate-500">{wallet.name}</div>
+                            <div className="font-medium text-primary">{wallet.percentage}%</div>
+
+                            <div className="row gap-2">
+                                <div>
+                                    {fBI(
+                                        (license.totalClaimedAmount * BigInt(Math.round(wallet.percentage * 100))) / 10000n,
+                                        18,
+                                    )}
+                                    /
+                                    {fBI(
+                                        (license.totalAssignedAmount * BigInt(Math.round(wallet.percentage * 100))) / 10000n,
+                                        18,
+                                    )}
+                                </div>
+
+                                <div className="text-slate-500">(R1 Balance: {fBI(wallet.balance, 18)})</div>
+
+                                {!!wallet.transferredOut && (
+                                    <div className="text-slate-500">(Transferred Out: {fN(wallet.transferredOut)})</div>
+                                )}
+                            </div> */}
                             </div>
-
-                            <div className="text-slate-500">(R1 Balance: {fBI(wallet.balance, 18)})</div>
-
-                            {!!wallet.transferredOut && (
-                                <div className="text-slate-500">(Transferred Out: {fN(wallet.transferredOut)})</div>
-                            )}
-                        </div>
-                    </div>
-                ))}
+                        ))}
+                </div>
             </div>
         </>
     );

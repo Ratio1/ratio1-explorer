@@ -2,7 +2,7 @@ import { getServerConfig } from '@/config/serverConfig';
 import { fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
 import { fBI } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
-import { Item } from '../shared/Item';
+import { CardItem } from '../shared/CardItem';
 
 export default async function AccountLincenseStats({ ethAddress }: { ethAddress: types.EthAddress }) {
     let licenses: types.LicenseInfo[], r1Balance: bigint;
@@ -21,11 +21,11 @@ export default async function AccountLincenseStats({ ethAddress }: { ethAddress:
     return (
         <>
             <div className="flex min-w-[128px]">
-                <Item label="Wallet $R1 Balance" value={<div className="text-primary">{fBI(r1Balance, 18)}</div>} />
+                <CardItem label="Wallet $R1 Balance" value={<div className="text-primary">{fBI(r1Balance, 18)}</div>} />
             </div>
 
             <div className="flex min-w-[118px] justify-start lg:justify-end">
-                <Item
+                <CardItem
                     label="Last Claim Epoch"
                     value={
                         <div>

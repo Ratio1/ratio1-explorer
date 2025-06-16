@@ -4,17 +4,20 @@ import { FunctionComponent, PropsWithChildren } from 'react';
 interface Props {
     useCustomWrapper?: boolean;
     hasFixedWidth?: boolean;
+    roundedSmall?: boolean;
 }
 
-export const CardBordered: FunctionComponent<PropsWithChildren<Props>> = ({
+export const BorderedCard: FunctionComponent<PropsWithChildren<Props>> = ({
     children,
     useCustomWrapper = false,
     hasFixedWidth = false,
+    roundedSmall = false,
 }) => {
     return (
         <div
             className={clsx('flex w-full overflow-hidden rounded-2xl border-2 border-slate-100 bg-slate-100', {
                 'min-w-[1126px]': hasFixedWidth,
+                '!rounded-xl': roundedSmall,
             })}
         >
             <div

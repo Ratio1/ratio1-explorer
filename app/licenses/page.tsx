@@ -2,7 +2,7 @@ import { getLicensesTotalSupply } from '@/lib/api/blockchain';
 import { LicenseItem } from '@/typedefs/general';
 import { notFound } from 'next/navigation';
 import List from '../server-components/Licenses/List';
-import { CardBordered } from '../server-components/shared/cards/CardBordered';
+import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
 
 export async function generateMetadata() {
@@ -46,7 +46,7 @@ export default async function LicensesPage(props: {
     return (
         <>
             <div className="w-full">
-                <CardBordered>
+                <BorderedCard>
                     <div className="card-title-big font-bold">Licenses</div>
 
                     <div className="flexible-row">
@@ -59,7 +59,7 @@ export default async function LicensesPage(props: {
                         <CardHorizontal label="ND" value={Number(ndTotalSupply)} isFlexible widthClasses="min-w-[192px]" />
                         <CardHorizontal label="MND" value={Number(mndTotalSupply)} isFlexible widthClasses="min-w-[192px]" />
                     </div>
-                </CardBordered>
+                </BorderedCard>
             </div>
 
             <List licenses={licenses} currentPage={currentPage} />

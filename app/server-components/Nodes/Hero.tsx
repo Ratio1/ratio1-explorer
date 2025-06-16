@@ -2,14 +2,14 @@ import HeroEpochCard from '@/components/Hero/HeroEpochCard';
 import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
 import R1MintedLastEpoch from '../R1MintedLastEpoch';
-import { CardBordered } from '../shared/cards/CardBordered';
+import { BorderedCard } from '../shared/cards/BorderedCard';
 import { CardHorizontal } from '../shared/cards/CardHorizontal';
 import R1TotalSupply from '../shared/R1TotalSupply';
 
 export default async function Hero({ nodesTotalItems }) {
     return (
         <div className="w-full">
-            <CardBordered>
+            <BorderedCard>
                 <div className="card-title-big font-bold">Nodes</div>
 
                 <div className="flexible-row">
@@ -41,7 +41,7 @@ export default async function Hero({ nodesTotalItems }) {
 
                     <HeroEpochCard />
                 </div>
-            </CardBordered>
+            </BorderedCard>
         </div>
     );
 }

@@ -5,7 +5,7 @@ import { arrayAverage } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Tooltip } from '@heroui/tooltip';
 import clsx from 'clsx';
-import { CardBordered } from '../shared/cards/CardBordered';
+import { BorderedCard } from '../shared/cards/BorderedCard';
 import { CardHorizontal } from '../shared/cards/CardHorizontal';
 
 export default async function NodePerformanceCard({
@@ -16,7 +16,7 @@ export default async function NodePerformanceCard({
     const { config } = await getServerConfig();
 
     return (
-        <CardBordered>
+        <BorderedCard>
             <div className="card-title font-bold">Node Performance</div>
 
             <div className="flexible-row">
@@ -137,6 +137,6 @@ export default async function NodePerformanceCard({
                     />
                 </div>
             </div>
-        </CardBordered>
+        </BorderedCard>
     );
 }

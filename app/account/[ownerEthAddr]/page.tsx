@@ -1,5 +1,5 @@
 import CompactLicenseCard from '@/app/server-components/main-cards/CompactLicenseCard';
-import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
+import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import UsageStats from '@/app/server-components/shared/Licenses/UsageStats';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
@@ -57,7 +57,7 @@ export default async function OwnerPage({ params }) {
 
     return (
         <div className="responsive-col">
-            <CardBordered>
+            <BorderedCard>
                 <div className="card-title-big font-bold">
                     Account •{' '}
                     {ensName ? (
@@ -125,7 +125,7 @@ export default async function OwnerPage({ params }) {
                         />
                     </div>
                 </div>
-            </CardBordered>
+            </BorderedCard>
 
             {licenses.map((license, index) => (
                 <div key={index}>

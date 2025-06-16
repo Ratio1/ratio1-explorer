@@ -6,8 +6,8 @@ import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import clsx from 'clsx';
 import { Suspense } from 'react';
-import { CardBordered } from '../shared/cards/CardBordered';
-import { Item } from '../shared/Item';
+import { CardItem } from '../shared/CardItem';
+import { BorderedCard } from '../shared/cards/BorderedCard';
 import LicenseSmallCard from '../shared/Licenses/LicenseSmallCard';
 import { SmallTag } from '../shared/SmallTag';
 import NodeSmallCard from './NodeSmallCard';
@@ -38,7 +38,7 @@ export default async function License({ licenseType, licenseId }: Props) {
     }
 
     return (
-        <CardBordered useCustomWrapper hasFixedWidth>
+        <BorderedCard useCustomWrapper hasFixedWidth>
             <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6">
                 {/* License */}
                 <LicenseSmallCard
@@ -52,7 +52,7 @@ export default async function License({ licenseType, licenseId }: Props) {
                 />
 
                 <div className="flex min-w-[34px]">
-                    <Item
+                    <CardItem
                         label="License Type"
                         value={
                             <div
@@ -71,7 +71,7 @@ export default async function License({ licenseType, licenseId }: Props) {
                 {/* Owner */}
                 {!isEmptyETHAddr(owner) && (
                     <div className="flex min-w-[112px]">
-                        <Item
+                        <CardItem
                             label="Owner"
                             value={<CopyableAddress value={owner} size={4} link={`${routePath.owner}/${owner}`} />}
                         />
@@ -79,7 +79,7 @@ export default async function License({ licenseType, licenseId }: Props) {
                 )}
 
                 <div className="min-w-[150px]">
-                    <Item
+                    <CardItem
                         label="Assign Timestamp"
                         value={
                             !assignTimestamp ? (
@@ -108,6 +108,6 @@ export default async function License({ licenseType, licenseId }: Props) {
                     )}
                 </div>
             </div>
-        </CardBordered>
+        </BorderedCard>
     );
 }

@@ -4,7 +4,7 @@ import { LicenseItem } from '@/typedefs/general';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import List from '../server-components/Accounts/List';
-import { CardBordered } from '../server-components/shared/cards/CardBordered';
+import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
 
 export async function generateMetadata() {
@@ -98,7 +98,7 @@ export default async function AccountsPage(props: {
     return (
         <>
             <div className="w-full">
-                <CardBordered>
+                <BorderedCard>
                     <div className="card-title-big font-bold">Accounts</div>
 
                     <div className="flexible-row">
@@ -128,7 +128,7 @@ export default async function AccountsPage(props: {
                             widthClasses="min-w-[192px]"
                         />
                     </div>
-                </CardBordered>
+                </BorderedCard>
             </div>
 
             <List owners={sortedHolders} currentPage={currentPage} />

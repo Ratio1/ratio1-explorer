@@ -1,4 +1,4 @@
-import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
+import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard';
 import { CardFlexible } from '@/app/server-components/shared/cards/CardFlexible';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import { Tag } from '@/app/server-components/shared/Tag';
@@ -21,7 +21,7 @@ export default async function NodeCard({
     const getTitle = () => <CardTitle hasLink={hasLink}>Node • {nodeResponse.node_alias}</CardTitle>;
 
     return (
-        <CardBordered>
+        <BorderedCard>
             <div className="row gap-3">
                 {!hasLink ? (
                     getTitle()
@@ -111,6 +111,6 @@ export default async function NodeCard({
             <div className="w-full text-right text-sm font-medium text-slate-400">
                 {nodeResponse.node_version.replace(/\|(?=\S)/g, '| ')}
             </div>
-        </CardBordered>
+        </BorderedCard>
     );
 }

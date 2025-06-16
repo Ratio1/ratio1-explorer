@@ -78,8 +78,8 @@ export default async function TreasuryDistribution({ license }: Props) {
             <div className="col gap-3">
                 <ListHeader>
                     <div className="min-w-[100px]">Wallet</div>
-                    <div className="min-w-[100px]">Allocation (%)</div>
-                    <div className="min-w-[220px]">Usage</div>
+                    <div className="min-w-[100px]">% of GND</div>
+                    <div className="min-w-[220px]">Mined/To be mined</div>
                     <div className="min-w-[120px]">$R1 Balance</div>
                     <div className="min-w-[120px]">Transferred Out</div>
                 </ListHeader>
@@ -100,14 +100,25 @@ export default async function TreasuryDistribution({ license }: Props) {
 
                                         <div className="min-w-[100px]">
                                             <CardItem
-                                                label="Allocation"
-                                                value={<div className="font-medium">{wallet.percentage}%</div>}
+                                                label="% of GND"
+                                                value={
+                                                    <div className="font-medium">
+                                                        <span className="text-slate-500">{wallet.percentage}%</span> (
+                                                        {fBI(
+                                                            (license.totalAssignedAmount *
+                                                                BigInt(Math.round(wallet.percentage * 100))) /
+                                                                10000n,
+                                                            18,
+                                                        )}
+                                                        )
+                                                    </div>
+                                                }
                                             />
                                         </div>
 
                                         <div className="min-w-[220px]">
                                             <CardItem
-                                                label="Usage"
+                                                label="Mined/To be mined"
                                                 value={
                                                     <div>
                                                         {fBI(
@@ -118,7 +129,7 @@ export default async function TreasuryDistribution({ license }: Props) {
                                                         )}
                                                         /
                                                         {fBI(
-                                                            (license.totalAssignedAmount *
+                                                            ((license.totalAssignedAmount - license.totalClaimedAmount) *
                                                                 BigInt(Math.round(wallet.percentage * 100))) /
                                                                 10000n,
                                                             18,
@@ -142,7 +153,7 @@ export default async function TreasuryDistribution({ license }: Props) {
                                                 label="Transferred Out"
                                                 value={
                                                     wallet.transferredOut ? (
-                                                        <div className="text-red-600">{fN(wallet.transferredOut)}</div>
+                                                        <div className="text-orange-600">{fN(wallet.transferredOut)}</div>
                                                     ) : (
                                                         <>—</>
                                                     )
@@ -151,29 +162,6 @@ export default async function TreasuryDistribution({ license }: Props) {
                                         </div>
                                     </div>
                                 </BorderedCard>
-
-                                {/* <div className="text-slate-500">{wallet.name}</div>
-                            <div className="font-medium text-primary">{wallet.percentage}%</div>
-
-                            <div className="row gap-2">
-                                <div>
-                                    {fBI(
-                                        (license.totalClaimedAmount * BigInt(Math.round(wallet.percentage * 100))) / 10000n,
-                                        18,
-                                    )}
-                                    /
-                                    {fBI(
-                                        (license.totalAssignedAmount * BigInt(Math.round(wallet.percentage * 100))) / 10000n,
-                                        18,
-                                    )}
-                                </div>
-
-                                <div className="text-slate-500">(R1 Balance: {fBI(wallet.balance, 18)})</div>
-
-                                {!!wallet.transferredOut && (
-                                    <div className="text-slate-500">(Transferred Out: {fN(wallet.transferredOut)})</div>
-                                )}
-                            </div> */}
                             </div>
                         ))}
                 </div>

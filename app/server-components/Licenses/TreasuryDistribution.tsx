@@ -75,11 +75,11 @@ export default async function TreasuryDistribution({ license }: Props) {
         <>
             <div className="card-title font-bold">Treasury Distribution</div>
 
-            <div className="col gap-3">
+            <div className="list">
                 <ListHeader>
-                    <div className="min-w-[100px]">Wallet</div>
-                    <div className="min-w-[100px]">% of GND</div>
-                    <div className="min-w-[220px]">Mined/To be mined</div>
+                    <div className="min-w-[70px]">Wallet</div>
+                    <div className="min-w-[112px]">% of GND</div>
+                    <div className="min-w-[210px]">Mined/To be mined</div>
                     <div className="min-w-[120px]">$R1 Balance</div>
                     <div className="min-w-[120px]">Transferred Out</div>
                 </ListHeader>
@@ -89,16 +89,16 @@ export default async function TreasuryDistribution({ license }: Props) {
                         .sort((a, b) => b.percentage - a.percentage)
                         .map((wallet) => (
                             <div key={wallet.address}>
-                                <BorderedCard useCustomWrapper roundedSmall>
+                                <BorderedCard useCustomWrapper roundedSmall useFixedWidthSmall>
                                     <div className="row justify-between gap-3 py-3 lg:gap-6">
-                                        <div className="min-w-[100px]">
+                                        <div className="min-w-[70px]">
                                             <CardItem
                                                 label="Wallet"
                                                 value={<div className="text-slate-500">{wallet.name}</div>}
                                             />
                                         </div>
 
-                                        <div className="min-w-[100px]">
+                                        <div className="min-w-[112px]">
                                             <CardItem
                                                 label="% of GND"
                                                 value={
@@ -116,7 +116,7 @@ export default async function TreasuryDistribution({ license }: Props) {
                                             />
                                         </div>
 
-                                        <div className="min-w-[220px]">
+                                        <div className="min-w-[210px]">
                                             <CardItem
                                                 label="Mined/To be mined"
                                                 value={

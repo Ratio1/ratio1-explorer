@@ -51,7 +51,7 @@ export const configs: {
         mndContractAddress: '0x0C431e546371C87354714Fcc1a13365391A549E2',
         readerContractAddress: '0xa2fDD4c7E93790Ff68a01f01AA789D619F12c6AC',
         genesisDate: new Date('2025-05-23T16:00:00.000Z'),
-        contractsGenesisBlock: 26045030n, // Obsolete, used by fetchR1MintedLastEpoch
+        contractsGenesisBlock: 30613326n,
         epochDurationInSeconds: 86400,
         ndLicenseCap: 1575188843457943924200n,
         mndCliffEpochs: 223,
@@ -68,7 +68,7 @@ export const configs: {
         mndContractAddress: '0xa8d7FFCE91a888872A9f5431B4Dd6c0c135055c1',
         readerContractAddress: '0xd1c7Dca934B37FAA402EB2EC64F6644d6957bE3b',
         genesisDate: new Date('2025-05-23T16:00:00.000Z'),
-        contractsGenesisBlock: 21552072n, // Obsolete, used by fetchR1MintedLastEpoch
+        contractsGenesisBlock: 26123856n,
         epochDurationInSeconds: 86400,
         ndLicenseCap: 1575188843457943924200n,
         mndCliffEpochs: 223,
@@ -85,7 +85,7 @@ export const configs: {
         mndContractAddress: '0x7A14Be75135a7ebdef99339CCc700C25Cda60c6E',
         readerContractAddress: '0x2c62a818967D3396b535De3d1EC47aF1f2B1282D',
         genesisDate: new Date('2025-05-23T16:00:00.000Z'),
-        contractsGenesisBlock: 21805660n, // Obsolete, used by fetchR1MintedLastEpoch
+        contractsGenesisBlock: 26123856n,
         epochDurationInSeconds: 3600,
         ndLicenseCap: 1575188843457943924200n,
         mndCliffEpochs: 223,
@@ -95,10 +95,42 @@ export const configs: {
     },
 };
 
+export const treasuryWallets: {
+    address: EthAddress;
+    name: string;
+    percentage: number;
+}[] = [
+    {
+        address: '0xABdaAC00E36007fB71b2059fc0E784690a991923',
+        name: 'LP',
+        percentage: 26.71,
+    },
+    {
+        address: '0x5d5F16f1848c87b49185A9136cdF042384e82BA8',
+        name: 'Expenses',
+        percentage: 13.84,
+    },
+    {
+        address: '0x9a7055e3FBA00F5D5231994B97f1c0216eE1C091',
+        name: 'Marketing',
+        percentage: 7.54,
+    },
+    {
+        address: '0x745C01f91c59000E39585441a3F1900AeF72c5C1',
+        name: 'Grants',
+        percentage: 34.6,
+    },
+    {
+        address: '0x0A27F805Db42089d79B96A4133A93B2e5Ff1b28C',
+        name: 'CSR',
+        percentage: 17.31,
+    },
+];
+
 export const getEnvironment = (hostname: string | null): 'mainnet' | 'testnet' | 'devnet' => {
     return hostname === domains.mainnet
         ? ('mainnet' as const)
         : hostname === domains.testnet
           ? ('testnet' as const)
-          : ('devnet' as const);
+          : ('mainnet' as const);
 };

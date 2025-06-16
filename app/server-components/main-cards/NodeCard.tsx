@@ -9,6 +9,7 @@ import clsx from 'clsx';
 import { formatDistanceToNow, subSeconds } from 'date-fns';
 import Link from 'next/link';
 import { RiEye2Line } from 'react-icons/ri';
+import { CardTitle } from '../shared/CardTitle';
 
 export default async function NodeCard({
     nodeResponse,
@@ -17,16 +18,7 @@ export default async function NodeCard({
     nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
     hasLink?: boolean; // If it has a link to it, it means it's not the main card (displayed on top of the page)
 }) {
-    const getTitle = () => (
-        <div
-            className={clsx('font-bold', {
-                'card-title': hasLink,
-                'card-title-big': !hasLink,
-            })}
-        >
-            Node • {nodeResponse.node_alias}
-        </div>
-    );
+    const getTitle = () => <CardTitle hasLink={hasLink}>Node • {nodeResponse.node_alias}</CardTitle>;
 
     return (
         <CardBordered>

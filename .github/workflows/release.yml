@@ -71,6 +71,7 @@ jobs:
               env:
                   NODE_ENV: production
                   MORALIS_API_KEY: ${{ secrets.MORALIS_API_KEY }}
+                  ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
                   NEXT_PUBLIC_APP_VERSION: ${{ needs.generate-version.outputs.version }}
 
             - name: Copy required assets

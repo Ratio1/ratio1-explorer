@@ -2,6 +2,7 @@ import LicenseRewards from '@/app/server-components/Licenses/LicenseRewards';
 import { CardBordered } from '@/app/server-components/shared/cards/CardBordered';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
+import { getServerEnvironment } from '@/config/serverConfig';
 import { routePath } from '@/lib/routes';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
@@ -9,6 +10,8 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import PoA from '../Licenses/PoA';
+import TreasuryDistribution from '../Licenses/TreasuryDistribution';
+import { CardTitle } from '../shared/CardTitle';
 import { LargeTag } from '../shared/LargeTag';
 import UsageStats from '../shared/Licenses/UsageStats';
 
@@ -22,20 +25,13 @@ interface Props {
 }
 
 export default async function LicenseCard({ license, licenseType, licenseId, owner, getNodeAvailability, hasLink }: Props) {
-    const getTitle = () => (
-        <div
-            className={clsx('font-bold', {
-                'card-title': hasLink,
-                'card-title-big': !hasLink,
-            })}
-        >
-            License #{licenseId}
-        </div>
-    );
+    const environment = await getServerEnvironment();
+
+    const getTitle = () => <CardTitle hasLink={hasLink}>License #{licenseId}</CardTitle>;
 
     return (
         <CardBordered>
-            <div className="row gap-2.5">
+            <div className="row gap-3">
                 {!hasLink ? (
                     getTitle()
                 ) : (
@@ -120,6 +116,10 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                     />
                 </Suspense>
             </div>
+
+            {environment === 'mainnet' && licenseId === '1' && licenseType === 'GND' && (
+                <TreasuryDistribution license={license} />
+            )}
         </CardBordered>
     );
 }

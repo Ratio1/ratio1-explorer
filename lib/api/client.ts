@@ -15,7 +15,7 @@ export const getPublicClient = async () => {
         publicClient = createPublicClient({
             chain,
             transport: http(
-                `https://base-${environment === 'mainnet' ? 'mainnet' : 'sepolia'}.g.alchemy.com/v2/n2UXf8tPtZ242ZpCzspVBPVE_sQhe6S3`,
+                `https://base-${environment === 'mainnet' ? 'mainnet' : 'sepolia'}.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
             ),
         }) as PublicClient;
     }

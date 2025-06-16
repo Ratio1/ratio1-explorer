@@ -3,12 +3,17 @@
 import { headers } from 'next/headers';
 import { Config, configs, getEnvironment } from '.';
 
+export async function getServerEnvironment(): Promise<'mainnet' | 'testnet' | 'devnet'> {
+    const hostname: string | null = (await headers()).get('host');
+    const environment: 'mainnet' | 'testnet' | 'devnet' = getEnvironment(hostname);
+    return environment;
+}
+
 export async function getServerConfig(): Promise<{
     config: Config;
     environment: 'mainnet' | 'testnet' | 'devnet';
 }> {
-    const hostname: string | null = (await headers()).get('host');
-    const environment: 'mainnet' | 'testnet' | 'devnet' = getEnvironment(hostname);
+    const environment = await getServerEnvironment();
 
     return {
         config: configs[environment],

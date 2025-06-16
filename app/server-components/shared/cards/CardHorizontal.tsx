@@ -26,7 +26,7 @@ export const CardHorizontal = ({
                 <div
                     className={clsx('text-right font-semibold', {
                         'text-lg md:text-xl': !isSmall && !isSmaller,
-                        'text-base md:text-lg': isSmall,
+                        'text-base md:text-[17px]': isSmall,
                         'text-[15px] sm:text-base': isSmaller,
                     })}
                 >

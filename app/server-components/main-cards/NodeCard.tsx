@@ -2,6 +2,7 @@ import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard'
 import { CardFlexible } from '@/app/server-components/shared/cards/CardFlexible';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import { Tag } from '@/app/server-components/shared/Tag';
+import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { routePath } from '@/lib/routes';
 import * as types from '@/typedefs/blockchain';
@@ -51,10 +52,14 @@ export default async function NodeCard({
                             </div>
 
                             <span className="web-only-block">
-                                <CopyableAddress value={nodeResponse.node_eth_address} size={8} isLarge />
+                                <ClientWrapper>
+                                    <CopyableAddress value={nodeResponse.node_eth_address} size={8} isLarge />
+                                </ClientWrapper>
                             </span>
                             <span className="mobile-only-block">
-                                <CopyableAddress value={nodeResponse.node_eth_address} size={4} />
+                                <ClientWrapper>
+                                    <CopyableAddress value={nodeResponse.node_eth_address} size={4} />
+                                </ClientWrapper>
                             </span>
                         </div>
 
@@ -65,10 +70,14 @@ export default async function NodeCard({
                             </div>
 
                             <span className="web-only-block">
-                                <CopyableAddress value={nodeResponse.node as types.R1Address} size={8} isLarge />
+                                <ClientWrapper>
+                                    <CopyableAddress value={nodeResponse.node as types.R1Address} size={8} isLarge />
+                                </ClientWrapper>
                             </span>
                             <span className="mobile-only-block">
-                                <CopyableAddress value={nodeResponse.node as types.R1Address} size={4} />
+                                <ClientWrapper>
+                                    <CopyableAddress value={nodeResponse.node as types.R1Address} size={4} />
+                                </ClientWrapper>
                             </span>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
 import LicenseRewards from '@/app/server-components/Licenses/LicenseRewards';
 import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
+import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getServerEnvironment } from '@/config/serverConfig';
 import { routePath } from '@/lib/routes';
@@ -66,7 +67,11 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                 {!!owner && (
                     <CardHorizontal
                         label="Owner"
-                        value={<CopyableAddress value={owner} size={4} isLarge link={`${routePath.owner}/${owner}`} />}
+                        value={
+                            <ClientWrapper>
+                                <CopyableAddress value={owner} size={4} isLarge link={`${routePath.owner}/${owner}`} />
+                            </ClientWrapper>
+                        }
                         isSmall
                         isFlexible
                     />

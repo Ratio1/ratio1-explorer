@@ -1,3 +1,4 @@
+import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getLicense } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
@@ -73,7 +74,11 @@ export default async function License({ licenseType, licenseId }: Props) {
                     <div className="flex min-w-[112px]">
                         <CardItem
                             label="Owner"
-                            value={<CopyableAddress value={owner} size={4} link={`${routePath.owner}/${owner}`} />}
+                            value={
+                                <ClientWrapper>
+                                    <CopyableAddress value={owner} size={4} link={`${routePath.owner}/${owner}`} />
+                                </ClientWrapper>
+                            }
                         />
                     </div>
                 )}

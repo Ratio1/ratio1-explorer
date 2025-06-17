@@ -1,3 +1,4 @@
+import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { routePath } from '@/lib/routes';
 import * as types from '@/typedefs/blockchain';
@@ -27,7 +28,11 @@ export default async function Account({ ethAddress, licenses }: Props) {
                                 <></>
                             )
                         }
-                        value={<CopyableAddress value={ethAddress} size={4} link={`${routePath.owner}/${ethAddress}`} />}
+                        value={
+                            <ClientWrapper>
+                                <CopyableAddress value={ethAddress} size={4} link={`${routePath.owner}/${ethAddress}`} />
+                            </ClientWrapper>
+                        }
                     />
                 </div>
 

@@ -1,4 +1,5 @@
 import { SmallCard } from '@/app/server-components/shared/Licenses/SmallCard';
+import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getNodeLicenseDetails } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
@@ -47,8 +48,13 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
                             <div className="h-9 w-1 rounded-full bg-primary-500"></div>
 
                             <div className="col font-medium">
-                                <CopyableAddress value={node.eth_addr} />
-                                <CopyableAddress value={ratio1Addr} />
+                                <ClientWrapper>
+                                    <CopyableAddress value={node.eth_addr} />
+                                </ClientWrapper>
+
+                                <ClientWrapper>
+                                    <CopyableAddress value={ratio1Addr} />
+                                </ClientWrapper>
                             </div>
                         </div>
                     </SmallCard>
@@ -69,7 +75,11 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
                     <div className="flex min-w-[112px]">
                         <CardItem
                             label="Owner"
-                            value={<CopyableAddress value={owner} size={4} link={`${routePath.owner}/${owner}`} />}
+                            value={
+                                <ClientWrapper>
+                                    <CopyableAddress value={owner} size={4} link={`${routePath.owner}/${owner}`} />
+                                </ClientWrapper>
+                            }
                         />
                     </div>
                 )}

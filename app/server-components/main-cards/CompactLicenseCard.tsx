@@ -1,5 +1,6 @@
 import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
+import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { routePath } from '@/lib/routes';
 import { isEmptyETHAddr } from '@/lib/utils';
@@ -68,12 +69,14 @@ export default async function CompactLicenseCard({ license, licenseType, license
                     <CardHorizontal
                         label="Node"
                         value={
-                            <CopyableAddress
-                                value={nodeEthAddress}
-                                size={4}
-                                isLarge
-                                link={`${routePath.node}/${nodeEthAddress}`}
-                            />
+                            <ClientWrapper>
+                                <CopyableAddress
+                                    value={nodeEthAddress}
+                                    size={4}
+                                    isLarge
+                                    link={`${routePath.node}/${nodeEthAddress}`}
+                                />
+                            </ClientWrapper>
                         }
                         isSmaller
                     />

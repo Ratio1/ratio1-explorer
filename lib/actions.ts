@@ -23,7 +23,7 @@ export const getNodeAvailability = async (
     const currentEpoch: number = getCurrentEpoch(config);
     const firstCheckEpoch: number = getLicenseFirstCheckEpoch(config, assignTimestamp);
 
-    return firstCheckEpoch === currentEpoch
+    return firstCheckEpoch === currentEpoch || firstCheckEpoch === currentEpoch - 1
         ? await getNodeLastEpoch(nodeEthAddr)
         : await getNodeEpochsRange(nodeEthAddr, firstCheckEpoch, currentEpoch - 1);
 };

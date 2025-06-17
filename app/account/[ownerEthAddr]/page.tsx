@@ -2,6 +2,7 @@ import CompactLicenseCard from '@/app/server-components/main-cards/CompactLicens
 import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import UsageStats from '@/app/server-components/shared/Licenses/UsageStats';
+import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getServerConfig } from '@/config/serverConfig';
 import { fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
@@ -73,7 +74,9 @@ export default async function OwnerPage({ params }) {
                             label="Address"
                             value={
                                 <div>
-                                    <CopyableAddress value={ownerEthAddr} size={4} isLarge />
+                                    <ClientWrapper>
+                                        <CopyableAddress value={ownerEthAddr} size={4} isLarge />
+                                    </ClientWrapper>
                                 </div>
                             }
                             isSmall

@@ -1,4 +1,5 @@
 import { SmallCard } from '@/app/server-components/shared/Licenses/SmallCard';
+import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getNodeLastEpoch } from '@/lib/api/oracles';
 import { routePath } from '@/lib/routes';
@@ -35,7 +36,9 @@ export default async function NodeSmallCard({ nodeEthAddr }: { nodeEthAddr: type
                             {nodeResponse.node_alias}
                         </div>
 
-                        <CopyableAddress value={nodeEthAddr} />
+                        <ClientWrapper>
+                            <CopyableAddress value={nodeEthAddr} />
+                        </ClientWrapper>
                     </div>
                 </div>
             </SmallCard>

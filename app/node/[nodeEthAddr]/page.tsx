@@ -158,14 +158,16 @@ export default async function NodePage({ params }) {
         <div className="responsive-col">
             <NodeCard nodeResponse={nodeResponse} />
 
-            <LicenseCard
-                license={license}
-                licenseType={licenseType}
-                licenseId={licenseId.toString()}
-                owner={owner}
-                getNodeAvailability={() => Promise.resolve(nodeResponse)}
-                hasLink
-            />
+            {licenseType && licenseId && (
+                <LicenseCard
+                    license={license}
+                    licenseType={licenseType}
+                    licenseId={licenseId.toString()}
+                    owner={owner}
+                    getNodeAvailability={() => Promise.resolve(nodeResponse)}
+                    hasLink
+                />
+            )}
 
             <NodePerformanceCard nodeResponse={nodeResponse} />
         </div>

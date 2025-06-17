@@ -89,7 +89,7 @@ const getCachedLicenseDetailsAndNodeAvailability = cache(
         }
 
         if (!licenseId || !licenseType) {
-            throw new Error('License not found.');
+            notFound();
         }
 
         const license: types.License = {

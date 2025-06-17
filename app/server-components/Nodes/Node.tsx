@@ -12,17 +12,21 @@ import { BorderedCard } from '../shared/cards/BorderedCard';
 import LicenseSmallCard from '../shared/Licenses/LicenseSmallCard';
 
 export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address; node: NodeState }) {
-    let licenseId: bigint | undefined,
+    let licenseId: bigint,
         licenseType: 'ND' | 'MND' | 'GND' | undefined,
-        owner: string | undefined,
-        totalAssignedAmount: bigint | undefined,
-        totalClaimedAmount: bigint | undefined,
-        isBanned: boolean | undefined;
+        owner: string,
+        totalAssignedAmount: bigint,
+        totalClaimedAmount: bigint,
+        isBanned: boolean;
 
     try {
         ({ licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount, isBanned } = await getNodeLicenseDetails(
             node.eth_addr,
         ));
+
+        if (!licenseId || !licenseType) {
+            return null;
+        }
     } catch (error) {
         console.error(error);
         return null;

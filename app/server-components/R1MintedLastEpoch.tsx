@@ -27,8 +27,8 @@ export default async function R1MintedLastEpoch() {
     try {
         value = await fetchCachedR1MintedLastEpoch(config);
     } catch (error) {
-        console.error(error);
-        return <div className="text-lg md:text-xl">—</div>;
+        console.log('Error fetching R1 minted last epoch', error);
+        return <div className="text-lg text-slate-600 md:text-xl">—</div>;
     }
 
     return (

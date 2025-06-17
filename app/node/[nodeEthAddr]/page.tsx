@@ -2,6 +2,7 @@ import LicenseCard from '@/app/server-components/main-cards/LicenseCard';
 import NodeCard from '@/app/server-components/main-cards/NodeCard';
 import NodePerformanceCard from '@/app/server-components/main-cards/NodePerformanceCard';
 import { DetailedAlert } from '@/app/server-components/shared/DetailedAlert';
+import { getServerConfig } from '@/config/serverConfig';
 import { getNodeAvailability } from '@/lib/actions';
 import { getNodeLicenseDetails } from '@/lib/api/blockchain';
 import { isEmptyETHAddr } from '@/lib/utils';
@@ -13,6 +14,7 @@ import { isAddress } from 'viem';
 
 export async function generateMetadata({ params }) {
     const { nodeEthAddr } = await params;
+    const { config } = await getServerConfig();
 
     if (!nodeEthAddr || !isAddress(nodeEthAddr) || isEmptyETHAddr(nodeEthAddr)) {
         console.log(`[Node Page] Invalid node address: ${nodeEthAddr}`);
@@ -22,7 +24,7 @@ export async function generateMetadata({ params }) {
     let nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
 
     try {
-        ({ nodeResponse } = await getCachedLicenseDetailsAndNodeAvailability(nodeEthAddr));
+        ({ nodeResponse } = await getCachedLicenseDetailsAndNodeAvailability(nodeEthAddr, config.environment));
 
         if (!nodeResponse) {
             console.log(`[Node Page] No node response found for address: ${nodeEthAddr}`);
@@ -49,6 +51,7 @@ export async function generateMetadata({ params }) {
 const getCachedLicenseDetailsAndNodeAvailability = cache(
     async (
         nodeEthAddr: types.EthAddress,
+        _environment: 'mainnet' | 'testnet' | 'devnet',
     ): Promise<{
         license: types.License;
         licenseId: bigint;
@@ -56,18 +59,34 @@ const getCachedLicenseDetailsAndNodeAvailability = cache(
         owner: types.EthAddress;
         nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
     }> => {
-        const {
-            nodeAddress,
-            totalAssignedAmount,
-            totalClaimedAmount,
-            lastClaimEpoch,
-            assignTimestamp,
-            lastClaimOracle,
-            isBanned,
-            licenseId,
-            licenseType,
-            owner,
-        } = await getNodeLicenseDetails(nodeEthAddr);
+        let nodeAddress: types.EthAddress,
+            totalAssignedAmount: bigint,
+            totalClaimedAmount: bigint,
+            lastClaimEpoch: bigint,
+            assignTimestamp: bigint,
+            lastClaimOracle: types.EthAddress,
+            isBanned: boolean,
+            licenseId: bigint,
+            licenseType: 'ND' | 'MND' | 'GND' | undefined,
+            owner: types.EthAddress;
+
+        try {
+            ({
+                nodeAddress,
+                totalAssignedAmount,
+                totalClaimedAmount,
+                lastClaimEpoch,
+                assignTimestamp,
+                lastClaimOracle,
+                isBanned,
+                licenseId,
+                licenseType,
+                owner,
+            } = await getNodeLicenseDetails(nodeEthAddr));
+        } catch (error) {
+            console.error(error);
+            throw new Error('Failed to get node license details.');
+        }
 
         if (!licenseId || !licenseType) {
             throw new Error('License not found.');
@@ -98,6 +117,7 @@ const getCachedLicenseDetailsAndNodeAvailability = cache(
 
 export default async function NodePage({ params }) {
     const { nodeEthAddr } = await params;
+    const { config } = await getServerConfig();
 
     if (!nodeEthAddr || !isAddress(nodeEthAddr) || isEmptyETHAddr(nodeEthAddr)) {
         console.log(`[Node Page] Invalid node address in page component: ${nodeEthAddr}`);
@@ -111,8 +131,10 @@ export default async function NodePage({ params }) {
     let nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
 
     try {
-        ({ license, licenseId, licenseType, owner, nodeResponse } =
-            await getCachedLicenseDetailsAndNodeAvailability(nodeEthAddr));
+        ({ license, licenseId, licenseType, owner, nodeResponse } = await getCachedLicenseDetailsAndNodeAvailability(
+            nodeEthAddr,
+            config.environment,
+        ));
     } catch (error: any) {
         console.error(error);
 

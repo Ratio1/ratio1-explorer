@@ -11,12 +11,19 @@ import { BorderedCard } from '../shared/cards/BorderedCard';
 import LicenseSmallCard from '../shared/Licenses/LicenseSmallCard';
 
 export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address; node: NodeState }) {
-    const { licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount, isBanned } = await getNodeLicenseDetails(
-        node.eth_addr,
-    );
+    let licenseId: bigint | undefined,
+        licenseType: 'ND' | 'MND' | 'GND' | undefined,
+        owner: string | undefined,
+        totalAssignedAmount: bigint | undefined,
+        totalClaimedAmount: bigint | undefined,
+        isBanned: boolean | undefined;
 
-    // The node will soon be disconnected by dAuth
-    if (!licenseId) {
+    try {
+        ({ licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount, isBanned } = await getNodeLicenseDetails(
+            node.eth_addr,
+        ));
+    } catch (error) {
+        console.error(error);
         return null;
     }
 

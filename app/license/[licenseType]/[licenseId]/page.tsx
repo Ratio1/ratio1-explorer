@@ -1,6 +1,7 @@
 import LicensePageNodeCardWrapper from '@/app/server-components/LicensePage/LicensePageNodeCardWrapper';
 import LicensePageNodePerformanceCardWrapper from '@/app/server-components/LicensePage/LicensePageNodePerformanceCardWrapper';
 import LicenseCard from '@/app/server-components/main-cards/LicenseCard';
+import { getServerConfig } from '@/config/serverConfig';
 import { getNodeAvailability } from '@/lib/actions';
 import { getLicense } from '@/lib/api/blockchain';
 import { isEmptyETHAddr } from '@/lib/utils';
@@ -11,6 +12,7 @@ import { cache, Suspense } from 'react';
 
 export async function generateMetadata({ params }) {
     const { licenseType, licenseId } = await params;
+    const { config } = await getServerConfig();
 
     if (!licenseType || !['ND', 'MND', 'GND'].includes(licenseType)) {
         return {
@@ -33,7 +35,7 @@ export async function generateMetadata({ params }) {
     }
 
     try {
-        await cachedGetLicense(licenseType, licenseId);
+        await cachedGetLicense(licenseType, licenseId, config.environment);
     } catch (error) {
         return {
             title: 'Error',
@@ -51,12 +53,15 @@ export async function generateMetadata({ params }) {
     };
 }
 
-const cachedGetLicense = cache(async (licenseType: 'ND' | 'MND' | 'GND', licenseId: string) => {
-    return await getLicense(licenseType, licenseId);
-});
+const cachedGetLicense = cache(
+    async (licenseType: 'ND' | 'MND' | 'GND', licenseId: string, _environment: 'mainnet' | 'testnet' | 'devnet') => {
+        return await getLicense(licenseType, licenseId);
+    },
+);
 
 export default async function LicensePage({ params }) {
     const { licenseType, licenseId } = await params;
+    const { config } = await getServerConfig();
 
     if (!licenseType || !['ND', 'MND', 'GND'].includes(licenseType)) {
         console.log(`[License Page] Invalid license type: ${licenseType}`);
@@ -73,7 +78,7 @@ export default async function LicensePage({ params }) {
     let license: types.License;
 
     try {
-        license = await cachedGetLicense(licenseType, licenseId);
+        license = await cachedGetLicense(licenseType, licenseId, config.environment);
     } catch (error) {
         console.error(error);
         console.log(`[License Page] Failed to fetch license: ${licenseType}-${licenseId}`);

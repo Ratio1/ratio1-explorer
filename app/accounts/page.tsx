@@ -1,3 +1,4 @@
+import { getServerConfig } from '@/config/serverConfig';
 import { getSSURL } from '@/lib/actions';
 import * as types from '@/typedefs/blockchain';
 import { LicenseItem } from '@/typedefs/general';
@@ -16,8 +17,8 @@ export async function generateMetadata() {
     };
 }
 
-const fetchCachedLicenseHolders = cache(async () => {
-    const url = await getSSURL('license-holders');
+const fetchCachedLicenseHolders = cache(async (environment: 'mainnet' | 'testnet' | 'devnet') => {
+    const url = await getSSURL(`license-holders?env=${environment}`);
 
     const res = await fetch(url, {
         next: { revalidate: 3600 }, // Cache for 1 hour
@@ -44,6 +45,8 @@ export default async function AccountsPage(props: {
     const searchParams = await props.searchParams;
     const currentPage = Number(searchParams?.page) || 1;
 
+    const { config } = await getServerConfig();
+
     let ndHolders: {
             ethAddress: types.EthAddress;
             licenseId: number;
@@ -63,7 +66,7 @@ export default async function AccountsPage(props: {
     }[];
 
     try {
-        ({ ndHolders, mndHolders } = await fetchCachedLicenseHolders());
+        ({ ndHolders, mndHolders } = await fetchCachedLicenseHolders(config.environment));
 
         ndHolders.forEach((holder) => {
             if (!holders[holder.ethAddress]) {

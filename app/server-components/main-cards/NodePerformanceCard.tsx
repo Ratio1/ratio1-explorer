@@ -58,26 +58,29 @@ export default async function NodePerformanceCard({
                         value={
                             <div className="row gap-6">
                                 <div className="row gap-1">
-                                    {nodeResponse.epochs_vals.slice(-10).map((val, index) => (
+                                    {nodeResponse.epochs.slice(-10).map((epoch, index) => (
                                         <div key={index}>
                                             <Tooltip
                                                 content={
                                                     <div className="px-1 py-1.5 text-small">
                                                         <div className="font-semibold">
-                                                            {parseFloat(((val * 100) / 255).toFixed(2))}%
+                                                            {parseFloat(
+                                                                ((nodeResponse.epochs_vals[index] * 100) / 255).toFixed(2),
+                                                            )}
+                                                            %
                                                         </div>
-                                                        <div className="text-slate-500">
-                                                            Epoch {getCurrentEpoch(config) - 10 + index}
-                                                        </div>
+                                                        <div className="text-slate-500">Epoch {epoch}</div>
                                                     </div>
                                                 }
                                                 closeDelay={0}
                                             >
                                                 <div
                                                     className={clsx('h-5 w-5 cursor-pointer rounded-md hover:opacity-70', {
-                                                        'bg-teal-500': val >= 200,
-                                                        'bg-yellow-500': val >= 100 && val < 200,
-                                                        'bg-red-500': val < 100,
+                                                        'bg-teal-500': nodeResponse.epochs_vals[index] >= 200,
+                                                        'bg-yellow-500':
+                                                            nodeResponse.epochs_vals[index] >= 100 &&
+                                                            nodeResponse.epochs_vals[index] < 200,
+                                                        'bg-red-500': nodeResponse.epochs_vals[index] < 100,
                                                     })}
                                                 ></div>
                                             </Tooltip>
@@ -89,7 +92,7 @@ export default async function NodePerformanceCard({
                                     <EpochsChart
                                         data={nodeResponse.epochs_vals.slice(-10).map((value, index, array) => ({
                                             Availability: (100 * value) / 255,
-                                            Epoch: getCurrentEpoch(config) - array.length + index + 1,
+                                            Epoch: nodeResponse.epochs[index],
                                         }))}
                                     />
                                 </div>

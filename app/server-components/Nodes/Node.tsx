@@ -25,6 +25,7 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
         ));
 
         if (!licenseId || !licenseType) {
+            console.log('No license found for node', node.eth_addr);
             return null;
         }
     } catch (error) {
@@ -97,7 +98,7 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
                         label="Last Epoch Availability"
                         value={
                             <div className="text-left lg:text-right">
-                                {parseFloat((node.recent_history.last_epoch_avail * 100).toFixed(2))}%
+                                {parseFloat(((node.recent_history.last_epoch_avail * 100) / 255).toFixed(2))}%
                             </div>
                         }
                     />

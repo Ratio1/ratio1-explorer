@@ -23,6 +23,12 @@ export const getNodeAvailability = async (
     const currentEpoch: number = getCurrentEpoch(config);
     const firstCheckEpoch: number = getLicenseFirstCheckEpoch(config, assignTimestamp);
 
+    if (currentEpoch - firstCheckEpoch <= 1) {
+        console.log('getNodeLastEpoch');
+    } else {
+        console.log('getNodeEpochsRange', firstCheckEpoch, currentEpoch - 1);
+    }
+
     // If the license was linked in the current or previous epoch
     return currentEpoch - firstCheckEpoch <= 1
         ? await getNodeLastEpoch(nodeEthAddr)

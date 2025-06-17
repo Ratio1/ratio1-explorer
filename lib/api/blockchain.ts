@@ -287,8 +287,19 @@ const calculateLicenseRewards = async (
         return 0n;
     }
 
+    // Disregard epochs before the cliff epoch for MNDs
+    if (cliffEpochs > 0 && epochs[0] < cliffEpochs) {
+        const start = cliffEpochs - epochs[0];
+        epochs = epochs.slice(start);
+        epochs_vals = epochs_vals.slice(start);
+    }
+
     if (epochsToClaim !== epochs.length || epochsToClaim !== epochs_vals.length) {
-        throw new Error('Invalid epochs array length.');
+        console.error(
+            `Invalid epochs array length. Received ${epochs.length} epochs, but there are ${epochsToClaim} epochs to claim.`,
+        );
+
+        return 0n;
     }
 
     const maxRewardsPerEpoch = license.totalAssignedAmount / BigInt(vestingEpochs);

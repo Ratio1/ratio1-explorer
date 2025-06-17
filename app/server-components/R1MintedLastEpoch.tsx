@@ -2,10 +2,9 @@ import { getNextEpochTimestamp } from '@/config';
 import { getServerConfig } from '@/config/serverConfig';
 import { getSSURL } from '@/lib/actions';
 import { differenceInSeconds } from 'date-fns';
-import { cache } from 'react';
 import { formatUnits } from 'viem';
 
-const fetchCachedR1MintedLastEpoch = cache(async () => {
+const fetchCachedR1MintedLastEpoch = async () => {
     const url = await getSSURL('r1-minted-last-epoch');
     const { config } = await getServerConfig();
 
@@ -18,7 +17,7 @@ const fetchCachedR1MintedLastEpoch = cache(async () => {
     } = await res.json();
 
     return data.value;
-});
+};
 
 export default async function R1MintedLastEpoch() {
     let value: string | undefined;

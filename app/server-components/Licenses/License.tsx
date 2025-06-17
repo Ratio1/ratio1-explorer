@@ -38,7 +38,7 @@ export default async function License({ licenseType, licenseId }: Props) {
     }
 
     return (
-        <BorderedCard useCustomWrapper hasFixedWidth>
+        <BorderedCard useCustomWrapper useFixedWidthLarge>
             <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6">
                 {/* License */}
                 <LicenseSmallCard

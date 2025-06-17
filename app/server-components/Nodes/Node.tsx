@@ -21,7 +21,7 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
     }
 
     return (
-        <BorderedCard useCustomWrapper hasFixedWidth>
+        <BorderedCard useCustomWrapper useFixedWidthLarge>
             <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6">
                 <Link href={`${routePath.node}/${node.eth_addr}`} className="group min-w-[200px] py-3 lg:min-w-[228px]">
                     <div className="row gap-1.5">

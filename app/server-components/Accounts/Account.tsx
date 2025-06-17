@@ -16,7 +16,7 @@ interface Props {
 
 export default async function Account({ ethAddress, licenses }: Props) {
     return (
-        <BorderedCard useCustomWrapper hasFixedWidth>
+        <BorderedCard useCustomWrapper useFixedWidthLarge>
             <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6 lg:py-4">
                 <div className="min-w-[180px]">
                     <CardItem

@@ -1,7 +1,7 @@
 import LicensePageNodeCardWrapper from '@/app/server-components/LicensePage/LicensePageNodeCardWrapper';
 import LicensePageNodePerformanceCardWrapper from '@/app/server-components/LicensePage/LicensePageNodePerformanceCardWrapper';
 import LicenseCard from '@/app/server-components/main-cards/LicenseCard';
-import { getServerConfig } from '@/config/serverConfig';
+import config from '@/config';
 import { getNodeAvailability } from '@/lib/actions';
 import { getLicense } from '@/lib/api/blockchain';
 import { isEmptyETHAddr } from '@/lib/utils';
@@ -12,7 +12,6 @@ import { cache, Suspense } from 'react';
 
 export async function generateMetadata({ params }) {
     const { licenseType, licenseId } = await params;
-    const { config } = await getServerConfig();
 
     if (!licenseType || !['ND', 'MND', 'GND'].includes(licenseType)) {
         return {
@@ -61,7 +60,6 @@ const cachedGetLicense = cache(
 
 export default async function LicensePage({ params }) {
     const { licenseType, licenseId } = await params;
-    const { config } = await getServerConfig();
 
     if (!licenseType || !['ND', 'MND', 'GND'].includes(licenseType)) {
         console.log(`[License Page] Invalid license type: ${licenseType}`);

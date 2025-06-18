@@ -1,6 +1,6 @@
 'use server';
 
-import { getServerConfig } from '@/config/serverConfig';
+import config from '@/config';
 import * as types from '@/typedefs/blockchain';
 import axios, { AxiosInstance } from 'axios';
 
@@ -32,14 +32,12 @@ export async function getAxiosBackend(baseURL: string): Promise<AxiosInstance> {
 }
 
 export const getNodeLastEpoch = async (nodeEthAddr: types.EthAddress) => {
-    const { config } = await getServerConfig();
     const oraclesApiURL = config.oraclesUrl;
 
     return _doGet<types.OraclesAvailabilityResult>(`/node_last_epoch?eth_node_addr=${nodeEthAddr}`, oraclesApiURL);
 };
 
 export const getNodeEpochsRange = async (nodeEthAddr: types.EthAddress, startEpoch: number, endEpoch: number) => {
-    const { config } = await getServerConfig();
     const oraclesApiURL = config.oraclesUrl;
 
     return _doGet<types.OraclesAvailabilityResult>(
@@ -49,7 +47,6 @@ export const getNodeEpochsRange = async (nodeEthAddr: types.EthAddress, startEpo
 };
 
 export const getCurrentEpochServer = async () => {
-    const { config } = await getServerConfig();
     const oraclesApiURL = config.oraclesUrl;
 
     return _doGet<types.OraclesAvailabilityResult>('/current_epoch', oraclesApiURL);

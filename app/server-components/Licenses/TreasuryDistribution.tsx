@@ -1,5 +1,4 @@
-import { treasuryWallets } from '@/config';
-import { getServerConfig } from '@/config/serverConfig';
+import config, { treasuryWallets } from '@/config';
 import { fetchErc20Balance } from '@/lib/api/blockchain';
 import { fBI, fN } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
@@ -12,8 +11,6 @@ interface Props {
 }
 
 export default async function TreasuryDistribution({ license }: Props) {
-    const { config } = await getServerConfig();
-
     const fetchR1TransferredOutAmount = async (walletAddress: string) => {
         try {
             const res = await fetch(`https://base-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`, {

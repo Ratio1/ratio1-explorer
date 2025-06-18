@@ -1,12 +1,10 @@
-import { getServerURL } from '@/config/serverConfig';
+import config from '@/config';
 import { MetadataRoute } from 'next';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const url = await getServerURL();
-
     return [
         {
-            url,
+            url: config.publicUrl,
             lastModified: new Date().toISOString(),
         },
     ];

@@ -1,5 +1,4 @@
 import { getLicenseFirstCheckEpoch } from '@/config';
-import { getServerConfig } from '@/config/serverConfig';
 import { getLicenseRewards } from '@/lib/api/blockchain';
 import * as types from '@/typedefs/blockchain';
 import { formatUnits } from 'viem';
@@ -15,7 +14,6 @@ export default async function LicenseRewards({
     getNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;
 }) {
     let rewards: bigint | undefined = 0n;
-    const { config } = await getServerConfig();
 
     const nodeResponse: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined =
         await getNodeAvailability();
@@ -24,7 +22,7 @@ export default async function LicenseRewards({
         return null;
     }
 
-    const firstCheckEpoch: number = getLicenseFirstCheckEpoch(config, license.assignTimestamp);
+    const firstCheckEpoch: number = getLicenseFirstCheckEpoch(license.assignTimestamp);
     const lastClaimEpoch: number = Number(license.lastClaimEpoch);
 
     rewards = await getLicenseRewards(

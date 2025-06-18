@@ -1,14 +1,18 @@
 {
     "name": "ratio1-explorer",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev --turbopack",
-        "devs": "next dev --experimental-https",
+        "dev": "dotenv -e .env.production.devnet next dev --turbopack",
+        "dev:mainnet": "dotenv -e .env.production.mainnet next dev --turbopack",
+        "dev:testnet": "dotenv -e .env.production.testnet next dev --turbopack",
+        "dev:devnet": "dotenv -e .env.production.devnet next dev --turbopack",
+        "build:mainnet": "dotenv -e .env.production.mainnet next build",
+        "build:testnet": "dotenv -e .env.production.testnet next build",
+        "build:devnet": "dotenv -e .env.production.devnet next build",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint",
-        "patch": "bash scripts/patch.sh"
+        "lint": "next lint"
     },
     "dependencies": {
         "@heroui/button": "^2.2.10",

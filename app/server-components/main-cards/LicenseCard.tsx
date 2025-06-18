@@ -3,7 +3,7 @@ import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard'
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
-import { getServerEnvironment } from '@/config/serverConfig';
+import config from '@/config';
 import { routePath } from '@/lib/routes';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
@@ -26,7 +26,7 @@ interface Props {
 }
 
 export default async function LicenseCard({ license, licenseType, licenseId, owner, getNodeAvailability, hasLink }: Props) {
-    const environment = await getServerEnvironment();
+    const environment = config.environment;
 
     const getTitle = () => <CardTitle hasLink={hasLink}>License #{licenseId}</CardTitle>;
 

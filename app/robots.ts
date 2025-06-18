@@ -1,14 +1,12 @@
-import { getServerURL } from '@/config/serverConfig';
+import config from '@/config';
 import type { MetadataRoute } from 'next';
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
-    const url = await getServerURL();
-
     return {
         rules: {
             userAgent: '*',
             allow: '/',
         },
-        sitemap: `${url}/sitemap.xml`,
+        sitemap: `${config.publicUrl}/sitemap.xml`,
     };
 }

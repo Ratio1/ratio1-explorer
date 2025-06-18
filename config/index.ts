@@ -4,6 +4,7 @@ import { base, baseSepolia } from 'viem/chains';
 
 export type Config = {
     environment: 'mainnet' | 'testnet' | 'devnet';
+    publicUrl: string;
     backendUrl: string;
     oraclesUrl: string;
     ndContractAddress: EthAddress;
@@ -47,6 +48,7 @@ export const chain = environment === 'mainnet' ? base : baseSepolia;
 
 const config: Config = {
     environment,
+    publicUrl: process.env.NEXT_PUBLIC_URL as string,
     backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL as string,
     oraclesUrl: process.env.NEXT_PUBLIC_ORACLES_URL as string,
     ndContractAddress: process.env.NEXT_PUBLIC_ND_CA as EthAddress,

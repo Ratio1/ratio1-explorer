@@ -256,7 +256,7 @@ const calculateLicenseRewards = async (
     vestingEpochs: number,
     cliffEpochs: number = 0,
 ): Promise<bigint> => {
-    const currentEpoch = getCurrentEpoch(config);
+    const currentEpoch = getCurrentEpoch();
 
     const firstEpochToClaim =
         cliffEpochs > 0

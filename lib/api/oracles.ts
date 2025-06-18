@@ -1,5 +1,6 @@
 'use server';
 
+import config from '@/config';
 import * as types from '@/typedefs/blockchain';
 import axios, { AxiosInstance } from 'axios';
 

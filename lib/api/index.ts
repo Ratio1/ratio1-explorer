@@ -1,5 +1,6 @@
 'use server';
 
+import config from '@/config';
 import * as types from '@/typedefs/blockchain';
 
 const PAGE_SIZE = 10;

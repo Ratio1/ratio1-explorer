@@ -1,4 +1,4 @@
-import { getServerURL } from '@/config/serverConfig';
+import config from '@/config';
 import '@/lib/api/blockchain';
 import { buildMetadata } from '@/lib/utils';
 import { monaSans, robotoMono } from '@/styles/fonts';
@@ -17,12 +17,10 @@ export const viewport: Viewport = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-    const url = await getServerURL();
-
     return buildMetadata(
         'Ratio1 Explorer',
         'Experience the power of Ratio1 AI OS, built on Ratio1 Protocol and powered by blockchain, democratizing AI to empower limitless innovation.',
-        url,
+        config.publicUrl,
     );
 }
 

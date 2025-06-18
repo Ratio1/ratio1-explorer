@@ -23,16 +23,16 @@ export type Config = {
 
 export const projectId = 'b0be1322e97542cc32eb568b37173a1c'; // Ratio1 Explorer
 
-export const getCurrentEpoch = (config: Config) =>
+export const getCurrentEpoch = () =>
     Math.floor((Date.now() / 1000 - config.genesisDate.getTime() / 1000) / config.epochDurationInSeconds);
 
-export const getNextEpochTimestamp = (config: Config): Date =>
-    addSeconds(config.genesisDate, (getCurrentEpoch(config) + 1) * config.epochDurationInSeconds);
+export const getNextEpochTimestamp = (): Date =>
+    addSeconds(config.genesisDate, (getCurrentEpoch() + 1) * config.epochDurationInSeconds);
 
-export const getEpochStartTimestamp = (config: Config, epoch: number): Date =>
+export const getEpochStartTimestamp = (epoch: number): Date =>
     addSeconds(config.genesisDate, epoch * config.epochDurationInSeconds);
 
-export const getLicenseFirstCheckEpoch = (config: Config, assignTimestamp: bigint) =>
+export const getLicenseFirstCheckEpoch = (assignTimestamp: bigint) =>
     Math.floor((Number(assignTimestamp) - config.genesisDate.getTime() / 1000) / config.epochDurationInSeconds);
 
 export const domains = {

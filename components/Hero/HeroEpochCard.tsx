@@ -1,43 +1,25 @@
 'use client';
 
 import { CardFlexible } from '@/app/server-components/shared/cards/CardFlexible';
-import { Config, getCurrentEpoch, getEpochStartTimestamp, getNextEpochTimestamp } from '@/config';
-import { getClientConfig } from '@/config/clientConfig';
+import { getCurrentEpoch, getEpochStartTimestamp, getNextEpochTimestamp } from '@/config';
 import { differenceInSeconds, format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { RiTimeLine } from 'react-icons/ri';
 import { EpochTimer } from './EpochTimer';
 
 export default function HeroEpochCard() {
-    const [config, setConfig] = useState<Config>();
-    const [currentEpoch, setCurrentEpoch] = useState<number>();
-
-    // Init
-    useEffect(() => {
-        const { config } = getClientConfig();
-        setConfig(config);
-    }, []);
+    const [currentEpoch, setCurrentEpoch] = useState<number>(getCurrentEpoch());
 
     useEffect(() => {
-        if (config) {
-            setCurrentEpoch(getCurrentEpoch(config));
-        }
-    }, [config]);
-
-    useEffect(() => {
-        if (currentEpoch && config) {
+        if (currentEpoch) {
             setTimeout(
                 () => {
-                    setCurrentEpoch(getCurrentEpoch(config));
+                    setCurrentEpoch(getCurrentEpoch());
                 },
-                (differenceInSeconds(getNextEpochTimestamp(config), new Date()) + 1) * 1000,
+                (differenceInSeconds(getNextEpochTimestamp(), new Date()) + 1) * 1000,
             );
         }
     }, [currentEpoch]);
-
-    if (!config || !currentEpoch) {
-        return null;
-    }
 
     return (
         <CardFlexible widthClasses="sm:min-w-[420px]">
@@ -56,7 +38,7 @@ export default function HeroEpochCard() {
                 <div className="col web-only-flex gap-[5px]">
                     <div className="text-[15px] font-medium leading-none text-slate-500">Started at</div>
                     <div className="font-semibold leading-none">
-                        {format(getEpochStartTimestamp(config, currentEpoch), 'PP, kk:mm')}
+                        {format(getEpochStartTimestamp(currentEpoch), 'PP, kk:mm')}
                     </div>
                 </div>
 

@@ -1,5 +1,6 @@
 import { EthAddress } from '@/typedefs/blockchain';
 import { addSeconds } from 'date-fns';
+import { base, baseSepolia } from 'viem/chains';
 
 export type Config = {
     environment: 'mainnet' | 'testnet' | 'devnet';
@@ -9,6 +10,7 @@ export type Config = {
     mndContractAddress: EthAddress;
     r1ContractAddress: EthAddress;
     readerContractAddress: EthAddress;
+    explorerUrl: string;
     genesisDate: Date;
     contractsGenesisBlock: bigint;
     epochDurationInSeconds: number;
@@ -39,60 +41,27 @@ export const domains = {
     devnet: 'devnet-explorer.ratio1.ai',
 };
 
-export const configs: {
-    [key in 'mainnet' | 'testnet' | 'devnet']: Config;
-} = {
-    mainnet: {
-        environment: 'mainnet',
-        backendUrl: 'https://dapp-api.ratio1.ai',
-        oraclesUrl: 'https://oracle.ratio1.ai',
-        r1ContractAddress: '0x6444C6c2D527D85EA97032da9A7504d6d1448ecF',
-        ndContractAddress: '0xE658DF6dA3FB5d4FBa562F1D5934bd0F9c6bd423',
-        mndContractAddress: '0x0C431e546371C87354714Fcc1a13365391A549E2',
-        readerContractAddress: '0xa2fDD4c7E93790Ff68a01f01AA789D619F12c6AC',
-        genesisDate: new Date('2025-05-23T16:00:00.000Z'),
-        contractsGenesisBlock: 30614094n,
-        epochDurationInSeconds: 86400,
-        ndLicenseCap: 1575188843457943924200n,
-        mndCliffEpochs: 223,
-        gndVestingEpochs: 365,
-        mndVestingEpochs: 900,
-        ndVestingEpochs: 1080,
-    },
-    testnet: {
-        environment: 'testnet',
-        backendUrl: 'https://testnet-dapp-api.ratio1.ai',
-        oraclesUrl: 'https://testnet-oracle.ratio1.ai',
-        r1ContractAddress: '0xCC96f389F45Fc08b4fa8e2bC4C7DA9920292ec64',
-        ndContractAddress: '0x18E86a5829CA1F02226FA123f30d90dCd7cFd0ED',
-        mndContractAddress: '0xa8d7FFCE91a888872A9f5431B4Dd6c0c135055c1',
-        readerContractAddress: '0xd1c7Dca934B37FAA402EB2EC64F6644d6957bE3b',
-        genesisDate: new Date('2025-05-23T16:00:00.000Z'),
-        contractsGenesisBlock: 26124257n,
-        epochDurationInSeconds: 86400,
-        ndLicenseCap: 1575188843457943924200n,
-        mndCliffEpochs: 223,
-        gndVestingEpochs: 365,
-        mndVestingEpochs: 900,
-        ndVestingEpochs: 1080,
-    },
-    devnet: {
-        environment: 'devnet',
-        backendUrl: 'https://devnet-dapp-api.ratio1.ai',
-        oraclesUrl: 'https://devnet-oracle.ratio1.ai',
-        r1ContractAddress: '0x07C5678F0f4aC347496eAA8D6031b37FF3402CE5',
-        ndContractAddress: '0x8D0CE4933728FF7C04388f0bEcC9a45676E232F7',
-        mndContractAddress: '0x7A14Be75135a7ebdef99339CCc700C25Cda60c6E',
-        readerContractAddress: '0x2c62a818967D3396b535De3d1EC47aF1f2B1282D',
-        genesisDate: new Date('2025-05-23T16:00:00.000Z'),
-        contractsGenesisBlock: 26124424n,
-        epochDurationInSeconds: 3600,
-        ndLicenseCap: 1575188843457943924200n,
-        mndCliffEpochs: 223,
-        gndVestingEpochs: 365,
-        mndVestingEpochs: 900,
-        ndVestingEpochs: 1080,
-    },
+const environment = process.env.NEXT_PUBLIC_ENVIRONMENT as 'mainnet' | 'testnet' | 'devnet';
+
+export const chain = environment === 'mainnet' ? base : baseSepolia;
+
+const config: Config = {
+    environment,
+    backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL as string,
+    oraclesUrl: process.env.NEXT_PUBLIC_ORACLES_URL as string,
+    ndContractAddress: process.env.NEXT_PUBLIC_ND_CA as EthAddress,
+    mndContractAddress: process.env.NEXT_PUBLIC_MND_CA as EthAddress,
+    r1ContractAddress: process.env.NEXT_PUBLIC_R1_CA as EthAddress,
+    readerContractAddress: process.env.NEXT_PUBLIC_READER_CA as EthAddress,
+    explorerUrl: process.env.NEXT_PUBLIC_EXPLORER_URL as string,
+    genesisDate: new Date(process.env.NEXT_PUBLIC_GENESIS_DATE as string),
+    contractsGenesisBlock: BigInt(process.env.NEXT_PUBLIC_CONTRACTS_GENESIS_BLOCK as string),
+    epochDurationInSeconds: Number(process.env.NEXT_PUBLIC_EPOCH_DURATION_SECONDS),
+    ndLicenseCap: BigInt(process.env.NEXT_PUBLIC_ND_LICENSE_CAP as string),
+    mndCliffEpochs: 223,
+    gndVestingEpochs: 365,
+    mndVestingEpochs: 900,
+    ndVestingEpochs: 1080,
 };
 
 export const treasuryWallets: {
@@ -127,12 +96,4 @@ export const treasuryWallets: {
     },
 ];
 
-export const getEnvironment = (hostname: string | null): 'mainnet' | 'testnet' | 'devnet' => {
-    return hostname === domains.mainnet
-        ? ('mainnet' as const)
-        : hostname === domains.testnet
-          ? ('testnet' as const)
-          : hostname === domains.devnet
-            ? ('devnet' as const)
-            : ('devnet' as const);
-};
+export default config;

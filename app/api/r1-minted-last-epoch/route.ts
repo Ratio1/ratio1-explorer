@@ -1,16 +1,13 @@
-import { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
-import { getServerConfig } from '@/config/serverConfig';
+import config, { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
 import { getBlockByTimestamp } from '@/lib/api/blockchain';
 import { NextResponse } from 'next/server';
 
 // export const dynamic = 'force-dynamic'; // Ensure API route is not cached
 
 async function fetchR1MintedLastEpoch() {
-    const { config } = await getServerConfig();
-
-    const currentEpoch = getCurrentEpoch(config);
-    const lastEpochStartTimestamp = getEpochStartTimestamp(config, currentEpoch - 1);
-    const lastEpochEndTimestamp = getEpochStartTimestamp(config, currentEpoch);
+    const currentEpoch = getCurrentEpoch();
+    const lastEpochStartTimestamp = getEpochStartTimestamp(currentEpoch - 1);
+    const lastEpochEndTimestamp = getEpochStartTimestamp(currentEpoch);
 
     const fromBlock = await getBlockByTimestamp(lastEpochStartTimestamp.getTime() / 1000);
     const toBlock = await getBlockByTimestamp(lastEpochEndTimestamp.getTime() / 1000);

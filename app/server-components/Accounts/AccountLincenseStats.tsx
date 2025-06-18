@@ -1,4 +1,4 @@
-import { getServerConfig } from '@/config/serverConfig';
+import config from '@/config';
 import { fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
 import { fBI } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
@@ -6,7 +6,6 @@ import { CardItem } from '../shared/CardItem';
 
 export default async function AccountLincenseStats({ ethAddress }: { ethAddress: types.EthAddress }) {
     let licenses: types.LicenseInfo[], r1Balance: bigint;
-    const { config } = await getServerConfig();
 
     try {
         [licenses, r1Balance] = await Promise.all([

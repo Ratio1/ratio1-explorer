@@ -1,5 +1,4 @@
-import { Config, getNextEpochTimestamp } from '@/config';
-import { getServerConfig } from '@/config/serverConfig';
+import config, { Config, getNextEpochTimestamp } from '@/config';
 import { getSSURL } from '@/lib/actions';
 import { differenceInSeconds } from 'date-fns';
 import { cache } from 'react';
@@ -9,7 +8,7 @@ const fetchCachedR1MintedLastEpoch = cache(async (config: Config) => {
     const url = await getSSURL(`r1-minted-last-epoch?env=${config.environment}`);
 
     const res = await fetch(url, {
-        next: { revalidate: differenceInSeconds(getNextEpochTimestamp(config), new Date()) + 1 },
+        next: { revalidate: differenceInSeconds(getNextEpochTimestamp(), new Date()) + 1 },
     });
 
     const data: {
@@ -20,8 +19,6 @@ const fetchCachedR1MintedLastEpoch = cache(async (config: Config) => {
 });
 
 export default async function R1MintedLastEpoch() {
-    const { config } = await getServerConfig();
-
     let value: string | undefined;
 
     try {

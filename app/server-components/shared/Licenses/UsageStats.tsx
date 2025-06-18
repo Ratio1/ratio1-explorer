@@ -1,4 +1,4 @@
-import { getServerConfig } from '@/config/serverConfig';
+import config from '@/config';
 import { fBI } from '@/lib/utils';
 
 export default async function UsageStats({
@@ -11,8 +11,6 @@ export default async function UsageStats({
     if (!totalAssignedAmount) {
         return null;
     }
-
-    const { config } = await getServerConfig();
 
     return (
         <div className="row w-full gap-2.5 text-sm font-medium leading-none">

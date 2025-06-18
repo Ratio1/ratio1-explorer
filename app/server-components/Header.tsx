@@ -1,13 +1,11 @@
 import { CardRounded } from '@/app/server-components/shared/cards/CardRounded';
 import Navigation from '@/components/Navigation';
 import { NetworkSelector } from '@/components/NetworkSelector';
-import { getServerConfig } from '@/config/serverConfig';
+import config from '@/config';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default async function Header() {
-    const { config } = await getServerConfig();
-
     return (
         <div className="flex w-full justify-between">
             <div className="row gap-10">

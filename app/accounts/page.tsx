@@ -1,4 +1,4 @@
-import { getServerConfig } from '@/config/serverConfig';
+import config from '@/config';
 import { getSSURL } from '@/lib/actions';
 import * as types from '@/typedefs/blockchain';
 import { LicenseItem } from '@/typedefs/general';
@@ -44,8 +44,6 @@ export default async function AccountsPage(props: {
 }) {
     const searchParams = await props.searchParams;
     const currentPage = Number(searchParams?.page) || 1;
-
-    const { config } = await getServerConfig();
 
     let ndHolders: {
             ethAddress: types.EthAddress;

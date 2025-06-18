@@ -3,8 +3,7 @@
 import { ERC20Abi } from '@/blockchain/ERC20';
 import { NDContractAbi } from '@/blockchain/NDContract';
 import { ReaderAbi } from '@/blockchain/Reader';
-import { getCurrentEpoch } from '@/config';
-import { getServerConfig } from '@/config/serverConfig';
+import config, { getCurrentEpoch } from '@/config';
 import * as types from '@/typedefs/blockchain';
 import console from 'console';
 import Moralis from 'moralis';
@@ -24,7 +23,6 @@ startMoralis();
 
 export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Promise<types.NodeLicenseDetailsResponse> {
     const publicClient = await getPublicClient();
-    const { config } = await getServerConfig();
 
     return await publicClient
         .readContract({
@@ -41,7 +39,6 @@ export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Prom
 
 export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: number | string): Promise<types.License> {
     const publicClient = await getPublicClient();
-    const { config } = await getServerConfig();
 
     if (licenseType === 'ND') {
         return await publicClient
@@ -96,7 +93,6 @@ export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: n
 
 export const getLicenses = async (address: types.EthAddress): Promise<types.LicenseInfo[]> => {
     const publicClient = await getPublicClient();
-    const { config } = await getServerConfig();
 
     const licenses = await publicClient
         .readContract({
@@ -134,7 +130,6 @@ export const fetchErc20Balance = async (address: types.EthAddress, tokenAddress:
 
 export const fetchR1Price = async () => {
     const publicClient = await getPublicClient();
-    const { config } = await getServerConfig();
 
     return await publicClient.readContract({
         address: config.ndContractAddress,
@@ -145,7 +140,6 @@ export const fetchR1Price = async () => {
 
 export const fetchR1TotalSupply = async () => {
     const publicClient = await getPublicClient();
-    const { config } = await getServerConfig();
 
     return await publicClient.readContract({
         address: config.r1ContractAddress,
@@ -157,7 +151,6 @@ export const fetchR1TotalSupply = async () => {
 // Binary search for the block with the closest timestamp to the target timestamp
 export const getBlockByTimestamp = async (targetTimestamp: number) => {
     const publicClient = await getPublicClient();
-    const { config } = await getServerConfig();
 
     let latestBlock = await publicClient.getBlock();
     let earliestBlock = await publicClient.getBlock({ blockNumber: config.contractsGenesisBlock });
@@ -201,7 +194,6 @@ export async function getLicensesTotalSupply(): Promise<{
     ndTotalSupply: bigint;
 }> {
     const publicClient = await getPublicClient();
-    const { config } = await getServerConfig();
 
     const [mndTotalSupply, ndTotalSupply] = await publicClient.readContract({
         address: config.readerContractAddress,
@@ -220,12 +212,8 @@ export async function getLicenseHolders(licenseType: 'ND' | 'MND' | 'GND'): Prom
         tokenId: string | number;
     }[]
 > {
-    const { config } = await getServerConfig();
-
     const address = licenseType === 'ND' ? config.ndContractAddress : config.mndContractAddress;
-    const { environment } = await getServerConfig();
-
-    const evmChain: EvmChain = environment === 'mainnet' ? EvmChain.BASE : EvmChain.BASE_SEPOLIA;
+    const evmChain: EvmChain = config.environment === 'mainnet' ? EvmChain.BASE : EvmChain.BASE_SEPOLIA;
 
     const holders: {
         ownerOf: EvmAddress | undefined;
@@ -250,17 +238,14 @@ export async function getLicenseHolders(licenseType: 'ND' | 'MND' | 'GND'): Prom
 }
 
 const getNdLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {
-    const { config } = await getServerConfig();
     return calculateLicenseRewards(license, epochs, epochs_vals, config.ndVestingEpochs);
 };
 
 const getMndLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {
-    const { config } = await getServerConfig();
     return calculateLicenseRewards(license, epochs, epochs_vals, config.mndVestingEpochs, config.mndCliffEpochs);
 };
 
 const getGndLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {
-    const { config } = await getServerConfig();
     return calculateLicenseRewards(license, epochs, epochs_vals, config.gndVestingEpochs);
 };
 
@@ -271,7 +256,6 @@ const calculateLicenseRewards = async (
     vestingEpochs: number,
     cliffEpochs: number = 0,
 ): Promise<bigint> => {
-    const { config } = await getServerConfig();
     const currentEpoch = getCurrentEpoch(config);
 
     const firstEpochToClaim =

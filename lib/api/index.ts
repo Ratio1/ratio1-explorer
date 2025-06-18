@@ -1,12 +1,10 @@
 'use server';
 
-import { getServerConfig } from '@/config/serverConfig';
 import * as types from '@/typedefs/blockchain';
 
 const PAGE_SIZE = 10;
 
 export async function getActiveNodes(page: number = 1): Promise<types.OraclesDefaultResult> {
-    const { config } = await getServerConfig();
     const oraclesApiURL = config.oraclesUrl;
 
     const response: Response = await fetch(`${oraclesApiURL}/active_nodes_list?items_per_page=${PAGE_SIZE}&page=${page}`, {
@@ -21,7 +19,6 @@ export async function getActiveNodes(page: number = 1): Promise<types.OraclesDef
 }
 
 export async function pingBackend(): Promise<boolean> {
-    const { config } = await getServerConfig();
     const backendApiURL = config.backendUrl;
 
     let response: Response | undefined;

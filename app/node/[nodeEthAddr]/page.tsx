@@ -2,7 +2,7 @@ import LicenseCard from '@/app/server-components/main-cards/LicenseCard';
 import NodeCard from '@/app/server-components/main-cards/NodeCard';
 import NodePerformanceCard from '@/app/server-components/main-cards/NodePerformanceCard';
 import { DetailedAlert } from '@/app/server-components/shared/DetailedAlert';
-import { getServerConfig } from '@/config/serverConfig';
+import config from '@/config';
 import { getNodeAvailability } from '@/lib/actions';
 import { getNodeLicenseDetails } from '@/lib/api/blockchain';
 import { isEmptyETHAddr } from '@/lib/utils';
@@ -14,7 +14,6 @@ import { isAddress } from 'viem';
 
 export async function generateMetadata({ params }) {
     const { nodeEthAddr } = await params;
-    const { config } = await getServerConfig();
 
     if (!nodeEthAddr || !isAddress(nodeEthAddr) || isEmptyETHAddr(nodeEthAddr)) {
         console.log(`[Node Page] Invalid node address: ${nodeEthAddr}`);
@@ -117,7 +116,6 @@ const getCachedLicenseDetailsAndNodeAvailability = cache(
 
 export default async function NodePage({ params }) {
     const { nodeEthAddr } = await params;
-    const { config } = await getServerConfig();
 
     if (!nodeEthAddr || !isAddress(nodeEthAddr) || isEmptyETHAddr(nodeEthAddr)) {
         console.log(`[Node Page] Invalid node address in page component: ${nodeEthAddr}`);

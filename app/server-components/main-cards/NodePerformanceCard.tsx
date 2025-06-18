@@ -1,6 +1,5 @@
 import EpochsChart from '@/components/Nodes/EpochsChart';
 import { getCurrentEpoch } from '@/config';
-import { getServerConfig } from '@/config/serverConfig';
 import { arrayAverage } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Tooltip } from '@heroui/tooltip';
@@ -13,8 +12,6 @@ export default async function NodePerformanceCard({
 }: {
     nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
 }) {
-    const { config } = await getServerConfig();
-
     return (
         <BorderedCard>
             <div className="card-title font-bold">Node Performance</div>
@@ -116,9 +113,7 @@ export default async function NodePerformanceCard({
                                                     <div className="font-semibold">
                                                         {parseFloat(((val * 100) / 255).toFixed(2))}%
                                                     </div>
-                                                    <div className="text-slate-500">
-                                                        Epoch {getCurrentEpoch(config) - 10 + index}
-                                                    </div>
+                                                    <div className="text-slate-500">Epoch {getCurrentEpoch() - 10 + index}</div>
                                                 </div>
                                             }
                                             closeDelay={0}

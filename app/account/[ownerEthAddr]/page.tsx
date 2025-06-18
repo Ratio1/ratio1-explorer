@@ -4,7 +4,7 @@ import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizon
 import UsageStats from '@/app/server-components/shared/Licenses/UsageStats';
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
-import { getServerConfig } from '@/config/serverConfig';
+import config from '@/config';
 import { fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
 import { cachedGetENSName, fBI, getShortAddress, isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
@@ -35,7 +35,6 @@ export async function generateMetadata({ params }) {
 
 export default async function OwnerPage({ params }) {
     const { ownerEthAddr } = await params;
-    const { config } = await getServerConfig();
 
     if (!ownerEthAddr || !isAddress(ownerEthAddr) || isEmptyETHAddr(ownerEthAddr)) {
         console.log(`[Account Page] Invalid owner address: ${ownerEthAddr}`);

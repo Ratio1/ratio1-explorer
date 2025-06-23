@@ -2,6 +2,9 @@ import config, { treasuryWallets } from '@/config';
 import { fetchErc20Balance } from '@/lib/api/blockchain';
 import { fBI, fN } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
+import { Button } from '@heroui/button';
+import Link from 'next/link';
+import { RiArrowRightUpLine } from 'react-icons/ri';
 import { CardItem } from '../shared/CardItem';
 import { BorderedCard } from '../shared/cards/BorderedCard';
 import ListHeader from '../shared/ListHeader';
@@ -70,7 +73,23 @@ export default async function TreasuryDistribution({ license }: Props) {
 
     return (
         <>
-            <div className="card-title font-bold">Treasury Distribution</div>
+            <div className="row gap-3">
+                <div className="card-title font-bold">Treasury Distribution</div>
+
+                <Button
+                    color="primary"
+                    variant="flat"
+                    size="sm"
+                    as={Link}
+                    href="https://ratio1.ai/blog/transparency-as-a-principle-not-a-slogan-and-why-we-re-sharing-our-foundation-wallets"
+                    target="_blank"
+                >
+                    <div className="row gap-0.5">
+                        <div className="text-sm font-medium">Read more</div>
+                        <RiArrowRightUpLine className="mt-[1px] text-[18px]" />
+                    </div>
+                </Button>
+            </div>
 
             <div className="list">
                 <ListHeader useFixedWidthSmall>

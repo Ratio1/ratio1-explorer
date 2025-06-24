@@ -21,7 +21,7 @@ const fetchCachedLicenseHolders = cache(async (environment: 'mainnet' | 'testnet
     const url = await getSSURL(`license-holders?env=${environment}`);
 
     const res = await fetch(url, {
-        next: { revalidate: 3600 }, // Cache for 1 hour
+        next: { revalidate: 300 }, // Cache for 5 minutes
     });
 
     const data: {

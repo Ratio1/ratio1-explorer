@@ -36,7 +36,7 @@ export default async function LicenseSmallCard({
                     {isBanned ? (
                         <SmallTag variant="banned">Banned</SmallTag>
                     ) : !!licenseType && !hideType ? (
-                        <SmallTag>{licenseType}</SmallTag>
+                        <SmallTag variant={licenseType}>{licenseType}</SmallTag>
                     ) : (
                         <></>
                     )}

@@ -44,7 +44,7 @@ export default async function Header() {
                         className="min-h-10 rounded-full lg:min-h-12"
                         color="primary"
                         as={Link}
-                        href={process.env.NEXT_APP_URL}
+                        href={process.env.NEXT_PUBLIC_APP_URL}
                         target="_blank"
                     >
                         <div className="row gap-1.5">

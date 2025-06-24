@@ -2,8 +2,10 @@ import { CardRounded } from '@/app/server-components/shared/cards/CardRounded';
 import Navigation from '@/components/Navigation';
 import { NetworkSelector } from '@/components/NetworkSelector';
 import config from '@/config';
+import { Button } from '@heroui/button';
 import Image from 'next/image';
 import Link from 'next/link';
+import { RiFunctionLine } from 'react-icons/ri';
 
 export default async function Header() {
     return (
@@ -28,7 +30,7 @@ export default async function Header() {
             </div>
 
             <div className="row gap-2">
-                <div className="web-only-flex">
+                <div className="web-only-flex gap-2">
                     <CardRounded>
                         <div className="row gap-1.5 px-4 py-3">
                             <Image className="h-6 w-auto" src="/base.webp" width={32} height={32} alt="Blockchain" />
@@ -37,6 +39,19 @@ export default async function Header() {
                             </div>
                         </div>
                     </CardRounded>
+
+                    <Button
+                        className="min-h-10 rounded-full lg:min-h-12"
+                        color="primary"
+                        as={Link}
+                        href={process.env.NEXT_APP_URL}
+                        target="_blank"
+                    >
+                        <div className="row gap-1.5">
+                            <RiFunctionLine className="text-lg" />
+                            <div className="font-medium">App</div>
+                        </div>
+                    </Button>
                 </div>
 
                 <div className="flex">

@@ -2,10 +2,8 @@ import { CardRounded } from '@/app/server-components/shared/cards/CardRounded';
 import Navigation from '@/components/Navigation';
 import { NetworkSelector } from '@/components/NetworkSelector';
 import config from '@/config';
-import { Button } from '@heroui/button';
 import Image from 'next/image';
 import Link from 'next/link';
-import { RiFunctionLine } from 'react-icons/ri';
 
 export default async function Header() {
     return (
@@ -40,7 +38,7 @@ export default async function Header() {
                         </div>
                     </CardRounded>
 
-                    <Button
+                    {/* <Button
                         className="min-h-10 rounded-full lg:min-h-12"
                         color="primary"
                         as={Link}
@@ -51,7 +49,7 @@ export default async function Header() {
                             <RiFunctionLine className="text-lg" />
                             <div className="font-medium">App</div>
                         </div>
-                    </Button>
+                    </Button> */}
                 </div>
 
                 <div className="flex">

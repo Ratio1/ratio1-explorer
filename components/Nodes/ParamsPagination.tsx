@@ -14,6 +14,11 @@ export default function ParamsPagination({ total }: { total: number }) {
         const params = new URLSearchParams(searchParams);
         params.set('page', pageNumber.toString());
         replace(`${pathname}?${params.toString()}`);
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
     };
 
     if (total === 1) {

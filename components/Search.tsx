@@ -1,6 +1,7 @@
 'use client';
 
 import { Alert } from '@/app/server-components/shared/Alert';
+import { getActiveNodes } from '@/lib/api';
 import { getLicense } from '@/lib/api/blockchain';
 import { getNodeLastEpoch } from '@/lib/api/oracles';
 import { routePath } from '@/lib/routes';
@@ -21,6 +22,8 @@ type SearchResult =
     | { type: 'node'; nodeAddress: types.EthAddress; alias: string; isOnline: boolean }
     | { type: 'license'; licenseId: number; licenseType: 'ND' | 'MND' | 'GND'; nodeAddress: types.EthAddress }
     | { type: 'owner'; address: types.EthAddress; ensName?: string };
+
+const URL_SAFE_PATTERN = /^[a-zA-Z0-9x\s\-_\.]+$/;
 
 export default function Search() {
     const [isLoading, setLoading] = useState<boolean>(false);
@@ -51,9 +54,11 @@ export default function Search() {
     }, [handleKeyPress]);
 
     const onSearch = async (query: string) => {
-        if (!query) {
-            setResults([]);
-            setError(false);
+        query = query.trim();
+
+        if (!query || query.length > 42 || !URL_SAFE_PATTERN.test(query)) {
+            console.log('Search query is invalid');
+            displayError();
             setLoading(false);
             return;
         }
@@ -86,7 +91,6 @@ export default function Search() {
                     console.log('Address is not a valid node');
                 } finally {
                     setResults(resultsArray);
-
                     setError(false);
                 }
             } else if (isNonZeroInteger(query)) {
@@ -123,16 +127,40 @@ export default function Search() {
                 setResults(resultsArray);
                 setError(resultsArray.length === 0);
             } else {
-                setResults([]);
-                setError(true);
+                let response: types.OraclesDefaultResult;
+
+                try {
+                    response = await getActiveNodes(1, query);
+
+                    if (response.result.nodes) {
+                        Object.entries(response.result.nodes).forEach(([_ratio1Addr, node]) => {
+                            resultsArray.push({
+                                type: 'node',
+                                nodeAddress: node.eth_addr,
+                                alias: node.alias,
+                                isOnline: parseInt(node.last_seen_ago.split(':')[2]) < 60,
+                            });
+                        });
+
+                        setResults(resultsArray);
+                    } else {
+                        displayError();
+                    }
+                } catch (error) {
+                    displayError();
+                }
             }
         } catch (error) {
             console.log(error);
-            setResults([]);
-            setError(true);
+            displayError();
         } finally {
             setLoading(false);
         }
+    };
+
+    const displayError = () => {
+        setResults([]);
+        setError(true);
     };
 
     useDebounce(

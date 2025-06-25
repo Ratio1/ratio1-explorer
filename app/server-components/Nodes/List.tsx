@@ -5,15 +5,18 @@ import { Skeleton } from '@heroui/skeleton';
 import { Fragment, Suspense } from 'react';
 import ListHeader from '../shared/ListHeader';
 import Node from './Node';
+import NodeListGNDCard from './NodeListGNDCard';
 
 export default async function List({
     nodes,
     pagesCount,
+    currentPage,
 }: {
     nodes: {
         [key: string]: types.NodeState;
     };
     pagesCount: number;
+    currentPage: number;
 }) {
     return (
         <div className="list-wrapper">
@@ -26,6 +29,8 @@ export default async function List({
                     <div className="min-w-[50px]">Version</div>
                     <div className="min-w-[152px]">Last Epoch Availability</div>
                 </ListHeader>
+
+                {currentPage === 1 && <NodeListGNDCard />}
 
                 {Object.entries(nodes).map(([ratio1Addr, node]) => (
                     <Fragment key={ratio1Addr}>

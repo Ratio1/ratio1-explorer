@@ -14,6 +14,8 @@ async function fetchR1MintedLastEpoch() {
 
     const alchemyUrl = `https://base-${config.environment === 'mainnet' ? 'mainnet' : 'sepolia'}.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`;
 
+    console.error('R1MintedLastEpoch alchemyUrl', alchemyUrl);
+
     const res = await fetch(alchemyUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -34,7 +36,8 @@ async function fetchR1MintedLastEpoch() {
         }),
     });
 
-    console.log('R1MintedLastEpoch res', res);
+    console.error('R1MintedLastEpoch res', res.statusText);
+    console.error('R1MintedLastEpoch res', res.text);
 
     const data = await res.json();
     const transfers = data.result?.transfers ?? [];

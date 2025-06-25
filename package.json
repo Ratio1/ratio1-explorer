@@ -10,7 +10,7 @@
         "build:mainnet": "dotenv -e .env.production.mainnet next build",
         "build:testnet": "dotenv -e .env.production.testnet next build",
         "build:devnet": "dotenv -e .env.production.devnet next build",
-        "build": "next build",
+        "build": "dotenv -e .env.production.mainnet next build",
         "start": "next start",
         "lint": "next lint"
     },

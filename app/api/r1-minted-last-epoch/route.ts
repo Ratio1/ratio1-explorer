@@ -34,6 +34,8 @@ async function fetchR1MintedLastEpoch() {
         }),
     });
 
+    console.log('R1MintedLastEpoch res', res);
+
     const data = await res.json();
     const transfers = data.result?.transfers ?? [];
 
@@ -54,7 +56,7 @@ export async function GET() {
     try {
         value = await fetchR1MintedLastEpoch();
     } catch (error) {
-        console.error('Error fetching R1 minted in last epoch:', error);
+        console.error('Error fetching R1 minted last epoch:', error);
         return NextResponse.json({ error: 'Failed to fetch minted R1 data' }, { status: 500 });
     }
 

@@ -1,10 +1,10 @@
-import config, { Config, getNextEpochTimestamp } from '@/config';
+import config, { getNextEpochTimestamp } from '@/config';
 import { getSSURL } from '@/lib/actions';
 import { differenceInSeconds } from 'date-fns';
 import { cache } from 'react';
 import { formatUnits } from 'viem';
 
-const fetchCachedR1MintedLastEpoch = cache(async (config: Config) => {
+const fetchCachedR1MintedLastEpoch = cache(async () => {
     const url = await getSSURL(`r1-minted-last-epoch?env=${config.environment}`);
 
     const res = await fetch(url, {
@@ -20,11 +20,12 @@ const fetchCachedR1MintedLastEpoch = cache(async (config: Config) => {
 
 export default async function R1MintedLastEpoch() {
     let value: string | undefined;
+    const alchemyUrl = `https://base-${config.environment === 'mainnet' ? 'mainnet' : 'sepolia'}.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`;
 
     try {
-        value = await fetchCachedR1MintedLastEpoch(config);
+        value = await fetchCachedR1MintedLastEpoch();
     } catch (error) {
-        console.log('Error fetching R1 minted last epoch', error);
+        console.log('Error fetching R1 minted last epoch', alchemyUrl, error);
         return <div className="text-lg text-slate-600 md:text-xl">—</div>;
     }
 

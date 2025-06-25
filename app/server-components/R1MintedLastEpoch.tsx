@@ -20,12 +20,11 @@ const fetchCachedR1MintedLastEpoch = cache(async () => {
 
 export default async function R1MintedLastEpoch() {
     let value: string | undefined;
-    const alchemyUrl = `https://base-${config.environment === 'mainnet' ? 'mainnet' : 'sepolia'}.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`;
 
     try {
         value = await fetchCachedR1MintedLastEpoch();
     } catch (error) {
-        console.log('Error fetching R1 minted last epoch', alchemyUrl, error);
+        console.log('R1MintedLastEpoch', error);
         return <div className="text-lg text-slate-600 md:text-xl">—</div>;
     }
 

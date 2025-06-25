@@ -39,22 +39,28 @@ async function fetchR1MintedLastEpoch() {
     console.error('R1MintedLastEpoch res', res.statusText);
     console.error('R1MintedLastEpoch res', res.text);
 
-    const data = await res.json();
-    const transfers = data.result?.transfers ?? [];
+    // const data = await res.json();
+    // const transfers = data.result?.transfers ?? [];
 
-    const value = transfers.reduce((acc: bigint, t: any) => {
-        try {
-            return acc + BigInt(t.rawContract.value ?? '0');
-        } catch {
-            return acc;
-        }
-    }, 0n);
+    // const value = transfers.reduce((acc: bigint, t: any) => {
+    //     try {
+    //         return acc + BigInt(t.rawContract.value ?? '0');
+    //     } catch {
+    //         return acc;
+    //     }
+    // }, 0n);
 
-    return value;
+    // return value;
+
+    return {
+        status: res.status,
+        statusText: res.statusText,
+        text: res.text,
+    };
 }
 
 export async function GET() {
-    let value: bigint;
+    let value: any;
 
     try {
         value = await fetchR1MintedLastEpoch();

@@ -1,36 +1,30 @@
-import config, { getNextEpochTimestamp } from '@/config';
-import { getSSURL } from '@/lib/actions';
-import { differenceInSeconds } from 'date-fns';
+import { fetchR1MintedLastEpoch } from '@/lib/api/blockchain';
 import { cache } from 'react';
 import { formatUnits } from 'viem';
 
+// Enable page-level caching
+export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
+
 const fetchCachedR1MintedLastEpoch = cache(async () => {
-    const url = await getSSURL(`r1-minted-last-epoch?env=${config.environment}`);
-
-    const res = await fetch(url, {
-        next: { revalidate: differenceInSeconds(getNextEpochTimestamp(), new Date()) + 1 },
-    });
-
-    const data: {
-        value: string;
-    } = await res.json();
-
-    return data.value;
+    const value: bigint = await fetchR1MintedLastEpoch();
+    return value;
 });
 
 export default async function R1MintedLastEpoch() {
-    let value: string | undefined;
+    let value: bigint | undefined;
 
     try {
         value = await fetchCachedR1MintedLastEpoch();
+        console.log('R1MintedLastEpoch', value);
     } catch (error) {
-        console.log('R1MintedLastEpoch', error);
+        console.log('R1MintedLastEpoch error', error);
         return <div className="text-lg text-slate-600 md:text-xl">—</div>;
     }
 
     return (
         <div className="text-lg text-primary md:text-xl">
-            {!!value ? `${parseFloat(Number(formatUnits(BigInt(value), 18)).toFixed(1)).toLocaleString()}` : '...'}
+            {!!value ? `${parseFloat(Number(formatUnits(BigInt(value), 18)).toFixed(2)).toLocaleString()}` : '...'}
         </div>
     );
 }

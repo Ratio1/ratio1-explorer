@@ -3,7 +3,7 @@
 import { ERC20Abi } from '@/blockchain/ERC20';
 import { NDContractAbi } from '@/blockchain/NDContract';
 import { ReaderAbi } from '@/blockchain/Reader';
-import config, { getCurrentEpoch } from '@/config';
+import config, { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
 import * as types from '@/typedefs/blockchain';
 import console from 'console';
 import Moralis from 'moralis';
@@ -235,6 +235,51 @@ export async function getLicenseHolders(licenseType: 'ND' | 'MND' | 'GND'): Prom
     } while (!!cursor);
 
     return holders;
+}
+
+export async function fetchR1MintedLastEpoch() {
+    const currentEpoch = getCurrentEpoch();
+    const lastEpochStartTimestamp = getEpochStartTimestamp(currentEpoch - 1);
+    const lastEpochEndTimestamp = getEpochStartTimestamp(currentEpoch);
+
+    const fromBlock = await getBlockByTimestamp(lastEpochStartTimestamp.getTime() / 1000);
+    const toBlock = await getBlockByTimestamp(lastEpochEndTimestamp.getTime() / 1000);
+
+    const alchemyUrl = `https://base-${config.environment === 'mainnet' ? 'mainnet' : 'sepolia'}.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`;
+
+    const res = await fetch(alchemyUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'alchemy_getAssetTransfers',
+            params: [
+                {
+                    fromBlock: `0x${fromBlock.toString(16)}`,
+                    toBlock: `0x${toBlock.toString(16)}`,
+                    fromAddress: '0x0000000000000000000000000000000000000000',
+                    contractAddresses: [config.r1ContractAddress],
+                    category: ['erc20'],
+                    withMetadata: false,
+                },
+            ],
+        }),
+    });
+
+    const data = await res.json();
+
+    const transfers = data.result?.transfers ?? [];
+
+    const value: bigint = transfers.reduce((acc: bigint, t: any) => {
+        try {
+            return acc + BigInt(t.rawContract.value ?? '0');
+        } catch {
+            return acc;
+        }
+    }, 0n);
+
+    return value;
 }
 
 const getNdLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {

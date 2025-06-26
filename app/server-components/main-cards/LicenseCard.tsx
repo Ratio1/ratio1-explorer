@@ -11,7 +11,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import PoA from '../Licenses/PoA';
-import TreasuryDistribution from '../Licenses/TreasuryDistribution';
+import TreasuryWallets from '../Licenses/TreasuryWallets';
 import { CardTitle } from '../shared/CardTitle';
 import { LargeTag } from '../shared/LargeTag';
 import UsageStats from '../shared/Licenses/UsageStats';
@@ -122,9 +122,7 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                 </Suspense>
             </div>
 
-            {environment === 'mainnet' && licenseId === '1' && licenseType === 'GND' && (
-                <TreasuryDistribution license={license} />
-            )}
+            {environment === 'mainnet' && licenseId === '1' && licenseType === 'GND' && <TreasuryWallets license={license} />}
         </BorderedCard>
     );
 }

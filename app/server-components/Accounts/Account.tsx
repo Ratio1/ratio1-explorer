@@ -17,21 +17,21 @@ interface Props {
 
 export default async function Account({ ethAddress, licenses }: Props) {
     return (
-        <BorderedCard useCustomWrapper useFixedWidthLarge>
+        <BorderedCard useCustomWrapper useFixedWidthSmall>
             <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6 lg:py-4">
-                <div className="min-w-[180px]">
+                <div className="min-w-[260px]">
                     <CardItem
-                        label={
-                            licenses.findIndex((license) => license.licenseType === 'GND') !== -1 ? (
-                                <SmallTag>Foundation Wallet</SmallTag>
-                            ) : (
-                                <></>
-                            )
-                        }
+                        label="Address"
                         value={
-                            <ClientWrapper>
-                                <CopyableAddress value={ethAddress} size={4} link={`${routePath.owner}/${ethAddress}`} />
-                            </ClientWrapper>
+                            <div className="row gap-2">
+                                <ClientWrapper>
+                                    <CopyableAddress value={ethAddress} size={4} link={`${routePath.owner}/${ethAddress}`} />
+                                </ClientWrapper>
+
+                                {licenses.findIndex((license) => license.licenseType === 'GND') !== -1 && (
+                                    <SmallTag>Foundation Wallet</SmallTag>
+                                )}
+                            </div>
                         }
                     />
                 </div>

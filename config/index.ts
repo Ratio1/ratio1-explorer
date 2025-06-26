@@ -11,6 +11,7 @@ export type Config = {
     mndContractAddress: EthAddress;
     r1ContractAddress: EthAddress;
     readerContractAddress: EthAddress;
+    usdcContractAddress: EthAddress;
     explorerUrl: string;
     genesisDate: Date;
     contractsGenesisBlock: bigint;
@@ -55,6 +56,7 @@ const config: Config = {
     mndContractAddress: process.env.NEXT_PUBLIC_MND_CA as EthAddress,
     r1ContractAddress: process.env.NEXT_PUBLIC_R1_CA as EthAddress,
     readerContractAddress: process.env.NEXT_PUBLIC_READER_CA as EthAddress,
+    usdcContractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' as EthAddress,
     explorerUrl: process.env.NEXT_PUBLIC_EXPLORER_URL as string,
     genesisDate: new Date(process.env.NEXT_PUBLIC_GENESIS_DATE as string),
     contractsGenesisBlock: BigInt(process.env.NEXT_PUBLIC_CONTRACTS_GENESIS_BLOCK as string),
@@ -95,6 +97,11 @@ export const treasuryWallets: {
         address: '0x0A27F805Db42089d79B96A4133A93B2e5Ff1b28C',
         name: 'CSR',
         percentage: 17.31,
+    },
+    {
+        address: '0x825d1Cb6D0Ff89C93B2d301F1d2830af9C7b76aE',
+        name: 'VAT',
+        percentage: 0,
     },
 ];
 

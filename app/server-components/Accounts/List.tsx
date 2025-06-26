@@ -27,8 +27,8 @@ export default async function List({
     return (
         <div className="list-wrapper">
             <div className="list">
-                <ListHeader>
-                    <div className="min-w-[180px]">Address</div>
+                <ListHeader useFixedWidthSmall>
+                    <div className="min-w-[260px]">Address</div>
                     <div className="min-w-[188px]">Licenses Owned (ND / MND)</div>
                     <div className="min-w-[128px]">Wallet $R1 Balance</div>
                     <div className="min-w-[118px]">Last Claim Epoch</div>

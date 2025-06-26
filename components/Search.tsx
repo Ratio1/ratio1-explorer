@@ -141,7 +141,7 @@ export default function Search() {
                     response = await getActiveNodes(1, query);
 
                     if (response.result.nodes) {
-                        console.log('Nodes response for query', query, response.result.nodes);
+                        // console.log('Nodes response for query', query, response.result.nodes);
 
                         Object.entries(response.result.nodes).forEach(([_ratio1Addr, node]) => {
                             resultsArray.push({

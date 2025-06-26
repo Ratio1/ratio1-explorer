@@ -16,6 +16,7 @@ export default async function R1MintedLastEpoch() {
 
     try {
         value = await fetchCachedR1MintedLastEpoch();
+        // console.log('R1MintedLastEpoch value', value);
     } catch (error) {
         console.log('R1MintedLastEpoch error', error);
         return <div className="text-lg text-slate-600 md:text-xl">—</div>;
@@ -23,7 +24,7 @@ export default async function R1MintedLastEpoch() {
 
     return (
         <div className="text-lg text-primary md:text-xl">
-            {!!value ? `${parseFloat(Number(formatUnits(BigInt(value), 18)).toFixed(2)).toLocaleString()}` : '...'}
+            {value !== undefined ? `${parseFloat(Number(formatUnits(BigInt(value), 18)).toFixed(2)).toLocaleString()}` : '...'}
         </div>
     );
 }

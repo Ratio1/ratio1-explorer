@@ -3,9 +3,10 @@
 import { ERC20Abi } from '@/blockchain/ERC20';
 import { NDContractAbi } from '@/blockchain/NDContract';
 import { ReaderAbi } from '@/blockchain/Reader';
-import config, { getCurrentEpoch, getEpochStartTimestamp } from '@/config';
+import config, { getCurrentEpoch, getEpochStartTimestamp, getNextEpochTimestamp } from '@/config';
 import * as types from '@/typedefs/blockchain';
 import console from 'console';
+import { differenceInSeconds } from 'date-fns';
 import Moralis from 'moralis';
 import { EvmAddress, EvmChain } from 'moralis/common-evm-utils';
 import { isEmptyETHAddr } from '../utils';
@@ -265,6 +266,7 @@ export async function fetchR1MintedLastEpoch() {
                 },
             ],
         }),
+        next: { revalidate: differenceInSeconds(getNextEpochTimestamp(), new Date()) + 5 },
     });
 
     const data = await res.json();

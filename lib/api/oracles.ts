@@ -2,34 +2,6 @@
 
 import config from '@/config';
 import * as types from '@/typedefs/blockchain';
-import axios, { AxiosInstance } from 'axios';
-
-const axiosInstances: Map<string, AxiosInstance> = new Map();
-
-export async function getAxiosBackend(baseURL: string): Promise<AxiosInstance> {
-    if (!axiosInstances.has(baseURL)) {
-        const instance = axios.create({
-            baseURL,
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-        });
-
-        instance.interceptors.response.use(
-            (response) => {
-                return response;
-            },
-            async (error) => {
-                return error.response;
-            },
-        );
-
-        axiosInstances.set(baseURL, instance);
-    }
-
-    return axiosInstances.get(baseURL)!;
-}
 
 export const getNodeLastEpoch = async (nodeEthAddr: types.EthAddress) => {
     const oraclesApiURL = config.oraclesUrl;
@@ -53,9 +25,15 @@ export const getCurrentEpochServer = async () => {
 };
 
 async function _doGet<T>(endpoint: string, baseUrl: string) {
-    const axiosOracles = await getAxiosBackend(baseUrl);
+    const response = await fetch(`${baseUrl}${endpoint}`, {
+        next: { revalidate: 60 },
+    });
 
-    const response = await axiosOracles.get<{
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = (await response.json()) as {
         result: (
             | {
                   error: string;
@@ -64,9 +42,7 @@ async function _doGet<T>(endpoint: string, baseUrl: string) {
         ) &
             types.OraclesDefaultResult;
         node_addr: types.R1Address;
-    }>(endpoint);
-
-    const { data } = response;
+    };
 
     if (!data.result) {
         throw new Error('Invalid response from oracles API');

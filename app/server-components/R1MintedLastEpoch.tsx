@@ -3,7 +3,7 @@ import { cache } from 'react';
 import { formatUnits } from 'viem';
 
 // Enable page-level caching
-export const revalidate = 3600;
+export const revalidate = 60;
 export const dynamic = 'force-dynamic';
 
 const fetchCachedR1MintedLastEpoch = cache(async () => {

@@ -1,6 +1,7 @@
 import { getLicensesTotalSupply } from '@/lib/api/blockchain';
+import { routePath } from '@/lib/routes';
 import { LicenseItem } from '@/typedefs/general';
-import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import List from '../server-components/Licenses/List';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
@@ -40,7 +41,7 @@ export default async function LicensesPage(props: {
     } catch (error) {
         console.error(error);
         console.log('[Licenses Page] Failed to fetch license data');
-        notFound();
+        redirect(routePath.notFound);
     }
 
     return (

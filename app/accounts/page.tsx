@@ -1,8 +1,9 @@
 import config from '@/config';
 import { getSSURL } from '@/lib/actions';
+import { routePath } from '@/lib/routes';
 import * as types from '@/typedefs/blockchain';
 import { LicenseItem } from '@/typedefs/general';
-import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import List from '../server-components/Accounts/List';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
@@ -93,7 +94,7 @@ export default async function AccountsPage(props: {
     } catch (error) {
         console.error(error);
         console.log('[Accounts Page] Failed to fetch account data');
-        notFound();
+        redirect(routePath.notFound);
     }
 
     return (

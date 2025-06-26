@@ -29,7 +29,7 @@ export default function Search() {
     const [isLoading, setLoading] = useState<boolean>(false);
     const [isError, setError] = useState<boolean>(false);
 
-    const [value, setValue] = useState<string>('');
+    const [value, setValue] = useState<string>();
     const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 
     const [results, setResults] = useState<SearchResult[]>([]);
@@ -56,7 +56,15 @@ export default function Search() {
     const onSearch = async (query: string) => {
         query = query.trim();
 
-        if (!query || query.length > 42 || !URL_SAFE_PATTERN.test(query)) {
+        if (!query) {
+            console.log('Empty query');
+            setResults([]);
+            setLoading(false);
+            setError(false);
+            return;
+        }
+
+        if (query.length > 42 || !URL_SAFE_PATTERN.test(query)) {
             console.log('Search query is invalid');
             displayError();
             setLoading(false);
@@ -133,6 +141,8 @@ export default function Search() {
                     response = await getActiveNodes(1, query);
 
                     if (response.result.nodes) {
+                        console.log('Nodes response for query', query, response.result.nodes);
+
                         Object.entries(response.result.nodes).forEach(([_ratio1Addr, node]) => {
                             resultsArray.push({
                                 type: 'node',
@@ -165,7 +175,9 @@ export default function Search() {
 
     useDebounce(
         () => {
-            onSearch(value);
+            if (value !== undefined) {
+                onSearch(value);
+            }
         },
         [value],
         400,
@@ -177,7 +189,7 @@ export default function Search() {
                 <Alert
                     icon={<RiLightbulbLine className="text-lg" />}
                     title="Search"
-                    description="Start writing to search for Nodes or owners using an ETH address or for Licenses using IDs."
+                    description="Start writing to search for Nodes or owners using an ETH address/alias, or for Licenses using IDs."
                 />
             );
         }

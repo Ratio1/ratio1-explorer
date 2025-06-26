@@ -5,9 +5,10 @@ import { DetailedAlert } from '@/app/server-components/shared/DetailedAlert';
 import config from '@/config';
 import { getNodeAvailability } from '@/lib/actions';
 import { getNodeLicenseDetails } from '@/lib/api/blockchain';
+import { routePath } from '@/lib/routes';
 import { isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { cache } from 'react';
 import { RiCloseLine } from 'react-icons/ri';
 import { isAddress } from 'viem';
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }) {
 
         if (!nodeResponse) {
             console.log(`[Node Page] No node response found for address: ${nodeEthAddr}`);
-            notFound();
+            redirect(routePath.notFound);
         }
     } catch (error) {
         console.error(error);
@@ -88,7 +89,7 @@ const getCachedLicenseDetailsAndNodeAvailability = cache(
         }
 
         if (!licenseId || !licenseType) {
-            notFound();
+            redirect(routePath.notFound);
         }
 
         const license: types.License = {
@@ -148,7 +149,7 @@ export default async function NodePage({ params }) {
             );
         } else {
             console.log(`[Node Page] Error fetching node details for address: ${nodeEthAddr}`, error.message);
-            notFound();
+            redirect(routePath.notFound);
         }
     }
 

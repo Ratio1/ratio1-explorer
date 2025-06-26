@@ -4,10 +4,11 @@ import LicenseCard from '@/app/server-components/main-cards/LicenseCard';
 import config from '@/config';
 import { getNodeAvailability } from '@/lib/actions';
 import { getLicense } from '@/lib/api/blockchain';
+import { routePath } from '@/lib/routes';
 import { isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { cache, Suspense } from 'react';
 
 export async function generateMetadata({ params }) {
@@ -80,7 +81,7 @@ export default async function LicensePage({ params }) {
     } catch (error) {
         console.error(error);
         console.log(`[License Page] Failed to fetch license: ${licenseType}-${licenseId}`);
-        notFound();
+        redirect(routePath.notFound);
     }
 
     const cachedGetNodeAvailability = cache(async () => {

@@ -6,9 +6,10 @@ import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import config from '@/config';
 import { fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
+import { routePath } from '@/lib/routes';
 import { cachedGetENSName, fBI, getShortAddress, isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { isAddress } from 'viem';
 
 export async function generateMetadata({ params }) {
@@ -52,7 +53,7 @@ export default async function OwnerPage({ params }) {
     } catch (error) {
         console.error(error);
         console.log(`[Account Page] Failed to fetch account data for address: ${ownerEthAddr}`);
-        notFound();
+        redirect(routePath.notFound);
     }
 
     return (

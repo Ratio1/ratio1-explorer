@@ -9,6 +9,8 @@ export const routePath = {
     node: '/node',
     license: '/license',
     owner: '/account',
+    // Other
+    notFound: '/404',
 };
 
 export const routeTitles = {

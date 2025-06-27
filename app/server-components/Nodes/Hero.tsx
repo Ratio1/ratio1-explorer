@@ -1,19 +1,56 @@
 import HeroEpochCard from '@/components/Hero/HeroEpochCard';
+import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
+import { round } from 'lodash';
 import { Suspense } from 'react';
 import R1MintedLastEpoch from '../R1MintedLastEpoch';
 import { BorderedCard } from '../shared/cards/BorderedCard';
 import { CardHorizontal } from '../shared/cards/CardHorizontal';
 import R1TotalSupply from '../shared/R1TotalSupply';
 
-export default async function Hero({ nodesTotalItems }) {
+export default async function Hero({
+    nodesTotalItems,
+    resourcesTotal,
+}: {
+    nodesTotalItems: number;
+    resourcesTotal: types.ResourcesTotal;
+}) {
     return (
         <div className="w-full">
             <BorderedCard>
                 <div className="card-title-big font-bold">Nodes</div>
 
                 <div className="flexible-row">
-                    <CardHorizontal label="Active Nodes" value={nodesTotalItems} isFlexible widthClasses="min-w-[192px]" />
+                    <CardHorizontal label="Active Nodes" value={nodesTotalItems} isFlexible widthClasses="min-w-[196px]" />
+
+                    <CardHorizontal
+                        label="CPU Cores Available"
+                        value={round(resourcesTotal.cpu_cores_avail, 1)}
+                        isFlexible
+                        widthClasses="min-w-[274px]"
+                    />
+
+                    <CardHorizontal
+                        label="Memory Available"
+                        value={
+                            <div>
+                                {round(resourcesTotal.mem_avail, 1)} <span className="text-slate-500">GB</span>
+                            </div>
+                        }
+                        isFlexible
+                        widthClasses="min-w-[302px]"
+                    />
+
+                    <CardHorizontal
+                        label="Disk Available"
+                        value={
+                            <div>
+                                {round(resourcesTotal.disk_avail, 1)} <span className="text-slate-500">GB</span>
+                            </div>
+                        }
+                        isFlexible
+                        widthClasses="min-w-[282px]"
+                    />
 
                     <CardHorizontal
                         label={
@@ -35,7 +72,7 @@ export default async function Hero({ nodesTotalItems }) {
                             }
                             value={<R1MintedLastEpoch />}
                             isFlexible
-                            widthClasses="min-w-[254px]"
+                            widthClasses="min-w-[300px]"
                         />
                     </Suspense>
 

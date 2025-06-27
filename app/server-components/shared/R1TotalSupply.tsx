@@ -7,7 +7,7 @@ export default async function R1TotalSupply() {
     return (
         <div className="text-lg text-primary md:text-xl">
             {R1TotalSupply !== undefined
-                ? `${parseFloat(Number(formatUnits(R1TotalSupply, 18)).toFixed(2)).toLocaleString()}`
+                ? `${parseFloat(Number(formatUnits(R1TotalSupply, 18)).toFixed(1)).toLocaleString()}`
                 : '...'}
         </div>
     );

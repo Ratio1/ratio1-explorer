@@ -22,7 +22,7 @@ export default async function List({
         <div className="list-wrapper">
             <div className="list">
                 <ListHeader>
-                    <div className="min-w-[200px] lg:min-w-[228px]">Alias</div>
+                    <div className="min-w-[200px]">Alias</div>
                     <div className="min-w-[164px]">Addresses</div>
                     <div className="min-w-[244px]">License</div>
                     <div className="min-w-[112px]">Owner</div>

@@ -92,6 +92,19 @@ type ServerInfo = {
     server_uptime: string;
 };
 
+type ResourcesTotal = {
+    cpu_cores: number;
+    cpu_cores_avail: number;
+    default_cuda: {
+        cpu: number;
+        'cuda:0': number;
+    };
+    disk_avail: number;
+    disk_total: number;
+    mem_avail: number;
+    mem_total: number;
+};
+
 type OraclesDefaultResult = {
     result: {
         nodes_total_items: number;
@@ -101,6 +114,7 @@ type OraclesDefaultResult = {
         nodes: {
             [key: R1Address | string]: NodeState;
         };
+        resources_total: ResourcesTotal;
         server_alias: string;
         server_version: string;
         server_time: string;
@@ -126,5 +140,6 @@ export type {
     OraclesAvailabilityResult,
     OraclesDefaultResult,
     R1Address,
+    ResourcesTotal,
     ServerInfo,
 };

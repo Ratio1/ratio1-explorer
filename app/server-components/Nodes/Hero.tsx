@@ -1,4 +1,5 @@
 import HeroEpochCard from '@/components/Hero/HeroEpochCard';
+import config from '@/config';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import { round } from 'lodash';
@@ -23,34 +24,38 @@ export default async function Hero({
                 <div className="flexible-row">
                     <CardHorizontal label="Active Nodes" value={nodesTotalItems} isFlexible widthClasses="min-w-[196px]" />
 
-                    <CardHorizontal
-                        label="CPU Cores Available"
-                        value={round(resourcesTotal.cpu_cores_avail, 1)}
-                        isFlexible
-                        widthClasses="min-w-[274px]"
-                    />
+                    {config.environment === 'devnet' && (
+                        <>
+                            <CardHorizontal
+                                label="CPU Cores Available"
+                                value={round(resourcesTotal.cpu_cores_avail, 1)}
+                                isFlexible
+                                widthClasses="min-w-[274px]"
+                            />
 
-                    <CardHorizontal
-                        label="Memory Available"
-                        value={
-                            <div>
-                                {round(resourcesTotal.mem_avail, 1)} <span className="text-slate-500">GB</span>
-                            </div>
-                        }
-                        isFlexible
-                        widthClasses="min-w-[302px]"
-                    />
+                            <CardHorizontal
+                                label="Memory Available"
+                                value={
+                                    <div>
+                                        {round(resourcesTotal.mem_avail, 1)} <span className="text-slate-500">GB</span>
+                                    </div>
+                                }
+                                isFlexible
+                                widthClasses="min-w-[302px]"
+                            />
 
-                    <CardHorizontal
-                        label="Disk Available"
-                        value={
-                            <div>
-                                {round(resourcesTotal.disk_avail, 1)} <span className="text-slate-500">GB</span>
-                            </div>
-                        }
-                        isFlexible
-                        widthClasses="min-w-[282px]"
-                    />
+                            <CardHorizontal
+                                label="Disk Available"
+                                value={
+                                    <div>
+                                        {round(resourcesTotal.disk_avail, 1)} <span className="text-slate-500">GB</span>
+                                    </div>
+                                }
+                                isFlexible
+                                widthClasses="min-w-[282px]"
+                            />
+                        </>
+                    )}
 
                     <CardHorizontal
                         label={
@@ -60,10 +65,12 @@ export default async function Hero({
                         }
                         value={<R1TotalSupply />}
                         isFlexible
-                        widthClasses="min-[420px]:min-w-[346px]"
+                        widthClasses="min-[420px]:min-w-[346px] md:max-w-[360px]"
                     />
 
-                    <Suspense fallback={<Skeleton className="min-h-[76px] w-full rounded-xl md:max-w-[380px]" />}>
+                    <Suspense
+                        fallback={<Skeleton className="min-h-[76px] w-full min-w-[300px] flex-1 rounded-xl md:max-w-[380px]" />}
+                    >
                         <CardHorizontal
                             label={
                                 <div>

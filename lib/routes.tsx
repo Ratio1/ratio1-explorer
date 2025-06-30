@@ -10,6 +10,7 @@ export const routePath = {
     license: '/license',
     owner: '/account',
     // Other
+    search: '/search',
     notFound: '/404',
 };
 

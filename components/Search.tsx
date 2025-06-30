@@ -1,31 +1,21 @@
 'use client';
 
+import SearchResultsList from '@/app/server-components/SearchResultsList';
 import { Alert } from '@/app/server-components/shared/Alert';
-import { getActiveNodes } from '@/lib/api';
-import { getLicense } from '@/lib/api/blockchain';
-import { getNodeLastEpoch } from '@/lib/api/oracles';
+import { search } from '@/lib/actions';
 import { routePath } from '@/lib/routes';
 import useDebounce from '@/lib/useDebounce';
-import { cachedGetENSName, isEmptyETHAddr, isNonZeroInteger } from '@/lib/utils';
-import * as types from '@/typedefs/blockchain';
+import { SearchResult } from '@/typedefs/general';
 import { Input } from '@heroui/input';
 import { Modal, ModalContent, useDisclosure } from '@heroui/modal';
 import { Spinner } from '@heroui/spinner';
-import clsx from 'clsx';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { RiErrorWarningLine, RiLightbulbLine, RiSearchLine } from 'react-icons/ri';
-import { CopyableAddress } from './shared/CopyableValue';
-import Identicon from './shared/Identicon';
-
-type SearchResult =
-    | { type: 'node'; nodeAddress: types.EthAddress; alias: string; isOnline: boolean }
-    | { type: 'license'; licenseId: number; licenseType: 'ND' | 'MND' | 'GND'; nodeAddress: types.EthAddress }
-    | { type: 'owner'; address: types.EthAddress; ensName?: string };
-
-const URL_SAFE_PATTERN = /^[a-zA-Z0-9x\s\-_\.]+$/;
 
 export default function Search() {
+    const router = useRouter();
+
     const [isLoading, setLoading] = useState<boolean>(false);
     const [isError, setError] = useState<boolean>(false);
 
@@ -54,123 +44,11 @@ export default function Search() {
     }, [handleKeyPress]);
 
     const onSearch = async (query: string) => {
-        query = query.trim();
-
-        if (!query) {
-            console.log('Empty query');
-            setResults([]);
-            setLoading(false);
-            setError(false);
-            return;
-        }
-
-        if (query.length > 42 || !URL_SAFE_PATTERN.test(query)) {
-            console.log('Search query is invalid');
-            displayError();
-            setLoading(false);
-            return;
-        }
-
-        try {
-            setLoading(true);
-            const resultsArray: SearchResult[] = [];
-
-            if (query.startsWith('0x') && query.length === 42) {
-                const ethAddress = query as types.EthAddress;
-                const ensName = await cachedGetENSName(ethAddress);
-
-                resultsArray.push({
-                    type: 'owner',
-                    address: ethAddress,
-                    ensName,
-                });
-
-                try {
-                    const nodeResponse = await getNodeLastEpoch(ethAddress);
-                    console.log('Search node', nodeResponse);
-
-                    resultsArray.push({
-                        type: 'node',
-                        nodeAddress: nodeResponse.node_eth_address,
-                        alias: nodeResponse.node_alias,
-                        isOnline: nodeResponse.node_is_online,
-                    });
-                } catch (error) {
-                    console.log('Address is not a valid node');
-                } finally {
-                    setResults(resultsArray);
-                    setError(false);
-                }
-            } else if (isNonZeroInteger(query)) {
-                const licenseId = parseInt(query);
-
-                try {
-                    const ndLicense = await getLicense('ND', licenseId);
-                    if (ndLicense && !isEmptyETHAddr(ndLicense.nodeAddress)) {
-                        resultsArray.push({
-                            type: 'license',
-                            licenseId,
-                            licenseType: 'ND',
-                            nodeAddress: ndLicense.nodeAddress,
-                        });
-                    }
-                } catch (error) {
-                    console.log('ND License not found', licenseId);
-                }
-
-                try {
-                    const mndLicense = await getLicense('MND', licenseId);
-                    if (!isEmptyETHAddr(mndLicense.nodeAddress)) {
-                        resultsArray.push({
-                            type: 'license',
-                            licenseId,
-                            licenseType: licenseId === 1 ? 'GND' : 'MND',
-                            nodeAddress: mndLicense.nodeAddress,
-                        });
-                    }
-                } catch (error) {
-                    console.log('MND/GND License not found', licenseId);
-                }
-
-                setResults(resultsArray);
-                setError(resultsArray.length === 0);
-            } else {
-                let response: types.OraclesDefaultResult;
-
-                try {
-                    response = await getActiveNodes(1, query);
-
-                    if (response.result.nodes) {
-                        // console.log('Nodes response for query', query, response.result.nodes);
-
-                        Object.entries(response.result.nodes).forEach(([_ratio1Addr, node]) => {
-                            resultsArray.push({
-                                type: 'node',
-                                nodeAddress: node.eth_addr,
-                                alias: node.alias,
-                                isOnline: parseInt(node.last_seen_ago.split(':')[2]) < 60,
-                            });
-                        });
-
-                        setResults(resultsArray);
-                    } else {
-                        displayError();
-                    }
-                } catch (error) {
-                    displayError();
-                }
-            }
-        } catch (error) {
-            console.log(error);
-            displayError();
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const displayError = () => {
-        setResults([]);
-        setError(true);
+        setLoading(true);
+        const { results, error } = await search(query);
+        setResults(results);
+        setError(error);
+        setLoading(false);
     };
 
     useDebounce(
@@ -180,7 +58,7 @@ export default function Search() {
             }
         },
         [value],
-        400,
+        600,
     );
 
     const getAlert = () => {
@@ -260,127 +138,18 @@ export default function Search() {
                                 ) : null
                             }
                             maxLength={42}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    onClose();
+                                    router.push(`${routePath.search}?query=${value || ''}`);
+                                }
+                            }}
                         />
 
                         {!results.length ? (
                             getAlert()
                         ) : (
-                            <div className="col gap-4">
-                                {results.some((r) => r.type === 'node') && (
-                                    <div className="col gap-2">
-                                        {getSectionTitle('Nodes')}
-
-                                        {results
-                                            .filter((r): r is Extract<SearchResult, { type: 'node' }> => r.type === 'node')
-                                            .map((node, index) => (
-                                                <div key={index}>
-                                                    <Link
-                                                        href={`${routePath.node}/${node.nodeAddress}`}
-                                                        className="row -mx-4 cursor-pointer px-4 py-2.5 transition-all hover:bg-slate-50"
-                                                        onClick={onClose}
-                                                    >
-                                                        <div className="row gap-3">
-                                                            <div className="relative h-8 w-8">
-                                                                <Identicon value={`node_${node.nodeAddress}`} />
-
-                                                                <div
-                                                                    className={clsx(
-                                                                        'absolute right-0 top-0 z-10 -mr-1 -mt-1 h-4 w-4 rounded-full border-2 border-white',
-                                                                        {
-                                                                            'bg-teal-500': node?.isOnline,
-                                                                            'bg-red-500': !node?.isOnline,
-                                                                        },
-                                                                    )}
-                                                                ></div>
-                                                            </div>
-
-                                                            <div className="col">
-                                                                <div className="text-sm font-medium">{node.alias}</div>
-                                                                <CopyableAddress value={node.nodeAddress} size={8} />
-                                                            </div>
-                                                        </div>
-                                                    </Link>
-                                                </div>
-                                            ))}
-                                    </div>
-                                )}
-
-                                {results.some((r) => r.type === 'license') && (
-                                    <div className="col gap-2">
-                                        {getSectionTitle('Licenses')}
-
-                                        {results
-                                            .filter(
-                                                (r): r is Extract<SearchResult, { type: 'license' }> => r.type === 'license',
-                                            )
-                                            .map((license, index) => (
-                                                <div key={index}>
-                                                    <Link
-                                                        href={`${routePath.license}/${license.licenseType}/${license.licenseId}`}
-                                                        className="row -mx-4 cursor-pointer px-4 py-2.5 transition-all hover:bg-slate-50"
-                                                        onClick={onClose}
-                                                    >
-                                                        <div className="row gap-3">
-                                                            <div className="relative h-8 w-8">
-                                                                <Identicon
-                                                                    value={`${license.licenseType}${license.licenseId}`}
-                                                                />
-                                                            </div>
-
-                                                            <div className="col">
-                                                                <div className="row gap-1.5">
-                                                                    <div className="text-sm font-medium">
-                                                                        License #{license.licenseId}
-                                                                    </div>
-
-                                                                    <div className="text-sm">•</div>
-
-                                                                    <div className="center-all rounded-md bg-slate-100 px-1.5 py-0.5 text-xs font-medium">
-                                                                        {license.licenseType}
-                                                                    </div>
-                                                                </div>
-
-                                                                <CopyableAddress value={license.nodeAddress} size={8} />
-                                                            </div>
-                                                        </div>
-                                                    </Link>
-                                                </div>
-                                            ))}
-                                    </div>
-                                )}
-
-                                {results.some((r) => r.type === 'owner') && (
-                                    <div className="col gap-2">
-                                        {getSectionTitle('Accounts')}
-
-                                        {results
-                                            .filter((r): r is Extract<SearchResult, { type: 'owner' }> => r.type === 'owner')
-                                            .map((owner, index) => (
-                                                <div key={index}>
-                                                    <Link
-                                                        href={`${routePath.owner}/${owner.address}`}
-                                                        className="row -mx-4 cursor-pointer px-4 py-2.5 transition-all hover:bg-slate-50"
-                                                        onClick={onClose}
-                                                    >
-                                                        <div className="row gap-3">
-                                                            <div className="relative h-8 w-8">
-                                                                <Identicon value={`owner_${owner.address}`} />
-                                                            </div>
-
-                                                            <div className="col">
-                                                                {!!owner.ensName && (
-                                                                    <div className="text-sm font-medium">{owner.ensName}</div>
-                                                                )}
-
-                                                                <CopyableAddress value={owner.address} size={8} />
-                                                            </div>
-                                                        </div>
-                                                    </Link>
-                                                </div>
-                                            ))}
-                                    </div>
-                                )}
-                            </div>
+                            <SearchResultsList results={results} variant="modal" getSectionTitle={getSectionTitle} />
                         )}
 
                         {/* Bottom bar */}
@@ -388,6 +157,10 @@ export default function Search() {
                             <div className="row gap-1 text-sm text-black/80">
                                 <div className="center-all rounded-lg bg-slate-200 px-2 py-1 font-medium">ESC</div>
                                 <div>To Cancel</div>
+                            </div>
+
+                            <div className="row gap-1 text-sm text-black/80">
+                                <div className="center-all rounded-lg bg-slate-200 px-2 py-1 font-medium">Enter</div>
                             </div>
                         </div>
                     </div>

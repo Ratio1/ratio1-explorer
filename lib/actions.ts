@@ -134,7 +134,6 @@ export const search = async (
 
             try {
                 response = await getActiveNodes(1, query);
-                console.log('getActiveNodes response', response);
 
                 if (response.result.nodes) {
                     Object.entries(response.result.nodes).forEach(([_ratio1Addr, node]) => {

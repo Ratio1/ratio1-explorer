@@ -21,7 +21,7 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
         }
 
         if (!licenseId || !licenseType) {
-            console.log('No license found for node', node.eth_addr);
+            console.log('[Node]No license found for node', node.eth_addr);
             return null;
         }
     } catch (error) {

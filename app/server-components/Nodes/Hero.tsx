@@ -21,39 +21,39 @@ export default async function Hero({
                 <div className="card-title-big font-bold">Nodes</div>
 
                 <div className="flexible-row">
-                    <CardHorizontal label="Active Nodes" value={nodesTotalItems} isFlexible widthClasses="min-w-[196px]" />
+                    <CardHorizontal label="Active Nodes" value={nodesTotalItems} isFlexible widthClasses="min-w-[200px]" />
 
                     <CardHorizontal
-                        label="CPU Cores"
+                        label="CPU Cores Available"
                         value={
                             <div>
                                 {round(resourcesTotal.cpu_cores_avail, 0)}/{resourcesTotal.cpu_cores}
                             </div>
                         }
                         isFlexible
-                        widthClasses="min-w-[278px]"
+                        widthClasses="min-w-[290px]"
                     />
 
                     <CardHorizontal
-                        label="Memory (GB)"
+                        label="Memory Available (GB)"
                         value={
                             <div>
                                 {round(resourcesTotal.mem_avail, 0)}/{round(resourcesTotal.mem_total, 0)}
                             </div>
                         }
                         isFlexible
-                        widthClasses="min-w-[302px]"
+                        widthClasses="min-w-[308px]"
                     />
 
                     <CardHorizontal
-                        label="Disk (GB)"
+                        label="Disk Available (GB)"
                         value={
                             <div>
                                 {round(resourcesTotal.disk_avail, 0)}/{round(resourcesTotal.disk_total, 0)}
                             </div>
                         }
                         isFlexible
-                        widthClasses="min-w-[290px]"
+                        widthClasses="min-w-[296px]"
                     />
 
                     <CardHorizontal

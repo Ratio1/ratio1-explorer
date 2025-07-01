@@ -24,17 +24,21 @@ export default async function Hero({
                     <CardHorizontal label="Active Nodes" value={nodesTotalItems} isFlexible widthClasses="min-w-[196px]" />
 
                     <CardHorizontal
-                        label="CPU Cores Available"
-                        value={round(resourcesTotal.cpu_cores_avail, 1)}
+                        label="CPU Cores"
+                        value={
+                            <div>
+                                {round(resourcesTotal.cpu_cores_avail, 0)}/{resourcesTotal.cpu_cores}
+                            </div>
+                        }
                         isFlexible
                         widthClasses="min-w-[278px]"
                     />
 
                     <CardHorizontal
-                        label="Memory Available"
+                        label="Memory (GB)"
                         value={
                             <div>
-                                {round(resourcesTotal.mem_avail, 1)} <span className="text-slate-500">GB</span>
+                                {round(resourcesTotal.mem_avail, 0)}/{round(resourcesTotal.mem_total, 0)}
                             </div>
                         }
                         isFlexible
@@ -42,10 +46,10 @@ export default async function Hero({
                     />
 
                     <CardHorizontal
-                        label="Disk Available"
+                        label="Disk (GB)"
                         value={
                             <div>
-                                {round(resourcesTotal.disk_avail, 1)} <span className="text-slate-500">GB</span>
+                                {round(resourcesTotal.disk_avail, 0)}/{round(resourcesTotal.disk_total, 0)}
                             </div>
                         }
                         isFlexible
@@ -64,7 +68,7 @@ export default async function Hero({
                     />
 
                     <Suspense
-                        fallback={<Skeleton className="min-h-[76px] w-full min-w-[300px] flex-1 rounded-xl md:max-w-[320px]" />}
+                        fallback={<Skeleton className="min-h-[76px] w-full min-w-[340px] flex-1 rounded-xl md:max-w-[320px]" />}
                     >
                         <CardHorizontal
                             label={
@@ -74,7 +78,7 @@ export default async function Hero({
                             }
                             value={<R1MintedLastEpoch />}
                             isFlexible
-                            widthClasses="min-w-[300px]"
+                            widthClasses="min-w-[340px]"
                         />
                     </Suspense>
 

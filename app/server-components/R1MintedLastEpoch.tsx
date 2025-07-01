@@ -18,11 +18,11 @@ export default async function R1MintedLastEpoch() {
         value = await fetchCachedR1MintedLastEpoch();
     } catch (error) {
         console.log('[R1MintedLastEpoch] error', error);
-        return <div className="text-lg text-slate-600 md:text-xl">—</div>;
+        return <div className="text-lg text-slate-600 md:text-[19px]">—</div>;
     }
 
     return (
-        <div className="text-lg text-primary md:text-xl">
+        <div className="text-lg text-primary md:text-[19px]">
             {value !== undefined ? `${parseFloat(Number(formatUnits(BigInt(value), 18)).toFixed(2)).toLocaleString()}` : '...'}
         </div>
     );

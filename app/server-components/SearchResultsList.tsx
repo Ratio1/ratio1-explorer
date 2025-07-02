@@ -9,9 +9,10 @@ interface Props {
     results: SearchResult[];
     variant: 'search-page' | 'modal';
     getSectionTitle: (value: string) => React.ReactNode;
+    onClose?: () => void;
 }
 
-export default function SearchResultsList({ results, variant, getSectionTitle }: Props) {
+export default function SearchResultsList({ results, variant, getSectionTitle, onClose }: Props) {
     const linkClassName = clsx('row  cursor-pointer px-4  transition-all ', {
         'rounded-xl border-2 border-slate-100 hover:border-slate-200 py-3': variant === 'search-page',
         '-mx-4 py-2.5 hover:bg-slate-50': variant === 'modal',
@@ -32,7 +33,11 @@ export default function SearchResultsList({ results, variant, getSectionTitle }:
                         .filter((r): r is Extract<SearchResult, { type: 'node' }> => r.type === 'node')
                         .map((node, index) => (
                             <div key={index}>
-                                <Link href={`${routePath.node}/${node.nodeAddress}`} className={linkClassName}>
+                                <Link
+                                    href={`${routePath.node}/${node.nodeAddress}`}
+                                    className={linkClassName}
+                                    onClick={onClose}
+                                >
                                     <div className="row gap-3">
                                         <div className="relative h-8 w-8">
                                             <Identicon value={`node_${node.nodeAddress}`} />
@@ -75,6 +80,7 @@ export default function SearchResultsList({ results, variant, getSectionTitle }:
                                 <Link
                                     href={`${routePath.license}/${license.licenseType}/${license.licenseId}`}
                                     className={linkClassName}
+                                    onClick={onClose}
                                 >
                                     <div className="row gap-3">
                                         <div className="relative h-8 w-8">
@@ -114,7 +120,7 @@ export default function SearchResultsList({ results, variant, getSectionTitle }:
                         .filter((r): r is Extract<SearchResult, { type: 'owner' }> => r.type === 'owner')
                         .map((owner, index) => (
                             <div key={index}>
-                                <Link href={`${routePath.owner}/${owner.address}`} className={linkClassName}>
+                                <Link href={`${routePath.owner}/${owner.address}`} className={linkClassName} onClick={onClose}>
                                     <div className="row gap-3">
                                         <div className="relative h-8 w-8">
                                             <Identicon value={`owner_${owner.address}`} />

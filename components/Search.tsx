@@ -149,7 +149,12 @@ export default function Search() {
                         {!results.length ? (
                             getAlert()
                         ) : (
-                            <SearchResultsList results={results} variant="modal" getSectionTitle={getSectionTitle} />
+                            <SearchResultsList
+                                results={results}
+                                variant="modal"
+                                onClose={onClose}
+                                getSectionTitle={getSectionTitle}
+                            />
                         )}
 
                         {/* Bottom bar */}

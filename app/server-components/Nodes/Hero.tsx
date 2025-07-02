@@ -17,27 +17,29 @@ const HeroStats = memo(
 
             <CardHorizontal
                 label="CPU Cores Available"
-                value={round(resourcesTotal.cpu_cores_avail, 1)}
+                value={`${round(resourcesTotal.cpu_cores_avail, 0)}/${round(resourcesTotal.cpu_cores, 0)}`}
                 isFlexible
-                widthClasses="min-w-[288px]"
+                widthClasses="min-w-[316px]"
             />
 
             <CardHorizontal
                 label="Memory Available"
                 value={
-                    <div>
-                        {fN(resourcesTotal.mem_avail)} <span className="text-slate-500">GB</span>
+                    <div className="leading-tight">
+                        {fN(round(resourcesTotal.mem_avail, 0))}/{fN(round(resourcesTotal.mem_total, 0))}{' '}
+                        <span className="text-slate-500">GB</span>
                     </div>
                 }
                 isFlexible
-                widthClasses="min-w-[314px]"
+                widthClasses="min-w-[282px]"
             />
 
             <CardHorizontal
                 label="Disk Available"
                 value={
-                    <div>
-                        {fN(resourcesTotal.disk_avail)} <span className="text-slate-500">GB</span>
+                    <div className="leading-tight">
+                        {fN(round(resourcesTotal.disk_avail, 0))}/{fN(round(resourcesTotal.disk_total, 0))}{' '}
+                        <span className="text-slate-500">GB</span>
                     </div>
                 }
                 isFlexible

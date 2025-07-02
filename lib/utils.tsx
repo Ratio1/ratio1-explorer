@@ -86,7 +86,7 @@ export function fN(num: number): string | number {
         return formattedNum % 1 === 0 ? `${formattedNum}K` : `${parseFloat(formattedNum.toFixed(2))}K`;
     }
 
-    return parseFloat(num.toFixed(2));
+    return parseFloat(num.toFixed(1));
 }
 
 export function fBI(num: bigint, decimals: number): string {

@@ -1,21 +1,38 @@
+import { getCurrentEpoch } from '@/config';
 import { fetchR1MintedLastEpoch } from '@/lib/api/blockchain';
 import { cache } from 'react';
 import { formatUnits } from 'viem';
 
-// Enable page-level caching
-export const revalidate = 60;
-export const dynamic = 'force-dynamic';
+let cachedValue: string | null = null;
+let cachedEpoch: number | null = null;
 
-const fetchCachedR1MintedLastEpoch = cache(async () => {
-    const value: bigint = await fetchR1MintedLastEpoch();
-    return value;
+const getCachedR1MintedLastEpoch = cache(async () => {
+    const currentEpoch = getCurrentEpoch();
+
+    // Check if we have cached data for the current epoch
+    if (cachedValue !== null && cachedEpoch === currentEpoch) {
+        // console.log(`[R1MintedLastEpoch] using cached data for epoch ${currentEpoch}`);
+        return cachedValue;
+    }
+
+    // console.log(`[R1MintedLastEpoch] fetching new data for epoch ${currentEpoch}`);
+    const value = await fetchR1MintedLastEpoch();
+    const valueString = value.toString();
+
+    // console.log(`[R1MintedLastEpoch] fetched new data for epoch ${currentEpoch}, value: ${valueString}`);
+
+    cachedValue = valueString;
+    cachedEpoch = currentEpoch;
+
+    return valueString;
 });
 
 export default async function R1MintedLastEpoch() {
     let value: bigint | undefined;
 
     try {
-        value = await fetchCachedR1MintedLastEpoch();
+        const cachedValue = await getCachedR1MintedLastEpoch();
+        value = BigInt(cachedValue);
     } catch (error) {
         console.log('[R1MintedLastEpoch] error', error);
         return <div className="text-lg text-slate-600 md:text-xl">—</div>;

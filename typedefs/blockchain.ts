@@ -115,6 +115,7 @@ type OraclesDefaultResult = {
             [key: R1Address | string]: NodeState;
         };
         resources_total: ResourcesTotal;
+        query_time: number;
         server_alias: string;
         server_version: string;
         server_time: string;

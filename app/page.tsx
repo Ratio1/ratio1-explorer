@@ -19,8 +19,6 @@ export default async function HomePage(props: {
         [key: string]: types.NodeState;
     } = response.result.nodes;
 
-    // console.log(response);
-
     const pagesCount: number = response.result.nodes_total_pages;
 
     return (

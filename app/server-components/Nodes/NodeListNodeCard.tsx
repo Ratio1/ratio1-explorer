@@ -34,7 +34,7 @@ export default async function NodeListNodeCard({
     return (
         <BorderedCard useCustomWrapper useFixedWidthLarge>
             <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6">
-                <Link href={`${routePath.node}/${node.eth_addr}`} className="group min-w-[200px] py-3">
+                <Link href={`${routePath.node}/${node.eth_addr}`} className="group min-w-[130px] py-3">
                     <div className="row gap-1.5">
                         <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium group-hover:text-primary lg:text-[15px]">
                             {node.alias}

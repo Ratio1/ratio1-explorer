@@ -43,7 +43,7 @@ export default function HeroEpochCard() {
                 </div>
 
                 <div className="col gap-[5px]">
-                    <div className="text-[15px] font-medium leading-none text-slate-500">Time left</div>
+                    <div className="text-right text-[15px] font-medium leading-none text-slate-500 md:text-left">Time left</div>
                     <div className="font-semibold leading-none">
                         <EpochTimer />
                     </div>

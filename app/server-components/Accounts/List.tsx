@@ -26,7 +26,7 @@ export default async function List({
 
     return (
         <div className="list-wrapper">
-            <div className="list">
+            <div id="list" className="list">
                 <ListHeader useFixedWidthSmall>
                     <div className="min-w-[260px]">Address</div>
                     <div className="min-w-[188px]">Licenses Owned (ND / MND)</div>

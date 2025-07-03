@@ -64,7 +64,7 @@ const CachedHeroContent = cache(async () => (
             widthClasses="min-[420px]:min-w-[330px] md:max-w-[350px]"
         />
 
-        <Suspense fallback={<Skeleton className="min-h-[76px] w-full min-w-[300px] flex-1 rounded-xl md:max-w-[320px]" />}>
+        <Suspense fallback={<Skeleton className="min-h-[76px] w-full min-w-[300px] flex-1 rounded-xl md:max-w-[340px]" />}>
             <CardHorizontal
                 label={
                     <div>
@@ -89,7 +89,7 @@ export default async function Hero({
     resourcesTotal: types.ResourcesTotal;
 }) {
     return (
-        <div className="w-full">
+        <div id="hero" className="w-full">
             <BorderedCard>
                 <div className="card-title-big font-bold">Nodes</div>
 

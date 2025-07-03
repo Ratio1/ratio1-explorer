@@ -11,6 +11,7 @@
         "build:testnet": "dotenv -e .env.production.testnet next build",
         "build:devnet": "dotenv -e .env.production.devnet next build",
         "build": "dotenv -e .env.production.mainnet next build",
+        "build:all": "./scripts/build-all.sh",
         "start": "next start",
         "lint": "next lint"
     },

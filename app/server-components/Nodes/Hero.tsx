@@ -13,7 +13,7 @@ import R1TotalSupply from '../shared/R1TotalSupply';
 const HeroStats = memo(
     ({ nodesTotalItems, resourcesTotal }: { nodesTotalItems: number; resourcesTotal: types.ResourcesTotal }) => (
         <>
-            <CardHorizontal label="Active Nodes" value={nodesTotalItems} isFlexible widthClasses="min-w-[196px]" />
+            <CardHorizontal label="Licensed Nodes" value={nodesTotalItems} isFlexible widthClasses="min-w-[196px]" />
 
             <CardHorizontal
                 label="CPU Cores Available"

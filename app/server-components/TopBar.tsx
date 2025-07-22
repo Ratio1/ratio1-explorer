@@ -35,7 +35,7 @@ export default async function TopBar() {
                         <PriceCard />
                     </Suspense>
 
-                    <CardWithIcon icon={<RiCpuLine />} label="Active Nodes">
+                    <CardWithIcon icon={<RiCpuLine />} label="Licensed Nodes">
                         {activeNodes.result.nodes_total_items}
                     </CardWithIcon>
                 </div>
@@ -49,7 +49,7 @@ export default async function TopBar() {
                         <PriceCard />
                     </Suspense>
 
-                    <RowWithIcon icon={<RiCpuLine />} label="Active Nodes">
+                    <RowWithIcon icon={<RiCpuLine />} label="Licensed Nodes">
                         {activeNodes.result.nodes_total_items}
                     </RowWithIcon>
                 </div>

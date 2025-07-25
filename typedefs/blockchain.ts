@@ -44,6 +44,7 @@ type OraclesAvailabilityResult = {
     node_is_oracle: boolean;
     node_version: string;
     node_last_seen_sec: number;
+    resources: Resources;
 };
 
 type EthSignedData = {
@@ -92,7 +93,7 @@ type ServerInfo = {
     server_uptime: string;
 };
 
-type ResourcesTotal = {
+type Resources = {
     cpu_cores: number;
     cpu_cores_avail: number;
     default_cuda: {
@@ -114,7 +115,7 @@ type OraclesDefaultResult = {
         nodes: {
             [key: R1Address | string]: NodeState;
         };
-        resources_total: ResourcesTotal;
+        resources_total: Resources;
         query_time: number;
         server_alias: string;
         server_version: string;
@@ -141,6 +142,6 @@ export type {
     OraclesAvailabilityResult,
     OraclesDefaultResult,
     R1Address,
-    ResourcesTotal,
+    Resources,
     ServerInfo,
 };

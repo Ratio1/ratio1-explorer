@@ -10,44 +10,42 @@ import { CardHorizontal } from '../shared/cards/CardHorizontal';
 import R1TotalSupply from '../shared/R1TotalSupply';
 
 // Memoized component for props-dependent parts
-const HeroStats = memo(
-    ({ nodesTotalItems, resourcesTotal }: { nodesTotalItems: number; resourcesTotal: types.ResourcesTotal }) => (
-        <>
-            <CardHorizontal label="Licensed Nodes" value={nodesTotalItems} isFlexible widthClasses="min-w-[196px]" />
+const HeroStats = memo(({ nodesTotalItems, resourcesTotal }: { nodesTotalItems: number; resourcesTotal: types.Resources }) => (
+    <>
+        <CardHorizontal label="Licensed Nodes" value={nodesTotalItems} isFlexible widthClasses="min-w-[196px]" />
 
-            <CardHorizontal
-                label="CPU Cores Available"
-                value={`${round(resourcesTotal.cpu_cores_avail, 0)}/${round(resourcesTotal.cpu_cores, 0)}`}
-                isFlexible
-                widthClasses="min-w-[316px]"
-            />
+        <CardHorizontal
+            label="CPU Cores Available"
+            value={`${round(resourcesTotal.cpu_cores_avail, 0)}/${round(resourcesTotal.cpu_cores, 0)}`}
+            isFlexible
+            widthClasses="min-w-[316px]"
+        />
 
-            <CardHorizontal
-                label="Memory Available"
-                value={
-                    <div className="leading-tight">
-                        {fN(round(resourcesTotal.mem_avail / 1024, 2))}/{fN(round(resourcesTotal.mem_total / 1024, 2))}{' '}
-                        <span className="text-slate-500">TB</span>
-                    </div>
-                }
-                isFlexible
-                widthClasses="min-w-[292px]"
-            />
+        <CardHorizontal
+            label="Memory Available"
+            value={
+                <div className="leading-tight">
+                    {fN(round(resourcesTotal.mem_avail / 1024, 2))}/{fN(round(resourcesTotal.mem_total / 1024, 2))}{' '}
+                    <span className="text-slate-500">TB</span>
+                </div>
+            }
+            isFlexible
+            widthClasses="min-w-[292px]"
+        />
 
-            <CardHorizontal
-                label="Disk Available"
-                value={
-                    <div className="leading-tight">
-                        {fN(round(resourcesTotal.disk_avail / 1024, 2))}/{fN(round(resourcesTotal.disk_total / 1024, 2))}{' '}
-                        <span className="text-slate-500">TB</span>
-                    </div>
-                }
-                isFlexible
-                widthClasses="min-w-[290px]"
-            />
-        </>
-    ),
-);
+        <CardHorizontal
+            label="Disk Available"
+            value={
+                <div className="leading-tight">
+                    {fN(round(resourcesTotal.disk_avail / 1024, 2))}/{fN(round(resourcesTotal.disk_total / 1024, 2))}{' '}
+                    <span className="text-slate-500">TB</span>
+                </div>
+            }
+            isFlexible
+            widthClasses="min-w-[290px]"
+        />
+    </>
+));
 
 HeroStats.displayName = 'HeroStats';
 
@@ -86,7 +84,7 @@ export default async function Hero({
     resourcesTotal,
 }: {
     nodesTotalItems: number;
-    resourcesTotal: types.ResourcesTotal;
+    resourcesTotal: types.Resources;
 }) {
     return (
         <div id="hero" className="w-full">

@@ -15,10 +15,22 @@ export default function ParamsPagination({ total }: { total: number }) {
         params.set('page', pageNumber.toString());
         replace(`${pathname}?${params.toString()}`);
 
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-        });
+        const element = document.getElementById('list');
+
+        if (element) {
+            element.scrollIntoView({
+                behavior: 'auto',
+                block: 'start',
+            });
+        } else {
+            // Fallback to scrolling to top if element not found
+            setTimeout(() => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'auto',
+                });
+            }, 0);
+        }
     };
 
     if (total === 1) {

@@ -53,7 +53,7 @@ body {
 }
 
 .list {
-    @apply group/list col w-full gap-2 overflow-x-auto pb-2 min-[1190px]:pb-0;
+    @apply group/list col -mt-2 w-full gap-2 overflow-x-auto pb-2 pt-2 min-[1190px]:pb-0;
 }
 
 /* Responsiveness */

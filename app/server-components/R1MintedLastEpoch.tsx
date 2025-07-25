@@ -1,31 +1,51 @@
 import { getCurrentEpoch } from '@/config';
 import { fetchR1MintedLastEpoch } from '@/lib/api/blockchain';
-import { cache } from 'react';
 import { formatUnits } from 'viem';
+interface CacheEntry {
+    value: string;
+    epoch: number;
+    timestamp: number;
+}
 
-let cachedValue: string | null = null;
-let cachedEpoch: number | null = null;
+let cacheEntry: CacheEntry | null = null;
+let fetchPromise: Promise<string> | null = null;
 
-const getCachedR1MintedLastEpoch = cache(async () => {
+const getCachedR1MintedLastEpoch = async (): Promise<string> => {
     const currentEpoch = getCurrentEpoch();
+    const now = Date.now();
 
-    // Check if we have cached data for the current epoch
-    if (cachedValue !== null && cachedEpoch === currentEpoch) {
-        // console.log(`[R1MintedLastEpoch] using cached data for epoch ${currentEpoch}`);
-        return cachedValue;
+    // Return cached value if still valid
+    if (cacheEntry && cacheEntry.epoch === currentEpoch) {
+        return cacheEntry.value;
     }
 
-    // console.log(`[R1MintedLastEpoch] fetching new data for epoch ${currentEpoch}`);
-    const value = await fetchR1MintedLastEpoch();
-    const valueString = value.toString();
+    // Prevent multiple concurrent fetches
+    if (fetchPromise) {
+        return fetchPromise;
+    }
 
-    // console.log(`[R1MintedLastEpoch] fetched new data for epoch ${currentEpoch}, value: ${valueString}`);
+    fetchPromise = (async () => {
+        try {
+            const value = await fetchR1MintedLastEpoch();
+            const valueString = value.toString();
 
-    cachedValue = valueString;
-    cachedEpoch = currentEpoch;
+            cacheEntry = {
+                value: valueString,
+                epoch: currentEpoch,
+                timestamp: now,
+            };
 
-    return valueString;
-});
+            return valueString;
+        } catch (error) {
+            console.error('[R1MintedLastEpoch] error', error);
+            throw error;
+        } finally {
+            fetchPromise = null;
+        }
+    })();
+
+    return fetchPromise;
+};
 
 export default async function R1MintedLastEpoch() {
     let value: bigint | undefined;
@@ -35,11 +55,11 @@ export default async function R1MintedLastEpoch() {
         value = BigInt(cachedValue);
     } catch (error) {
         console.log('[R1MintedLastEpoch] error', error);
-        return <div className="text-lg text-slate-600 md:text-xl">—</div>;
+        return <div className="text-lg text-slate-600 md:text-[19px]">—</div>;
     }
 
     return (
-        <div className="text-lg text-primary md:text-xl">
+        <div className="text-lg text-primary md:text-[19px]">
             {value !== undefined ? `${parseFloat(Number(formatUnits(BigInt(value), 18)).toFixed(2)).toLocaleString()}` : '...'}
         </div>
     );

@@ -136,7 +136,6 @@ export const search = cache(
 
                 try {
                     response = await getActiveNodes(1, query);
-                    console.log('Response', response);
 
                     if (response.result.nodes) {
                         Object.entries(response.result.nodes).forEach(([_ratio1Addr, node]) => {

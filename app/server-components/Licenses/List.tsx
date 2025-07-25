@@ -16,7 +16,7 @@ export default async function List({ licenses, currentPage }: { licenses: Licens
 
     return (
         <div className="list-wrapper">
-            <div className="list">
+            <div id="list" className="list">
                 <ListHeader>
                     <div className="min-w-[244px]">License</div>
                     <div className="min-w-[34px]">Type</div>

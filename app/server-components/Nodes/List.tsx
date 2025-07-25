@@ -19,9 +19,9 @@ export default async function List({
 }) {
     return (
         <div className="list-wrapper">
-            <div className="list">
+            <div id="list" className="list">
                 <ListHeader>
-                    <div className="min-w-[200px]">Alias</div>
+                    <div className="min-w-[130px]">Alias</div>
                     <div className="min-w-[164px]">Addresses</div>
                     <div className="min-w-[244px]">License</div>
                     <div className="min-w-[112px]">Owner</div>

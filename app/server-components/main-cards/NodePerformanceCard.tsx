@@ -55,34 +55,33 @@ export default async function NodePerformanceCard({
                         value={
                             <div className="row gap-6">
                                 <div className="row gap-1">
-                                    {nodeResponse.epochs.slice(-10).map((epoch, index) => (
-                                        <div key={index}>
-                                            <Tooltip
-                                                content={
-                                                    <div className="px-1 py-1.5 text-small">
-                                                        <div className="font-semibold">
-                                                            {parseFloat(
-                                                                ((nodeResponse.epochs_vals[index] * 100) / 255).toFixed(2),
-                                                            )}
-                                                            %
+                                    {nodeResponse.epochs.slice(-10).map((epoch, index) => {
+                                        const availability = nodeResponse.epochs_vals.slice(-10)[index];
+
+                                        return (
+                                            <div key={index}>
+                                                <Tooltip
+                                                    content={
+                                                        <div className="px-1 py-1.5 text-small">
+                                                            <div className="font-semibold">
+                                                                {parseFloat(((availability * 100) / 255).toFixed(2))}%
+                                                            </div>
+                                                            <div className="text-slate-500">Epoch {epoch}</div>
                                                         </div>
-                                                        <div className="text-slate-500">Epoch {epoch}</div>
-                                                    </div>
-                                                }
-                                                closeDelay={0}
-                                            >
-                                                <div
-                                                    className={clsx('h-5 w-5 cursor-pointer rounded-md hover:opacity-70', {
-                                                        'bg-teal-500': nodeResponse.epochs_vals[index] >= 200,
-                                                        'bg-yellow-500':
-                                                            nodeResponse.epochs_vals[index] >= 100 &&
-                                                            nodeResponse.epochs_vals[index] < 200,
-                                                        'bg-red-500': nodeResponse.epochs_vals[index] < 100,
-                                                    })}
-                                                ></div>
-                                            </Tooltip>
-                                        </div>
-                                    ))}
+                                                    }
+                                                    closeDelay={0}
+                                                >
+                                                    <div
+                                                        className={clsx('h-5 w-5 cursor-pointer rounded-md hover:opacity-70', {
+                                                            'bg-teal-500': availability >= 200,
+                                                            'bg-yellow-500': availability >= 100 && availability < 200,
+                                                            'bg-red-500': availability < 100,
+                                                        })}
+                                                    ></div>
+                                                </Tooltip>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
 
                                 <div className="h-[40px] w-[200px]">

@@ -26,20 +26,20 @@ const HeroStats = memo(
                 label="Memory Available"
                 value={
                     <div className="leading-tight">
-                        {fN(round(resourcesTotal.mem_avail, 0))}/{fN(round(resourcesTotal.mem_total, 0))}{' '}
-                        <span className="text-slate-500">GB</span>
+                        {fN(round(resourcesTotal.mem_avail / 1024, 2))}/{fN(round(resourcesTotal.mem_total / 1024, 2))}{' '}
+                        <span className="text-slate-500">TB</span>
                     </div>
                 }
                 isFlexible
-                widthClasses="min-w-[282px]"
+                widthClasses="min-w-[292px]"
             />
 
             <CardHorizontal
                 label="Disk Available"
                 value={
                     <div className="leading-tight">
-                        {fN(round(resourcesTotal.disk_avail, 0))}/{fN(round(resourcesTotal.disk_total, 0))}{' '}
-                        <span className="text-slate-500">GB</span>
+                        {fN(round(resourcesTotal.disk_avail / 1024, 2))}/{fN(round(resourcesTotal.disk_total / 1024, 2))}{' '}
+                        <span className="text-slate-500">TB</span>
                     </div>
                 }
                 isFlexible

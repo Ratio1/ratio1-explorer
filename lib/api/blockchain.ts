@@ -129,6 +129,14 @@ export const fetchErc20Balance = async (address: types.EthAddress, tokenAddress:
     });
 };
 
+export const fetchEthBalance = async (address: types.EthAddress): Promise<bigint> => {
+    const publicClient = await getPublicClient();
+
+    return publicClient.getBalance({
+        address,
+    });
+};
+
 export const fetchR1Price = async () => {
     const publicClient = await getPublicClient();
 

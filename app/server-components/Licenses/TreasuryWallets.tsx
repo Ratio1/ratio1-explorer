@@ -89,16 +89,16 @@ export default async function TreasuryWallets({ license }: Props) {
                 <div className="card-title font-bold">Treasury Wallets</div>
 
                 <Button
-                    color="primary"
+                    className="slate-button"
                     variant="flat"
                     size="sm"
                     as={Link}
                     href="https://ratio1.ai/blog/transparency-as-a-principle-not-a-slogan-and-why-we-re-sharing-our-foundation-wallets"
                     target="_blank"
                 >
-                    <div className="row gap-0.5">
+                    <div className="row gap-1">
                         <div className="text-sm font-medium">Read more</div>
-                        <RiArrowRightUpLine className="mt-[1px] text-[18px]" />
+                        <RiArrowRightUpLine className="mt-[1px] text-[17px]" />
                     </div>
                 </Button>
             </div>

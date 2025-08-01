@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { cache, JSX } from 'react';
-import { formatUnits } from 'viem';
 
 export const ETH_EMPTY_ADDR = '0x0000000000000000000000000000000000000000';
 
@@ -102,7 +101,7 @@ export function fBI(num: bigint, decimals: number): string {
         return formattedNum % 1 === 0 ? `${formattedNum}K` : `${parseFloat(formattedNum.toFixed(2))}K`;
     }
 
-    return parseFloat(Number(formatUnits(num, decimals)).toFixed(1)).toString();
+    return parseFloat(Number(numWithDecimals).toFixed(1)).toString();
 }
 
 export const isNonZeroInteger = (value: string): boolean => {

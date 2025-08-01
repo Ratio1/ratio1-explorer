@@ -4,8 +4,10 @@ import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizon
 import { Tag } from '@/app/server-components/shared/Tag';
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
+import config from '@/config';
+import { fetchErc20Balance, fetchEthBalance } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
-import { fN } from '@/lib/utils';
+import { fBI, fN } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import clsx from 'clsx';
 import { formatDistanceToNow, subSeconds } from 'date-fns';
@@ -22,6 +24,20 @@ export default async function NodeCard({
     hasLink?: boolean; // If it has a link to it, it means it's not the main card (displayed on top of the page)
 }) {
     const getTitle = () => <CardTitle hasLink={hasLink}>Node • {nodeResponse.node_alias}</CardTitle>;
+
+    let nodeR1Balance: bigint | undefined;
+    let nodeEthBalance: bigint | undefined;
+
+    try {
+        if (nodeResponse.node_is_oracle) {
+            [nodeR1Balance, nodeEthBalance] = await Promise.all([
+                fetchErc20Balance(nodeResponse.node_eth_address, config.r1ContractAddress),
+                fetchEthBalance(nodeResponse.node_eth_address),
+            ]);
+        }
+    } catch (error) {
+        console.error('Error fetching node balances for node:', nodeResponse.node_eth_address, error);
+    }
 
     return (
         <BorderedCard>
@@ -120,7 +136,7 @@ export default async function NodeCard({
                     <CardHorizontal
                         label="Version"
                         value={nodeResponse.node_version.split('|')[0]}
-                        widthClasses="min-w-[192px] md:max-w-[210px]"
+                        widthClasses="min-w-[192px]"
                         isFlexible
                         isSmall
                     />
@@ -155,6 +171,24 @@ export default async function NodeCard({
                         isFlexible
                         widthClasses="min-w-[320px] md:max-w-[340px]"
                     />
+
+                    {nodeResponse.node_is_oracle && nodeR1Balance !== undefined && nodeEthBalance !== undefined && (
+                        <>
+                            <CardHorizontal
+                                label="$R1 Balance"
+                                value={<div className="text-primary">{fBI(nodeR1Balance, 18)}</div>}
+                                isFlexible
+                                widthClasses="min-w-[300px] md:max-w-[320px]"
+                            />
+
+                            <CardHorizontal
+                                label="ETH Balance"
+                                value={<div className="text-primary">{fBI(nodeEthBalance, 18)}</div>}
+                                isFlexible
+                                widthClasses="min-w-[300px] md:max-w-[320px]"
+                            />
+                        </>
+                    )}
                 </div>
             </div>
 

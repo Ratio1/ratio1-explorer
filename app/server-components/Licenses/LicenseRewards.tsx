@@ -13,37 +13,43 @@ export default async function LicenseRewards({
     licenseType: 'ND' | 'MND' | 'GND';
     getNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;
 }) {
-    let rewards: bigint | undefined = 0n;
+    try {
+        let rewards: bigint | undefined = 0n;
 
-    const nodeResponse: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined =
-        await getNodeAvailability();
+        const nodeResponse: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined =
+            await getNodeAvailability();
 
-    if (!nodeResponse) {
-        return null;
+        if (!nodeResponse) {
+            return <CardHorizontal label="Rewards" value={<div className="text-red-600">Error loading rewards</div>} isSmall />;
+        }
+
+        const firstCheckEpoch: number = getLicenseFirstCheckEpoch(license.assignTimestamp);
+        const lastClaimEpoch: number = Number(license.lastClaimEpoch);
+
+        rewards = await getLicenseRewards(
+            license,
+            licenseType,
+            nodeResponse.epochs.slice(lastClaimEpoch - firstCheckEpoch),
+            nodeResponse.epochs_vals.slice(lastClaimEpoch - firstCheckEpoch),
+        );
+
+        return (
+            <CardHorizontal
+                label="Rewards"
+                value={
+                    <div className="text-primary">
+                        {!!rewards ? '$R1 ' : ''}
+                        {rewards === undefined
+                            ? '...'
+                            : parseFloat(Number(formatUnits(rewards ?? 0n, 18)).toFixed(4)).toLocaleString()}
+                    </div>
+                }
+                isSmall
+            />
+        );
+    } catch (error) {
+        console.log('Failed to fetch license rewards:', error);
+
+        return <CardHorizontal label="Rewards" value={<div className="text-red-600">Error loading rewards</div>} isSmall />;
     }
-
-    const firstCheckEpoch: number = getLicenseFirstCheckEpoch(license.assignTimestamp);
-    const lastClaimEpoch: number = Number(license.lastClaimEpoch);
-
-    rewards = await getLicenseRewards(
-        license,
-        licenseType,
-        nodeResponse.epochs.slice(lastClaimEpoch - firstCheckEpoch),
-        nodeResponse.epochs_vals.slice(lastClaimEpoch - firstCheckEpoch),
-    );
-
-    return (
-        <CardHorizontal
-            label="Rewards"
-            value={
-                <div className="text-primary">
-                    {!!rewards ? '$R1 ' : ''}
-                    {rewards === undefined
-                        ? '...'
-                        : parseFloat(Number(formatUnits(rewards ?? 0n, 18)).toFixed(4)).toLocaleString()}
-                </div>
-            }
-            isSmall
-        />
-    );
 }

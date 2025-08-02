@@ -4,7 +4,6 @@ import { getCurrentEpoch, getLicenseFirstCheckEpoch } from '@/config';
 import * as types from '@/typedefs/blockchain';
 import { SearchResult } from '@/typedefs/general';
 import { headers } from 'next/headers';
-import { cache } from 'react';
 import { getActiveNodes } from './api';
 import { getLicense } from './api/blockchain';
 import { getNodeEpochsRange, getNodeLastEpoch } from './api/oracles';
@@ -33,140 +32,139 @@ export const getNodeAvailability = async (
         : await getNodeEpochsRange(nodeEthAddr, firstCheckEpoch, currentEpoch - 1);
 };
 
-export const search = cache(
-    async (
-        query: string,
-    ): Promise<{
-        results: SearchResult[];
-        error: boolean;
-    }> => {
-        query = query.trim();
+export const search = async (
+    query: string,
+): Promise<{
+    results: SearchResult[];
+    error: boolean;
+}> => {
+    query = query.trim();
 
-        if (!query) {
-            console.log('Empty search query.');
-            return {
-                results: [],
-                error: false,
-            };
-        }
+    if (!query) {
+        console.log('Empty search query.');
+        return {
+            results: [],
+            error: false,
+        };
+    }
 
-        if (query.length > 42 || !URL_SAFE_PATTERN.test(query)) {
-            console.log('Search query is invalid.');
-            return {
-                results: [],
-                error: true,
-            };
-        }
+    if (query.length > 42 || !URL_SAFE_PATTERN.test(query)) {
+        console.log('Search query is invalid.');
+        return {
+            results: [],
+            error: true,
+        };
+    }
 
-        try {
-            const resultsArray: SearchResult[] = [];
+    try {
+        const resultsArray: SearchResult[] = [];
 
-            if (query.startsWith('0x') && query.length === 42) {
-                console.log('Searching for ETH address...');
+        if (query.startsWith('0x') && query.length === 42) {
+            console.log('Searching for ETH address...');
 
-                const ethAddress = query as types.EthAddress;
-                const ensName = await cachedGetENSName(ethAddress);
+            const ethAddress = query as types.EthAddress;
+            const ensName = await cachedGetENSName(ethAddress);
+
+            resultsArray.push({
+                type: 'owner',
+                address: ethAddress,
+                ensName,
+            });
+
+            try {
+                const nodeResponse = await getNodeLastEpoch(ethAddress);
 
                 resultsArray.push({
-                    type: 'owner',
-                    address: ethAddress,
-                    ensName,
+                    type: 'node',
+                    nodeAddress: nodeResponse.node_eth_address,
+                    alias: nodeResponse.node_alias,
+                    isOnline: nodeResponse.node_is_online,
                 });
 
-                try {
-                    const nodeResponse = await getNodeLastEpoch(ethAddress);
+                return {
+                    results: resultsArray,
+                    error: false,
+                };
+            } catch (error) {
+                console.log('Address is not a valid node.');
+            } finally {
+                return {
+                    results: resultsArray,
+                    error: false,
+                };
+            }
+        } else if (isNonZeroInteger(query)) {
+            console.log('Searching for license...');
+            const licenseId = parseInt(query);
 
+            try {
+                const ndLicense = await getLicense('ND', licenseId);
+                if (ndLicense && !isEmptyETHAddr(ndLicense.nodeAddress)) {
                     resultsArray.push({
-                        type: 'node',
-                        nodeAddress: nodeResponse.node_eth_address,
-                        alias: nodeResponse.node_alias,
-                        isOnline: nodeResponse.node_is_online,
+                        type: 'license',
+                        licenseId,
+                        licenseType: 'ND',
+                        nodeAddress: ndLicense.nodeAddress,
+                    });
+                }
+            } catch (error) {
+                console.log('ND License not found', licenseId);
+            }
+
+            try {
+                const mndLicense = await getLicense('MND', licenseId);
+                if (!isEmptyETHAddr(mndLicense.nodeAddress)) {
+                    resultsArray.push({
+                        type: 'license',
+                        licenseId,
+                        licenseType: licenseId === 1 ? 'GND' : 'MND',
+                        nodeAddress: mndLicense.nodeAddress,
+                    });
+                }
+            } catch (error) {
+                console.log('MND/GND License not found', licenseId);
+            }
+
+            return {
+                results: resultsArray,
+                error: resultsArray.length === 0,
+            };
+        } else {
+            console.log('Searching for nodes by alias...');
+            let response: types.OraclesDefaultResult;
+
+            try {
+                response = await getActiveNodes(1, query);
+
+                if (response.result.nodes) {
+                    Object.entries(response.result.nodes).forEach(([_ratio1Addr, node]) => {
+                        resultsArray.push({
+                            type: 'node',
+                            nodeAddress: node.eth_addr,
+                            alias: node.alias,
+                            isOnline: parseInt(node.last_seen_ago.split(':')[2]) < 60,
+                        });
                     });
 
                     return {
                         results: resultsArray,
-                        error: false,
+                        error: resultsArray.length === 0,
                     };
-                } catch (error) {
-                    console.log('Address is not a valid node.');
-                    return {
-                        results: [],
-                        error: true,
-                    };
+                } else {
+                    throw new Error('No nodes found for the current query.');
                 }
-            } else if (isNonZeroInteger(query)) {
-                console.log('Searching for license...');
-                const licenseId = parseInt(query);
-
-                try {
-                    const ndLicense = await getLicense('ND', licenseId);
-                    if (ndLicense && !isEmptyETHAddr(ndLicense.nodeAddress)) {
-                        resultsArray.push({
-                            type: 'license',
-                            licenseId,
-                            licenseType: 'ND',
-                            nodeAddress: ndLicense.nodeAddress,
-                        });
-                    }
-                } catch (error) {
-                    console.log('ND License not found', licenseId);
-                }
-
-                try {
-                    const mndLicense = await getLicense('MND', licenseId);
-                    if (!isEmptyETHAddr(mndLicense.nodeAddress)) {
-                        resultsArray.push({
-                            type: 'license',
-                            licenseId,
-                            licenseType: licenseId === 1 ? 'GND' : 'MND',
-                            nodeAddress: mndLicense.nodeAddress,
-                        });
-                    }
-                } catch (error) {
-                    console.log('MND/GND License not found', licenseId);
-                }
-
+            } catch (error) {
                 return {
-                    results: resultsArray,
-                    error: resultsArray.length === 0,
+                    results: [],
+                    error: true,
                 };
-            } else {
-                console.log('Searching for nodes by alias...');
-                let response: types.OraclesDefaultResult;
-
-                try {
-                    response = await getActiveNodes(1, query);
-
-                    if (response.result.nodes) {
-                        Object.entries(response.result.nodes).forEach(([_ratio1Addr, node]) => {
-                            resultsArray.push({
-                                type: 'node',
-                                nodeAddress: node.eth_addr,
-                                alias: node.alias,
-                                isOnline: parseInt(node.last_seen_ago.split(':')[2]) < 60,
-                            });
-                        });
-
-                        return {
-                            results: resultsArray,
-                            error: resultsArray.length === 0,
-                        };
-                    } else {
-                        throw new Error('No nodes found for the current query.');
-                    }
-                } catch (error) {
-                    return {
-                        results: [],
-                        error: true,
-                    };
-                }
             }
-        } catch (error) {
-            console.log(error);
-            return {
-                results: [],
-                error: true,
-            };
         }
-    },
-);
+    } catch (error) {
+        console.log(error);
+        return {
+            results: [],
+            error: true,
+        };
+    }
+};

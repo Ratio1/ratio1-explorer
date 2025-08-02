@@ -19,7 +19,7 @@ export default function Search() {
     const [isLoading, setLoading] = useState<boolean>(false);
     const [isError, setError] = useState<boolean>(false);
 
-    const [value, setValue] = useState<string>();
+    const [value, setValue] = useState<string>('');
     const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 
     const [results, setResults] = useState<SearchResult[]>([]);

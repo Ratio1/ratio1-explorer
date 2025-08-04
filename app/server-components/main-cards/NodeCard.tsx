@@ -176,14 +176,14 @@ export default async function NodeCard({
                         <>
                             <CardHorizontal
                                 label="$R1 Balance"
-                                value={<div className="text-primary">{fBI(nodeR1Balance, 18)}</div>}
+                                value={<div className="text-primary">{fBI(nodeR1Balance, 18, 3)}</div>}
                                 isFlexible
                                 widthClasses="min-w-[300px] md:max-w-[320px]"
                             />
 
                             <CardHorizontal
                                 label="ETH Balance"
-                                value={<div className="text-primary">{fBI(nodeEthBalance, 18)}</div>}
+                                value={<div className="text-primary">{fBI(nodeEthBalance, 18, 4)}</div>}
                                 isFlexible
                                 widthClasses="min-w-[300px] md:max-w-[320px]"
                             />

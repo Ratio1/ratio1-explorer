@@ -130,11 +130,12 @@ export const search = async (
                 error: resultsArray.length === 0,
             };
         } else {
-            console.log('Searching for nodes by alias...');
+            // console.log('Searching for nodes by alias...', new Date());
             let response: types.OraclesDefaultResult;
 
             try {
                 response = await getActiveNodes(1, query);
+                // console.log('getActiveNodes', new Date(), response);
 
                 if (response.result.nodes) {
                     Object.entries(response.result.nodes).forEach(([_ratio1Addr, node]) => {

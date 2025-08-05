@@ -24,6 +24,8 @@ export default async function HomePage(props: {
 
         const pagesCount: number = response.result.nodes_total_pages;
 
+        // console.log('[HomePage] getActiveNodes Page', currentPage, response.result.nodes_total_items);
+
         return (
             <>
                 <Hero nodesTotalItems={response.result.nodes_total_items} resourcesTotal={response.result.resources_total} />

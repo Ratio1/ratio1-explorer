@@ -1,5 +1,6 @@
 import { CardWithIcon } from '@/app/server-components/shared/cards/CardWithIcon';
 import Search from '@/components/Search';
+import ClientWrapper from '@/components/shared/ClientWrapper';
 import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
 import { lazy, Suspense } from 'react';
@@ -22,7 +23,9 @@ export default async function TopBar() {
     return (
         <div className="flex w-full flex-col justify-between gap-4 md:gap-6 lg:flex-row lg:gap-12">
             <div className="w-full flex-1">
-                <Search />
+                <ClientWrapper>
+                    <Search />
+                </ClientWrapper>
             </div>
 
             <div className="flex-1">

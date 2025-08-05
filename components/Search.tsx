@@ -2,9 +2,9 @@
 
 import SearchResultsList from '@/app/server-components/SearchResultsList';
 import { Alert } from '@/app/server-components/shared/Alert';
-import { search } from '@/lib/actions';
 import { routePath } from '@/lib/routes';
 import useDebounce from '@/lib/useDebounce';
+import { clientSearch as search } from '@/lib/utils';
 import { SearchResult } from '@/typedefs/general';
 import { Input } from '@heroui/input';
 import { Modal, ModalContent, useDisclosure } from '@heroui/modal';
@@ -23,6 +23,8 @@ export default function Search() {
     const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 
     const [results, setResults] = useState<SearchResult[]>([]);
+
+    const isLoggingEnabled = true;
 
     const handleKeyPress = useCallback((event: KeyboardEvent) => {
         if (event.key === '/') {
@@ -45,11 +47,12 @@ export default function Search() {
 
     const onSearch = async (query: string) => {
         setLoading(true);
-        console.log('Searching...');
-        const { results, error } = await search(query);
-        console.log('Results', results);
+        if (isLoggingEnabled) console.log('Searching...');
+        const { results, error } = await search(query, isLoggingEnabled);
+        if (isLoggingEnabled) console.log('Results', results);
         setResults(results);
         setError(error);
+        if (isLoggingEnabled) console.log('Error searching', error);
         setLoading(false);
     };
 

@@ -45,7 +45,9 @@ export default function Search() {
 
     const onSearch = async (query: string) => {
         setLoading(true);
+        console.log('Searching...');
         const { results, error } = await search(query);
+        console.log('Results', results);
         setResults(results);
         setError(error);
         setLoading(false);
@@ -142,6 +144,11 @@ export default function Search() {
                                 if (e.key === 'Enter') {
                                     onClose();
                                     router.push(`${routePath.search}?query=${value || ''}`);
+                                }
+
+                                if (e.key === 'Escape') {
+                                    onClose();
+                                    setValue('');
                                 }
                             }}
                         />

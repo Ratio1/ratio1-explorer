@@ -24,11 +24,18 @@ export default async function HomePage(props: {
 
         const pagesCount: number = response.result.nodes_total_pages;
 
-        // console.log('[HomePage] getActiveNodes Page', currentPage, response.result.nodes_total_items);
+        console.log(`[HomePage] getActiveNodes(${currentPage})`, response);
 
         return (
             <>
-                <Hero nodesTotalItems={response.result.nodes_total_items} resourcesTotal={response.result.resources_total} />
+                <Hero
+                    nodesTotalItems={response.result.nodes_total_items}
+                    resourcesTotal={response.result.resources_total}
+                    serverInfo={{
+                        alias: response.result.server_alias,
+                        version: response.result.server_version,
+                    }}
+                />
 
                 <Suspense fallback={<NodesListSkeleton />}>
                     <List nodes={nodes} pagesCount={pagesCount} currentPage={currentPage} />

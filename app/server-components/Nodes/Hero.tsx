@@ -82,9 +82,14 @@ const CachedHeroContent = cache(async () => (
 export default async function Hero({
     nodesTotalItems,
     resourcesTotal,
+    serverInfo,
 }: {
     nodesTotalItems: number;
     resourcesTotal: types.Resources;
+    serverInfo: {
+        alias: string;
+        version: string;
+    };
 }) {
     return (
         <div id="hero" className="w-full">
@@ -94,6 +99,10 @@ export default async function Hero({
                 <div className="flexible-row">
                     <HeroStats nodesTotalItems={nodesTotalItems} resourcesTotal={resourcesTotal} />
                     <CachedHeroContent />
+                </div>
+
+                <div className="w-full text-right text-sm font-medium text-slate-400 lg:-mt-1">
+                    {serverInfo.alias} • v{serverInfo.version}
                 </div>
             </BorderedCard>
         </div>

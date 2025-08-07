@@ -192,7 +192,7 @@ export default async function NodeCard({
                 </div>
             </div>
 
-            <div className="w-full text-right text-sm font-medium text-slate-400">
+            <div className="w-full text-right text-sm font-medium text-slate-400 lg:-mt-1">
                 {nodeResponse.node_version.replace(/\|(?=\S)/g, '| ')}
             </div>
         </BorderedCard>

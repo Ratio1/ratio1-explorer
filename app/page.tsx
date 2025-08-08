@@ -24,7 +24,7 @@ export default async function HomePage(props: {
 
         const pagesCount: number = response.result.nodes_total_pages;
 
-        console.log(`[HomePage] getActiveNodes(${currentPage})`, response);
+        // console.log(`[HomePage] getActiveNodes(${currentPage})`, response.result);
 
         return (
             <>

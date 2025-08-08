@@ -4,6 +4,7 @@ import { getCurrentEpoch, getLicenseFirstCheckEpoch } from '@/config';
 import * as types from '@/typedefs/blockchain';
 import { SearchResult } from '@/typedefs/general';
 import { headers } from 'next/headers';
+import { cache } from 'react';
 import { getActiveNodes } from './api';
 import { getLicense } from './api/blockchain';
 import { getNodeEpochsRange, getNodeLastEpoch } from './api/oracles';
@@ -169,3 +170,7 @@ export const search = async (
         };
     }
 };
+
+export const cachedLayoutFunction = cache(async () => {
+    return await getActiveNodes(1);
+});

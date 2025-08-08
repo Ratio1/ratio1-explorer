@@ -1,7 +1,7 @@
 import { CardWithIcon } from '@/app/server-components/shared/cards/CardWithIcon';
 import Search from '@/components/Search';
 import ClientWrapper from '@/components/shared/ClientWrapper';
-import { getActiveNodes } from '@/lib/api';
+import { cachedLayoutFunction } from '@/lib/actions';
 import * as types from '@/typedefs/blockchain';
 import { lazy, Suspense } from 'react';
 import { RiCpuLine } from 'react-icons/ri';
@@ -14,7 +14,7 @@ export default async function TopBar() {
     let activeNodes: types.OraclesDefaultResult;
 
     try {
-        activeNodes = await getActiveNodes(1); // Only fetch first page data for the count
+        activeNodes = await cachedLayoutFunction();
     } catch (error) {
         console.error(error);
         return null;

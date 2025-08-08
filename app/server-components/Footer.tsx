@@ -1,4 +1,6 @@
 import ApiStatusCard from '@/app/server-components/shared/ApiStatusCard';
+import { cachedLayoutFunction } from '@/lib/actions';
+import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -13,6 +15,15 @@ const socialLinks = [
 ];
 
 export default async function Footer() {
+    let activeNodes: types.OraclesDefaultResult;
+
+    try {
+        activeNodes = await cachedLayoutFunction();
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+
     return (
         <div className="col center-all w-full gap-8 rounded-3xl bg-slate-100 px-8 py-10">
             <div className="col gap-4">
@@ -34,6 +45,10 @@ export default async function Footer() {
                         {link.icon}
                     </Link>
                 ))}
+            </div>
+
+            <div className="text-center text-sm font-medium text-slate-400">
+                {activeNodes.result.server_alias} • v{activeNodes.result.server_version}
             </div>
 
             <div className="col items-center gap-2">

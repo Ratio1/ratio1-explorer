@@ -19,8 +19,8 @@ const MIN_WIDTHS = {
     percentage: 'min-w-[118px]',
     mined: 'min-w-[140px]',
     r1Balance: 'min-w-[92px]',
+    transferredOut: 'min-w-[134px]',
     usdcBalance: 'min-w-[110px]',
-    transferredOut: 'min-w-[112px]',
 } as const;
 
 export default async function TreasuryWallets({ license }: Props) {
@@ -109,8 +109,8 @@ export default async function TreasuryWallets({ license }: Props) {
                     <div className={MIN_WIDTHS.percentage}>% of GND</div>
                     <div className={MIN_WIDTHS.mined}>Mined/To be mined</div>
                     <div className={MIN_WIDTHS.r1Balance}>$R1 Balance</div>
+                    <div className={MIN_WIDTHS.transferredOut}>$R1 Transferred Out</div>
                     <div className={MIN_WIDTHS.usdcBalance}>$USDC Balance</div>
-                    <div className={MIN_WIDTHS.transferredOut}>Transferred Out</div>
                 </ListHeader>
 
                 <div className="col gap-1.5">
@@ -195,17 +195,6 @@ export default async function TreasuryWallets({ license }: Props) {
                                             />
                                         </div>
 
-                                        <div className={MIN_WIDTHS.usdcBalance}>
-                                            <CardItem
-                                                label="$USDC Balance"
-                                                value={
-                                                    <div className="font-medium text-slate-500">
-                                                        {fBI(wallet.usdcBalance, 6)}
-                                                    </div>
-                                                }
-                                            />
-                                        </div>
-
                                         <div className={MIN_WIDTHS.transferredOut}>
                                             <CardItem
                                                 label="Transferred Out"
@@ -215,6 +204,17 @@ export default async function TreasuryWallets({ license }: Props) {
                                                     ) : (
                                                         <>—</>
                                                     )
+                                                }
+                                            />
+                                        </div>
+
+                                        <div className={MIN_WIDTHS.usdcBalance}>
+                                            <CardItem
+                                                label="$USDC Balance"
+                                                value={
+                                                    <div className="font-medium text-slate-500">
+                                                        {fBI(wallet.usdcBalance, 6)}
+                                                    </div>
                                                 }
                                             />
                                         </div>

@@ -236,7 +236,7 @@ export const clientSearch = async (
             let response: types.OraclesDefaultResult;
 
             try {
-                response = await getActiveNodes(1, query);
+                response = await getActiveNodes(1, 50, query);
                 if (isLoggingEnabled) console.log('[Search] getActiveNodes', response);
 
                 if (response.result.nodes) {
@@ -247,6 +247,14 @@ export const clientSearch = async (
                             alias: node.alias,
                             isOnline: parseInt(node.last_seen_ago.split(':')[2]) < 60,
                         });
+                    });
+
+                    // Sort results by node alias
+                    resultsArray.sort((a, b) => {
+                        if (a.type === 'node' && b.type === 'node') {
+                            return a.alias.localeCompare(b.alias);
+                        }
+                        return 0;
                     });
 
                     return {

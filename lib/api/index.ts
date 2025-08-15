@@ -5,11 +5,15 @@ import * as types from '@/typedefs/blockchain';
 
 const PAGE_SIZE = 10;
 
-export async function getActiveNodes(page: number = 1, alias_pattern?: string): Promise<types.OraclesDefaultResult> {
+export async function getActiveNodes(
+    page: number = 1,
+    pageSize: number = PAGE_SIZE,
+    alias_pattern?: string,
+): Promise<types.OraclesDefaultResult> {
     const oraclesApiURL = config.oraclesUrl;
 
     const response: Response = await fetch(
-        `${oraclesApiURL}/active_nodes_list?items_per_page=${PAGE_SIZE}&page=${page}${alias_pattern ? `&alias_pattern=${alias_pattern}` : ''}`,
+        `${oraclesApiURL}/active_nodes_list?items_per_page=${pageSize}&page=${page}${alias_pattern ? `&alias_pattern=${alias_pattern}` : ''}`,
         {
             next: { revalidate: 60 }, // Revalidate every 1 minute
         },

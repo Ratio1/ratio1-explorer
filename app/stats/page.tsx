@@ -50,13 +50,10 @@ export default async function StatsPage() {
                             isFlexible
                             widthClasses="min-w-[230px]"
                         />
-
-                        <CardHorizontal label="Minted" value={fN(tokenSupply.minted)} isFlexible widthClasses="min-w-[160px]" />
+                        <CardHorizontal label="Burned" value={fN(tokenSupply.burned)} isFlexible widthClasses="min-w-[160px]" />
                     </div>
 
                     <div className="flexible-row">
-                        <CardHorizontal label="Burned" value={fN(tokenSupply.burned)} isFlexible widthClasses="min-w-[160px]" />
-
                         <CardHorizontal
                             label="Max. Theoretical Supply"
                             value={fN(tokenSupply.maxSupply)}

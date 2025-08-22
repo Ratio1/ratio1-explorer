@@ -12,7 +12,7 @@ export default function Navigation() {
     return navRoutes.map((routePath) => (
         <div
             key={routePath}
-            className={clsx('layoutBreak:block hidden cursor-pointer pt-[6px] hover:opacity-50', {
+            className={clsx('hidden cursor-pointer pt-[6px] hover:opacity-50 layoutBreak:block', {
                 [activeStyle]: routePath === pathname,
             })}
         >

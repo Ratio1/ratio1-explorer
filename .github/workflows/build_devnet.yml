@@ -1,8 +1,9 @@
-name: Build & Push Container
+name: Build & Push Devnet Image
 
 on:
   push:
-    branches: [ development ]
+    branches: [ develop ]
+  # also allow manual runs
   workflow_dispatch:
 
 jobs:
@@ -26,7 +27,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build & push devnet
+      - name: Build & Push Devnet Image
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -36,18 +37,6 @@ jobs:
           build-args: |
             MORALIS_API_KEY=${{ secrets.MORALIS_API_KEY }}
             ALCHEMY_API_KEY=${{ secrets.ALCHEMY_API_KEY }}
+            NEXT_PUBLIC_COMMIT_HASH=${{ github.sha }}
           tags: |
             ratio1/explorer:devnet
-
-      - name: Build & push testnet
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile_testnet
-          push: true
-          platforms: linux/amd64
-          build-args: |
-            MORALIS_API_KEY=${{ secrets.MORALIS_API_KEY }}
-            ALCHEMY_API_KEY=${{ secrets.ALCHEMY_API_KEY }}
-          tags: |
-            ratio1/explorer:testnet

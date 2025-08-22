@@ -1,8 +1,9 @@
-name: Build & Push Container
+name: Build and Push Testnet and Mainnet Images
 
 on:
   push:
     branches: [ main ]
+  # also allow manual runs
   workflow_dispatch:
 
 jobs:
@@ -48,7 +49,21 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build & push mainnet
+      - name: Build & Push Testnet Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile_testnet
+          push: true
+          platforms: linux/amd64
+          build-args: |
+            MORALIS_API_KEY=${{ secrets.MORALIS_API_KEY }}
+            ALCHEMY_API_KEY=${{ secrets.ALCHEMY_API_KEY }}
+            NEXT_PUBLIC_APP_VERSION=${{ needs.generate-version.outputs.version }}
+          tags: |
+            ratio1/explorer:testnet
+
+      - name: Build & Push Mainnet Image
         uses: docker/build-push-action@v5
         with:
           context: .

@@ -68,7 +68,13 @@ export default async function Footer() {
                     <ApiStatusCard />
                 </Suspense>
 
-                <div className="text-sm font-medium text-slate-500">v{process.env.NEXT_PUBLIC_APP_VERSION}</div>
+                {(!!process.env.NEXT_PUBLIC_APP_VERSION || !!process.env.NEXT_PUBLIC_COMMIT_HASH) && (
+                    <div className="text-sm font-medium text-slate-500">
+                        {process.env.NEXT_PUBLIC_APP_VERSION
+                            ? `v${process.env.NEXT_PUBLIC_APP_VERSION}`
+                            : `${process.env.NEXT_PUBLIC_COMMIT_HASH?.substring(0, 7)}`}
+                    </div>
+                )}
             </div>
         </div>
     );

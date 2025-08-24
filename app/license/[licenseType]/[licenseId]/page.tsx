@@ -78,6 +78,7 @@ export default async function LicensePage({ params }) {
 
     try {
         license = await cachedGetLicense(licenseType, licenseId, config.environment);
+        console.log('[LicensePage] cachedGetLicense', license);
     } catch (error) {
         console.error(error);
         console.log(`[License Page] Failed to fetch license: ${licenseType}-${licenseId}`);

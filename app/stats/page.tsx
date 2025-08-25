@@ -25,6 +25,7 @@ export default async function StatsPage() {
 
     try {
         [tokenSupply, r1Price] = await Promise.all([getTokenSupply(), fetchR1Price()]);
+        console.log('StatsPage', tokenSupply, r1Price);
     } catch (error) {
         console.error(error);
         redirect(routePath.notFound);
@@ -60,13 +61,6 @@ export default async function StatsPage() {
 
                         <CardHorizontal label="Burned" value={fN(tokenSupply.burned)} isFlexible widthClasses="min-w-[140px]" />
                     </div>
-
-                    {/* <CardHorizontal
-                        label="$R1 Price"
-                        value={`$${parseFloat((Number((r1Price * scale) / divisor) / Number(scale)).toFixed(2))}`}
-                        isFlexible
-                        widthClasses="min-w-[150px]"
-                    /> */}
                 </div>
             </BorderedCard>
         </div>

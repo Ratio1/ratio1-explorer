@@ -20,8 +20,8 @@ export default async function StatsPage() {
     let tokenSupply: TokenSupplyResponse;
     let r1Price: bigint;
 
-    const divisor = 10n ** BigInt(18);
-    const scale = 1000000n;
+    // const divisor = 10n ** BigInt(18);
+    // const scale = 1000000n;
 
     try {
         [tokenSupply, r1Price] = await Promise.all([getTokenSupply(), fetchR1Price()]);
@@ -41,7 +41,7 @@ export default async function StatsPage() {
                             label="Circulating Supply"
                             value={fN(tokenSupply.circulatingSupply)}
                             isFlexible
-                            widthClasses="min-w-[282px]"
+                            widthClasses="min-w-[292px]"
                         />
 
                         <CardHorizontal
@@ -51,26 +51,22 @@ export default async function StatsPage() {
                             widthClasses="min-w-[230px]"
                         />
 
-                        <CardHorizontal label="Minted" value={fN(tokenSupply.minted)} isFlexible widthClasses="min-w-[160px]" />
-                    </div>
-
-                    <div className="flexible-row">
-                        <CardHorizontal label="Burned" value={fN(tokenSupply.burned)} isFlexible widthClasses="min-w-[160px]" />
-
                         <CardHorizontal
                             label="Max. Theoretical Supply"
                             value={fN(tokenSupply.maxSupply)}
                             isFlexible
-                            widthClasses="min-w-[290px]"
+                            widthClasses="min-w-[320px]"
                         />
 
-                        <CardHorizontal
-                            label="$R1 Price"
-                            value={`$${parseFloat((Number((r1Price * scale) / divisor) / Number(scale)).toFixed(2))}`}
-                            isFlexible
-                            widthClasses="min-w-[150px]"
-                        />
+                        <CardHorizontal label="Burned" value={fN(tokenSupply.burned)} isFlexible widthClasses="min-w-[140px]" />
                     </div>
+
+                    {/* <CardHorizontal
+                        label="$R1 Price"
+                        value={`$${parseFloat((Number((r1Price * scale) / divisor) / Number(scale)).toFixed(2))}`}
+                        isFlexible
+                        widthClasses="min-w-[150px]"
+                    /> */}
                 </div>
             </BorderedCard>
         </div>

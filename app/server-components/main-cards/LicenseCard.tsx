@@ -31,8 +31,6 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
 
     const getTitle = () => <CardTitle hasLink={hasLink}>License #{licenseId}</CardTitle>;
 
-    const poaiRewards = 0n;
-
     return (
         <BorderedCard>
             <div className="row gap-3">
@@ -128,10 +126,10 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                     label="Rewards (PoAI)"
                     value={
                         <div className="text-primary">
-                            {!!poaiRewards ? '$R1 ' : ''}
-                            {poaiRewards === undefined
+                            {!!license.r1PoaiRewards ? '$R1 ' : ''}
+                            {license.r1PoaiRewards === undefined
                                 ? '...'
-                                : parseFloat(Number(formatUnits(poaiRewards ?? 0n, 18)).toFixed(3)).toLocaleString()}
+                                : parseFloat(Number(formatUnits(license.r1PoaiRewards ?? 0n, 18)).toFixed(3)).toLocaleString()}
                         </div>
                     }
                     isSmall

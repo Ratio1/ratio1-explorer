@@ -3,6 +3,7 @@ import { getLicenseRewards } from '@/lib/api/blockchain';
 import * as types from '@/typedefs/blockchain';
 import { formatUnits } from 'viem';
 import { CardHorizontal } from '../shared/cards/CardHorizontal';
+import { SmallTag } from '../shared/SmallTag';
 
 export default async function LicenseRewardsPoA({
     license,
@@ -20,7 +21,9 @@ export default async function LicenseRewardsPoA({
             await getNodeAvailability();
 
         if (!nodeResponse) {
-            return <CardHorizontal label="Rewards" value={<div className="text-red-600">Error loading rewards</div>} isSmall />;
+            return (
+                <CardHorizontal label="Rewards" value={<SmallTag variant="banned">Error loading rewards</SmallTag>} isSmall />
+            );
         }
 
         const firstCheckEpoch: number = getLicenseFirstCheckEpoch(license.assignTimestamp);
@@ -55,7 +58,7 @@ export default async function LicenseRewardsPoA({
         return (
             <CardHorizontal
                 label="Rewards"
-                value={<div className="text-red-600">Error loading rewards</div>}
+                value={<SmallTag variant="banned">Error loading rewards</SmallTag>}
                 widthClasses="min-w-[280px]"
                 isSmall
                 isFlexible

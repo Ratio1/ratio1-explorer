@@ -10,6 +10,7 @@ type License = {
     lastClaimOracle: EthAddress;
     isBanned: boolean;
     owner: EthAddress;
+    r1PoaiRewards: bigint;
 };
 
 type NodeLicenseDetailsResponse = License & {

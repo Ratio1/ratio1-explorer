@@ -108,11 +108,11 @@ export default async function LicensePage({ params }) {
                 getNodeAvailability={cachedGetNodeAvailability}
             />
 
-            <Suspense fallback={<Skeleton className="min-h-[310px] w-full rounded-2xl" />}>
+            <Suspense fallback={<Skeleton className="min-h-[325.5px] w-full rounded-2xl" />}>
                 <LicensePageNodeCardWrapper cachedGetNodeAvailability={cachedGetNodeAvailability} />
             </Suspense>
 
-            <Suspense fallback={<Skeleton className="min-h-[276px] w-full rounded-2xl" />}>
+            <Suspense fallback={<Skeleton className="min-h-[272px] w-full rounded-2xl" />}>
                 <LicensePageNodePerformanceCardWrapper cachedGetNodeAvailability={cachedGetNodeAvailability} />
             </Suspense>
         </div>

@@ -122,18 +122,22 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                     />
                 </Suspense>
 
-                <CardHorizontal
-                    label="Rewards (PoAI)"
-                    value={
-                        <div className="text-primary">
-                            {!!license.r1PoaiRewards ? '$R1 ' : ''}
-                            {license.r1PoaiRewards === undefined
-                                ? '...'
-                                : parseFloat(Number(formatUnits(license.r1PoaiRewards ?? 0n, 18)).toFixed(3)).toLocaleString()}
-                        </div>
-                    }
-                    isSmall
-                />
+                {licenseType === 'ND' && (
+                    <CardHorizontal
+                        label="Rewards (PoAI)"
+                        value={
+                            <div className="text-primary">
+                                {!!license.r1PoaiRewards ? '$R1 ' : ''}
+                                {license.r1PoaiRewards === undefined
+                                    ? '...'
+                                    : parseFloat(
+                                          Number(formatUnits(license.r1PoaiRewards ?? 0n, 18)).toFixed(3),
+                                      ).toLocaleString()}
+                            </div>
+                        }
+                        isSmall
+                    />
+                )}
             </div>
 
             {environment === 'mainnet' && licenseId === '1' && licenseType === 'GND' && <TreasuryWallets license={license} />}

@@ -3,8 +3,9 @@ import { getLicenseRewards } from '@/lib/api/blockchain';
 import * as types from '@/typedefs/blockchain';
 import { formatUnits } from 'viem';
 import { CardHorizontal } from '../shared/cards/CardHorizontal';
+import { SmallTag } from '../shared/SmallTag';
 
-export default async function LicenseRewards({
+export default async function LicenseRewardsPoA({
     license,
     licenseType,
     getNodeAvailability,
@@ -20,7 +21,9 @@ export default async function LicenseRewards({
             await getNodeAvailability();
 
         if (!nodeResponse) {
-            return <CardHorizontal label="Rewards" value={<div className="text-red-600">Error loading rewards</div>} isSmall />;
+            return (
+                <CardHorizontal label="Rewards" value={<SmallTag variant="banned">Error loading rewards</SmallTag>} isSmall />
+            );
         }
 
         const firstCheckEpoch: number = getLicenseFirstCheckEpoch(license.assignTimestamp);
@@ -35,7 +38,7 @@ export default async function LicenseRewards({
 
         return (
             <CardHorizontal
-                label="Rewards"
+                label="Rewards (PoA)"
                 value={
                     <div className="text-primary">
                         {!!rewards ? '$R1 ' : ''}
@@ -44,12 +47,22 @@ export default async function LicenseRewards({
                             : parseFloat(Number(formatUnits(rewards ?? 0n, 18)).toFixed(3)).toLocaleString()}
                     </div>
                 }
+                widthClasses="min-w-[280px]"
+                isFlexible
                 isSmall
             />
         );
     } catch (error) {
         console.log('Failed to fetch license rewards:', error);
 
-        return <CardHorizontal label="Rewards" value={<div className="text-red-600">Error loading rewards</div>} isSmall />;
+        return (
+            <CardHorizontal
+                label="Rewards"
+                value={<SmallTag variant="banned">Error loading rewards</SmallTag>}
+                widthClasses="min-w-[280px]"
+                isSmall
+                isFlexible
+            />
+        );
     }
 }

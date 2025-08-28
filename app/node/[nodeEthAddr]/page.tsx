@@ -68,7 +68,8 @@ const getCachedLicenseDetailsAndNodeAvailability = cache(
             isBanned: boolean,
             licenseId: bigint,
             licenseType: 'ND' | 'MND' | 'GND' | undefined,
-            owner: types.EthAddress;
+            owner: types.EthAddress,
+            r1PoaiRewards: bigint;
 
         try {
             ({
@@ -82,6 +83,7 @@ const getCachedLicenseDetailsAndNodeAvailability = cache(
                 licenseId,
                 licenseType,
                 owner,
+                r1PoaiRewards,
             } = await getNodeLicenseDetails(nodeEthAddr));
         } catch (error) {
             console.error(error);
@@ -101,6 +103,7 @@ const getCachedLicenseDetailsAndNodeAvailability = cache(
             lastClaimOracle,
             isBanned,
             owner,
+            r1PoaiRewards,
         };
 
         const nodeResponse = await getNodeAvailability(nodeEthAddr, assignTimestamp);
@@ -134,6 +137,8 @@ export default async function NodePage({ params }) {
             nodeEthAddr,
             config.environment,
         ));
+
+        // console.log('[Node Page] license', license);
     } catch (error: any) {
         console.error(error);
 

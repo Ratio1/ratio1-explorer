@@ -1,4 +1,4 @@
-import LicenseRewards from '@/app/server-components/Licenses/LicenseRewards';
+import LicenseRewardsPoA from '@/app/server-components/Licenses/LicenseRewardsPoA';
 import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import ClientWrapper from '@/components/shared/ClientWrapper';
@@ -10,6 +10,7 @@ import { Skeleton } from '@heroui/skeleton';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { formatUnits } from 'viem';
 import PoA from '../Licenses/PoA';
 import TreasuryWallets from '../Licenses/TreasuryWallets';
 import { CardTitle } from '../shared/CardTitle';
@@ -114,12 +115,25 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                 <PoA license={license} />
 
                 <Suspense fallback={<Skeleton className="min-h-[76px] w-full rounded-xl md:max-w-[258px]" />}>
-                    <LicenseRewards
+                    <LicenseRewardsPoA
                         license={license}
                         licenseType={licenseType as 'ND' | 'MND' | 'GND'}
                         getNodeAvailability={getNodeAvailability}
                     />
                 </Suspense>
+
+                <CardHorizontal
+                    label="Rewards (PoAI)"
+                    value={
+                        <div className="text-primary">
+                            {!!license.r1PoaiRewards ? '$R1 ' : ''}
+                            {license.r1PoaiRewards === undefined
+                                ? '...'
+                                : parseFloat(Number(formatUnits(license.r1PoaiRewards ?? 0n, 18)).toFixed(3)).toLocaleString()}
+                        </div>
+                    }
+                    isSmall
+                />
             </div>
 
             {environment === 'mainnet' && licenseId === '1' && licenseType === 'GND' && <TreasuryWallets license={license} />}

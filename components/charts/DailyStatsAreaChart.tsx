@@ -27,27 +27,27 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
         date: new Date(entry.creationTimestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
         usdcLocked: {
             type: 'bigint',
-            label: '$USDC Locked',
+            label: chartConfig.usdcLocked.label,
             value: entry.dailyUsdcLocked,
             decimals: 6,
             normalizedValue: Number(BigInt(entry.dailyUsdcLocked) / BigInt(10 ** 6)),
         },
         activeJobs: {
             type: 'number',
-            label: 'Active Jobs',
+            label: chartConfig.activeJobs.label,
             value: entry.dailyActiveJobs,
             normalizedValue: entry.dailyActiveJobs * 100,
         },
         poaiRewards: {
             type: 'bigint',
-            label: 'PoAI Rewards',
+            label: chartConfig.poaiRewards.label,
             value: entry.dailyPOAIRewards,
             decimals: 6,
             normalizedValue: Number(BigInt(entry.dailyPOAIRewards) / BigInt(10 ** 6)) * 20,
         },
         tokenBurned: {
             type: 'bigint',
-            label: 'PoAI Burn',
+            label: chartConfig.tokenBurned.label,
             value: entry.totalTokenBurn - entry.totalNdContractTokenBurn,
             decimals: 18,
             normalizedValue:
@@ -64,14 +64,15 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
     };
 
     return (
-        <div className="col gap-1">
+        <div className="col -mx-[5px] gap-0.5">
             <ChartContainer className="aspect-auto h-[240px] w-full" config={chartConfig}>
                 <AreaChart
                     accessibilityLayer
                     data={chartData}
                     margin={{
-                        left: 0,
-                        right: 0,
+                        left: 5,
+                        right: 5,
+                        bottom: 5,
                     }}
                 >
                     <CartesianGrid vertical={false} />
@@ -87,11 +88,9 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
                                     const key = (name as string).split('.')[0];
                                     const entry = payload[key] as ChartEntry;
 
-                                    // console.log({ value, name, item, index, payload });
-
                                     return (
                                         <div className="row w-full justify-between gap-4">
-                                            <div className="row gap-1">
+                                            <div className="row gap-1.5">
                                                 <div
                                                     className="h-2 w-2 rounded-sm"
                                                     style={{ backgroundColor: chartConfig[key].color }}
@@ -167,7 +166,7 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
                 </AreaChart>
             </ChartContainer>
 
-            <ChartContainer className="-mb-1 h-6" config={chartConfig}>
+            <ChartContainer className="mx-[5px] -mb-1 h-6" config={chartConfig}>
                 <AreaChart
                     accessibilityLayer
                     data={chartData}

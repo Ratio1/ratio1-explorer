@@ -11,19 +11,19 @@ import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal
 
 const chartConfig = {
     usdcLocked: {
-        label: '$USDC Locked',
+        label: 'Escrow TVL ($USDC)',
         color: '#0074D9',
     },
     activeJobs: {
-        label: 'Active Jobs',
+        label: 'Total Active Jobs',
         color: '#FFDC00',
     },
     poaiRewards: {
-        label: 'PoAI Rewards',
+        label: 'Daily PoAI Rewards ($USDC)',
         color: '#2ECC40',
     },
     tokenBurned: {
-        label: 'PoAI Burn',
+        label: 'Daily PoAI Burn ($R1)',
         color: '#FF4136',
     },
 } satisfies ChartConfig;
@@ -50,10 +50,18 @@ export default async function StatsPage() {
         redirect(routePath.notFound);
     }
 
+    const getLegendEntries = () =>
+        Object.values(chartConfig).map((entry, index) => (
+            <div className="row gap-1.5" key={index}>
+                <div className="h-1 w-3.5 rounded-md" style={{ backgroundColor: entry.color }} />
+                <div className="whitespace-nowrap text-sm font-medium text-slate-500">{entry.label}</div>
+            </div>
+        ));
+
     return (
         <div className="col w-full flex-1 gap-4 md:gap-6">
             <BorderedCard>
-                <div className="card-title-big font-bold">Token</div>
+                <div className="card-title-big font-bold">$R1 Stats</div>
 
                 <div className="col gap-3">
                     <div className="flexible-row">
@@ -83,16 +91,11 @@ export default async function StatsPage() {
             </BorderedCard>
 
             <BorderedCard>
-                <div className="row justify-between">
-                    <div className="card-title-big font-bold">Daily Stats</div>
+                <div className="flex flex-col justify-between gap-2 md:gap-3 lg:flex-row">
+                    <div className="card-title-big font-bold">Daily PoAI Stats</div>
 
-                    <div className="row gap-5">
-                        {Object.values(chartConfig).map((entry, index) => (
-                            <div className="row gap-1.5" key={index}>
-                                <div className="h-1 w-3.5 rounded-md" style={{ backgroundColor: entry.color }} />
-                                <div className="text-sm font-medium text-slate-500">{entry.label}</div>
-                            </div>
-                        ))}
+                    <div className="larger:gap-5 flex flex-col flex-wrap gap-1 sm:flex-row sm:gap-3 md:items-center">
+                        {getLegendEntries()}
                     </div>
                 </div>
 

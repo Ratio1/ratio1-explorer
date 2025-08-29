@@ -78,6 +78,7 @@ export default {
             md: '768px',
             layoutBreak: '856px',
             lg: '1024px',
+            larger: '1100px',
         },
     },
     plugins: [heroui(), animate],

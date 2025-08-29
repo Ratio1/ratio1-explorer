@@ -36,21 +36,22 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
             type: 'number',
             label: 'Active Jobs',
             value: entry.dailyActiveJobs,
-            normalizedValue: entry.dailyActiveJobs,
+            normalizedValue: entry.dailyActiveJobs * 100,
         },
         poaiRewards: {
             type: 'bigint',
-            label: 'POAI Rewards',
+            label: 'PoAI Rewards',
             value: entry.dailyPOAIRewards,
             decimals: 6,
-            normalizedValue: Number(BigInt(entry.dailyPOAIRewards) / BigInt(10 ** 6)),
+            normalizedValue: Number(BigInt(entry.dailyPOAIRewards) / BigInt(10 ** 6)) * 20,
         },
         tokenBurned: {
             type: 'bigint',
-            label: 'Token Burned',
-            value: entry.dailyTokenBurn,
+            label: 'PoAI Burn',
+            value: entry.totalTokenBurn - entry.totalNdContractTokenBurn,
             decimals: 18,
-            normalizedValue: Number(BigInt(entry.dailyTokenBurn) / BigInt(10 ** 18)),
+            normalizedValue:
+                Number((BigInt(entry.totalTokenBurn) - BigInt(entry.totalNdContractTokenBurn)) / BigInt(10 ** 18)) * 20,
         },
     }));
 
@@ -89,13 +90,13 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
                                     // console.log({ value, name, item, index, payload });
 
                                     return (
-                                        <div className="row w-full justify-between gap-3">
+                                        <div className="row w-full justify-between gap-4">
                                             <div className="row gap-1">
                                                 <div
-                                                    className="h-2.5 w-2.5 rounded-sm"
+                                                    className="h-2 w-2 rounded-sm"
                                                     style={{ backgroundColor: chartConfig[key].color }}
                                                 />
-                                                <div className="text-slate-500">{entry.label}</div>
+                                                <div className="font-normal text-slate-600">{entry.label}</div>
                                             </div>
 
                                             <div className="font-robotoMono font-medium">{formatValue(entry)}</div>

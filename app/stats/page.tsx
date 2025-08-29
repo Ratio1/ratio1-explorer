@@ -16,14 +16,14 @@ const chartConfig = {
     },
     activeJobs: {
         label: 'Active Jobs',
-        color: '#7FDBFF',
+        color: '#FFDC00',
     },
     poaiRewards: {
-        label: 'POAI Rewards',
+        label: 'PoAI Rewards',
         color: '#2ECC40',
     },
     tokenBurned: {
-        label: 'Token Burned',
+        label: 'PoAI Burn',
         color: '#FF4136',
     },
 } satisfies ChartConfig;
@@ -90,7 +90,7 @@ export default async function StatsPage() {
                         {Object.values(chartConfig).map((entry, index) => (
                             <div className="row gap-1.5" key={index}>
                                 <div className="h-1 w-3.5 rounded-md" style={{ backgroundColor: entry.color }} />
-                                <div className="text-sm text-slate-500">{entry.label}</div>
+                                <div className="text-sm font-medium text-slate-500">{entry.label}</div>
                             </div>
                         ))}
                     </div>

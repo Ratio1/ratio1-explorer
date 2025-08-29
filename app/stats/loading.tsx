@@ -5,10 +5,7 @@ export default function Loading() {
         <div className="responsive-col">
             <Skeleton className="min-h-[180px] w-full rounded-2xl" />
 
-            <div className="grid grid-cols-2 gap-4">
-                <Skeleton className="min-h-[260px] w-full rounded-2xl" />
-                <Skeleton className="min-h-[200px] w-full rounded-2xl" />
-            </div>
+            <Skeleton className="min-h-[368px] w-full rounded-2xl" />
         </div>
     );
 }

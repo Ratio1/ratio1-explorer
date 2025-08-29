@@ -20,4 +20,27 @@ type TokenSupplyResponse = {
     totalSupply: number;
 };
 
-export type { LicenseItem, SearchResult, TokenSupplyResponse };
+type TokenStatsEntry = {
+    creationTimestamp: string;
+    dailyActiveJobs: number;
+    dailyMinted: number;
+    dailyNdContractTokenBurn: number;
+    dailyPOAIRewards: number;
+    dailyTokenBurn: number;
+    dailyUsdcLocked: number;
+    lastBlockNumber: number;
+    teamWalletsSupply: number;
+    totalMinted: number;
+    totalNdContractTokenBurn: number;
+    totalPOAIRewards: number;
+    totalSupply: number;
+    totalTokenBurn: number;
+};
+
+type TokenStatsResponse = {
+    data: TokenStatsEntry[];
+    error: string;
+    nodeAddress: types.EthAddress;
+};
+
+export type { LicenseItem, SearchResult, TokenStatsResponse, TokenSupplyResponse };

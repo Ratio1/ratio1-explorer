@@ -1,8 +1,7 @@
-import { fetchR1Price } from '@/lib/api/blockchain';
-import { getTokenSupply } from '@/lib/api/general';
+import { getTokenStats, getTokenSupply } from '@/lib/api/general';
 import { routePath } from '@/lib/routes';
 import { fN } from '@/lib/utils';
-import { TokenSupplyResponse } from '@/typedefs/general';
+import { TokenStatsResponse, TokenSupplyResponse } from '@/typedefs/general';
 import { redirect } from 'next/navigation';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
@@ -18,14 +17,12 @@ export async function generateMetadata() {
 
 export default async function StatsPage() {
     let tokenSupply: TokenSupplyResponse;
-    let r1Price: bigint;
-
-    // const divisor = 10n ** BigInt(18);
-    // const scale = 1000000n;
+    let tokenStats: TokenStatsResponse;
 
     try {
-        [tokenSupply, r1Price] = await Promise.all([getTokenSupply(), fetchR1Price()]);
-        console.log('StatsPage', tokenSupply, r1Price);
+        [tokenSupply, tokenStats] = await Promise.all([getTokenSupply(), getTokenStats()]);
+        console.log('[StatsPage] Token Supply', tokenSupply);
+        console.log('[StatsPage] Token Stats', tokenStats);
     } catch (error) {
         console.error(error);
         redirect(routePath.notFound);
@@ -34,7 +31,7 @@ export default async function StatsPage() {
     return (
         <div className="w-full flex-1">
             <BorderedCard>
-                <div className="card-title-big font-bold">$R1 Token</div>
+                <div className="card-title-big font-bold">Token</div>
 
                 <div className="col gap-3">
                     <div className="flexible-row">

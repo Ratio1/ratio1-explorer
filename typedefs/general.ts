@@ -43,4 +43,4 @@ type TokenStatsResponse = {
     nodeAddress: types.EthAddress;
 };
 
-export type { LicenseItem, SearchResult, TokenStatsResponse, TokenSupplyResponse };
+export type { LicenseItem, SearchResult, TokenStatsEntry, TokenStatsResponse, TokenSupplyResponse };

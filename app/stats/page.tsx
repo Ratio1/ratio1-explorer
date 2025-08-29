@@ -1,5 +1,6 @@
-import CustomAreaChart from '@/components/charts/CustomAreaChart';
+import DailyStatsAreaChart from '@/components/charts/DailyStatsAreaChart';
 import ClientWrapper from '@/components/shared/ClientWrapper';
+import { ChartConfig } from '@/components/ui/chart';
 import { getTokenStats, getTokenSupply } from '@/lib/api/general';
 import { routePath } from '@/lib/routes';
 import { fN } from '@/lib/utils';
@@ -7,6 +8,25 @@ import { TokenStatsResponse, TokenSupplyResponse } from '@/typedefs/general';
 import { redirect } from 'next/navigation';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
+
+const chartConfig = {
+    usdcLocked: {
+        label: '$USDC Locked',
+        color: '#0074D9',
+    },
+    activeJobs: {
+        label: 'Active Jobs',
+        color: '#7FDBFF',
+    },
+    poaiRewards: {
+        label: 'POAI Rewards',
+        color: '#2ECC40',
+    },
+    tokenBurned: {
+        label: 'Token Burned',
+        color: '#FF4136',
+    },
+} satisfies ChartConfig;
 
 export async function generateMetadata() {
     return {
@@ -23,7 +43,7 @@ export default async function StatsPage() {
 
     try {
         [tokenSupply, tokenStats] = await Promise.all([getTokenSupply(), getTokenStats()]);
-        console.log('[StatsPage] Token Supply', tokenSupply);
+        // console.log('[StatsPage] Token Supply', tokenSupply);
         console.log('[StatsPage] Token Stats', tokenStats);
     } catch (error) {
         console.error(error);
@@ -62,47 +82,24 @@ export default async function StatsPage() {
                 </div>
             </BorderedCard>
 
-            <div className="grid grid-cols-2 gap-4 md:gap-6">
-                <BorderedCard>
-                    <div className="col">
-                        <div className="text-xl font-bold">$USDC Locked</div>
+            <BorderedCard>
+                <div className="row justify-between">
+                    <div className="card-title-big font-bold">Daily Stats</div>
 
-                        <div className="text-sm font-medium text-slate-500">
-                            Total daily $USDC locked in all the CSP smart contracts
-                        </div>
+                    <div className="row gap-5">
+                        {Object.values(chartConfig).map((entry, index) => (
+                            <div className="row gap-1.5" key={index}>
+                                <div className="h-1 w-3.5 rounded-md" style={{ backgroundColor: entry.color }} />
+                                <div className="text-sm text-slate-500">{entry.label}</div>
+                            </div>
+                        ))}
                     </div>
+                </div>
 
-                    <ClientWrapper>
-                        <CustomAreaChart
-                            label="$USDC"
-                            data={tokenStats.data.map((entry) => ({
-                                date: new Date(entry.creationTimestamp),
-                                value: entry.dailyUsdcLocked,
-                            }))}
-                            valueType="usdc"
-                        />
-                    </ClientWrapper>
-                </BorderedCard>
-
-                <BorderedCard>
-                    <div className="col">
-                        <div className="text-xl font-bold">Active Jobs</div>
-
-                        <div className="text-sm font-medium text-slate-500">Daily total number of active jobs</div>
-                    </div>
-
-                    <ClientWrapper>
-                        <CustomAreaChart
-                            label="Active Jobs"
-                            data={tokenStats.data.map((entry) => ({
-                                date: new Date(entry.creationTimestamp),
-                                value: entry.dailyActiveJobs,
-                            }))}
-                            valueType="number"
-                        />
-                    </ClientWrapper>
-                </BorderedCard>
-            </div>
+                <ClientWrapper>
+                    <DailyStatsAreaChart data={tokenStats.data} chartConfig={chartConfig} />
+                </ClientWrapper>
+            </BorderedCard>
         </div>
     );
 }

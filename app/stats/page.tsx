@@ -43,8 +43,7 @@ export default async function StatsPage() {
 
     try {
         [tokenSupply, tokenStats] = await Promise.all([getTokenSupply(), getTokenStats()]);
-        // console.log('[StatsPage] Token Supply', tokenSupply);
-        console.log('[StatsPage] Token Stats', tokenStats);
+        // console.log('[StatsPage] Token Stats', tokenStats);
     } catch (error) {
         console.error(error);
         redirect(routePath.notFound);

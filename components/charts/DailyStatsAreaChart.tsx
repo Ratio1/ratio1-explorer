@@ -36,7 +36,7 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
             type: 'number',
             label: chartConfig.activeJobs.label,
             value: entry.dailyActiveJobs,
-            normalizedValue: entry.dailyActiveJobs * 100,
+            normalizedValue: entry.dailyActiveJobs * 75,
         },
         poaiRewards: {
             type: 'bigint',

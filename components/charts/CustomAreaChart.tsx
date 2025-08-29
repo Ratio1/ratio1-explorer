@@ -35,27 +35,18 @@ export default function CustomAreaChart({
     };
 
     return (
-        <div className="col gap-1">
+        <div className="col -mx-[5px] gap-0.5">
             <ChartContainer className="aspect-auto h-[200px] w-full" config={chartConfig}>
                 <AreaChart
                     accessibilityLayer
                     data={chartData}
                     margin={{
-                        left: 0,
-                        right: 0,
+                        left: 5,
+                        right: 5,
+                        bottom: 5,
                     }}
                 >
                     <CartesianGrid vertical={false} />
-
-                    {/* <YAxis
-                        dataKey={label}
-                        tickLine={false}
-                        axisLine={false}
-                        tickMargin={8}
-                        tickFormatter={(value: number) => formatValue(value).toString()}
-                    /> */}
-
-                    {/* <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} minTickGap={8} /> */}
 
                     <ChartTooltip
                         cursor={false}
@@ -96,13 +87,13 @@ export default function CustomAreaChart({
                 </AreaChart>
             </ChartContainer>
 
-            <ChartContainer className="-mb-1 h-6" config={chartConfig}>
+            <ChartContainer className="mx-[5px] -mb-1 h-6" config={chartConfig}>
                 <AreaChart
                     accessibilityLayer
                     data={chartData}
                     margin={{
-                        left: 24,
-                        right: 24,
+                        left: 20,
+                        right: 20,
                     }}
                 >
                     <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} minTickGap={8} />

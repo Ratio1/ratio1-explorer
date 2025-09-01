@@ -130,7 +130,7 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
 
                     <Area
                         dataKey="usdcLocked.normalizedValue"
-                        type="natural"
+                        type="linear"
                         fill="url(#fillUsdcLocked)"
                         fillOpacity={0.4}
                         stroke="var(--color-usdcLocked)"
@@ -139,7 +139,7 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
 
                     <Area
                         dataKey="activeJobs.normalizedValue"
-                        type="natural"
+                        type="linear"
                         fill="url(#fillActiveJobs)"
                         fillOpacity={0.4}
                         stroke="var(--color-activeJobs)"
@@ -148,7 +148,7 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
 
                     <Area
                         dataKey="poaiRewards.normalizedValue"
-                        type="natural"
+                        type="linear"
                         fill="url(#fillPoaiRewards)"
                         fillOpacity={0.4}
                         stroke="var(--color-poaiRewards)"
@@ -157,7 +157,7 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
 
                     <Area
                         dataKey="tokenBurned.normalizedValue"
-                        type="natural"
+                        type="linear"
                         fill="url(#fillTokenBurned)"
                         fillOpacity={0.4}
                         stroke="var(--color-tokenBurned)"

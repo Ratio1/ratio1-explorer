@@ -41,7 +41,7 @@ export default async function NodeCard({
 
     return (
         <BorderedCard>
-            <div className="row gap-3">
+            <div className="row flex-wrap items-center gap-2">
                 {!hasLink ? (
                     getTitle()
                 ) : (

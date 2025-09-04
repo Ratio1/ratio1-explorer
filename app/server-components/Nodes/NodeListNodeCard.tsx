@@ -46,7 +46,7 @@ export default async function NodeListNodeCard({
                         </div>
 
                         {node.tags && node.tags.length > 0 && (
-                            <div className="row flex-wrap gap-1">
+                            <div className="row flex-wrap items-center gap-1">
                                 {node.tags.map(tag => (
                                     <Tag key={tag}>{tag.includes(':') ? tag.split(':')[1] : tag}</Tag>
                                 ))}

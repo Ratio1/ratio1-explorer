@@ -121,6 +121,13 @@ export const isNonZeroInteger = (value: string): boolean => {
     return !isNaN(int) && isFinite(int) && int > 0;
 };
 
+export const processNodeTag = (tag: string): string => {
+    if (tag.startsWith('DC:')) {
+        return 'DATACENTER';
+    }
+    return tag.includes(':') ? tag.split(':')[1] : tag;
+};
+
 export const cachedGetENSName = cache(async (ownerEthAddr: string): Promise<string | undefined> => {
     try {
         const response = await fetch(`https://api.ensideas.com/ens/resolve/${ownerEthAddr}`);

@@ -7,7 +7,7 @@ import { CopyableAddress } from '@/components/shared/CopyableValue';
 import config from '@/config';
 import { fetchErc20Balance, fetchEthBalance } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
-import { fBI, fN } from '@/lib/utils';
+import { fBI, fN, processNodeTag } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import clsx from 'clsx';
 import { formatDistanceToNow, subSeconds } from 'date-fns';
@@ -61,7 +61,7 @@ export default async function NodeCard({
 
                 {nodeResponse.tags &&
                     nodeResponse.tags.map(tag => (
-                        <Tag key={tag}>{tag.includes(':') ? tag.split(':')[1] : tag}</Tag>
+                        <Tag key={tag}>{processNodeTag(tag)}</Tag>
                     ))}
             </div>
 

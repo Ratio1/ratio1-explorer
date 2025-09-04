@@ -87,6 +87,10 @@ export default async function NodeListNodeCard({
                     </div>
                 )}
 
+                <div className="flex min-w-[160px]">
+                    <CardItem label="Tags" value={<>{node.tags?.join(', ') || '-'}</>} />
+                </div>
+
                 <div className="min-w-[50px]">
                     <CardItem label="Version" value={<>{node.ver.split('|')[0]}</>} />
                 </div>

@@ -1,5 +1,6 @@
 import Node from '@/app/server-components/Nodes/Node';
 import ParamsPagination from '@/components/Nodes/ParamsPagination';
+import TagFilter from '@/components/Nodes/TagFilter';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import { Fragment, Suspense } from 'react';
@@ -10,21 +11,27 @@ export default async function List({
     nodes,
     pagesCount,
     currentPage,
+    availableTags,
+    currentTag,
 }: {
     nodes: {
         [key: string]: types.NodeState;
     };
     pagesCount: number;
     currentPage: number;
+    availableTags: string[];
+    currentTag?: string;
 }) {
     return (
         <div className="list-wrapper">
+            <TagFilter tags={availableTags} currentTag={currentTag} />
             <div id="list" className="list">
                 <ListHeader>
                     <div className="min-w-[130px]">Alias</div>
                     <div className="min-w-[164px]">Addresses</div>
                     <div className="min-w-[244px]">License</div>
                     <div className="min-w-[112px]">Owner</div>
+                    <div className="min-w-[160px]">Tags</div>
                     <div className="min-w-[50px]">Version</div>
                     <div className="min-w-[152px]">Last Epoch Availability</div>
                 </ListHeader>

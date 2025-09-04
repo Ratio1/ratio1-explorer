@@ -23,6 +23,7 @@ export default async function NodeListGNDCard() {
         node = {
             eth_addr: nodeResponse.node_eth_address,
             alias: nodeResponse.node_alias,
+            tags: [],
             last_state: nodeResponse.node_is_online ? 'online' : 'offline',
             last_seen_ago: nodeResponse.node_last_seen_sec.toString(),
             non_zero: 0,

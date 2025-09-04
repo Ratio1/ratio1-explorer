@@ -67,6 +67,7 @@ type BuyLicenseRequest = {
 type NodeState = {
     eth_addr: EthAddress;
     alias: string;
+    tags?: string[];
     last_state: string;
     last_seen_ago: string;
     non_zero: number;

@@ -10,17 +10,31 @@ import { Alert } from './server-components/shared/Alert';
 export default async function HomePage(props: {
     searchParams?: Promise<{
         page?: string;
+        tag?: string;
     }>;
 }) {
     const searchParams = await props.searchParams;
     const currentPage = Number(searchParams?.page) || 1;
+    const currentTag = searchParams?.tag;
 
     try {
         const response: types.OraclesDefaultResult = await getActiveNodes(currentPage);
 
-        const nodes: {
-            [key: string]: types.NodeState;
-        } = response.result.nodes;
+        const nodes: { [key: string]: types.NodeState } = response.result.nodes;
+
+        const availableTags = Array.from(
+            new Set(
+                Object.values(nodes)
+                    .flatMap((node) => node.tags ?? [])
+                    .sort(),
+            ),
+        );
+
+        const filteredNodes = currentTag
+            ? Object.fromEntries(
+                  Object.entries(nodes).filter(([, node]) => node.tags?.includes(currentTag)),
+              )
+            : nodes;
 
         const pagesCount: number = response.result.nodes_total_pages;
 
@@ -36,7 +50,13 @@ export default async function HomePage(props: {
                 />
 
                 <Suspense fallback={<NodesListSkeleton />}>
-                    <List nodes={nodes} pagesCount={pagesCount} currentPage={currentPage} />
+                    <List
+                        nodes={filteredNodes}
+                        pagesCount={pagesCount}
+                        currentPage={currentPage}
+                        availableTags={availableTags}
+                        currentTag={currentTag}
+                    />
                 </Suspense>
             </>
         );

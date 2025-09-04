@@ -9,6 +9,7 @@ import { RiEye2Line } from 'react-icons/ri';
 import { CardItem } from '../shared/CardItem';
 import { BorderedCard } from '../shared/cards/BorderedCard';
 import LicenseSmallCard from '../shared/Licenses/LicenseSmallCard';
+import { Tag } from '../shared/Tag';
 
 interface Props {
     ratio1Addr: R1Address;
@@ -35,12 +36,22 @@ export default async function NodeListNodeCard({
         <BorderedCard useCustomWrapper useFixedWidthLarge>
             <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6">
                 <Link href={`${routePath.node}/${node.eth_addr}`} className="group min-w-[130px] py-3">
-                    <div className="row gap-1.5">
-                        <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium group-hover:text-primary lg:text-[15px]">
-                            {node.alias}
+                    <div className="col gap-1">
+                        <div className="row gap-1.5">
+                            <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium group-hover:text-primary lg:text-[15px]">
+                                {node.alias}
+                            </div>
+
+                            {false && <RiEye2Line className="text-lg text-primary" />}
                         </div>
 
-                        {false && <RiEye2Line className="text-lg text-primary" />}
+                        {node.tags && node.tags.length > 0 && (
+                            <div className="row flex-wrap gap-1">
+                                {node.tags.map(tag => (
+                                    <Tag key={tag}>{tag.includes(':') ? tag.split(':')[1] : tag}</Tag>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </Link>
 

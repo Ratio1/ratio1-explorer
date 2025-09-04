@@ -58,6 +58,11 @@ export default async function NodeCard({
                         </div>
                     </Tag>
                 )}
+
+                {nodeResponse.tags &&
+                    nodeResponse.tags.map(tag => (
+                        <Tag key={tag}>{tag.includes(':') ? tag.split(':')[1] : tag}</Tag>
+                    ))}
             </div>
 
             <div className="col gap-3">

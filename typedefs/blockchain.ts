@@ -46,6 +46,7 @@ type OraclesAvailabilityResult = {
     node_version: string;
     node_last_seen_sec: number;
     resources: Resources;
+    tags?: string[];
 };
 
 type EthSignedData = {
@@ -84,6 +85,7 @@ type NodeState = {
         last_epoch_avail: number;
     };
     ver: string;
+    tags?: string[];
 };
 
 type ServerInfo = {

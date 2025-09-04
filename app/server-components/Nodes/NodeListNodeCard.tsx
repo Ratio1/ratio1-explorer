@@ -9,7 +9,6 @@ import { RiEye2Line } from 'react-icons/ri';
 import { CardItem } from '../shared/CardItem';
 import { BorderedCard } from '../shared/cards/BorderedCard';
 import LicenseSmallCard from '../shared/Licenses/LicenseSmallCard';
-import { Tag } from '../shared/Tag';
 
 interface Props {
     ratio1Addr: R1Address;
@@ -48,13 +47,6 @@ export default async function NodeListNodeCard({
                             {false && <RiEye2Line className="text-lg text-primary" />}
                         </div>
 
-                        {node.tags && node.tags.length > 0 && (
-                            <div className="row flex-wrap items-center gap-1">
-                                {node.tags.map(tag => (
-                                    <Tag key={tag}>{tag.includes(':') ? tag.split(':')[1] : tag}</Tag>
-                                ))}
-                            </div>
-                        )}
                     </div>
                 </Link>
 

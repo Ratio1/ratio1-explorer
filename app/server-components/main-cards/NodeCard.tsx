@@ -25,6 +25,9 @@ export default async function NodeCard({
 }) {
     const getTitle = () => <CardTitle hasLink={hasLink}>Node • {nodeResponse.node_alias}</CardTitle>;
 
+    // Safe handling for tags - ensure it's an array or empty array
+    const nodeTags = nodeResponse.tags || [];
+
     let nodeR1Balance: bigint | undefined;
     let nodeEthBalance: bigint | undefined;
 
@@ -59,10 +62,9 @@ export default async function NodeCard({
                     </Tag>
                 )}
 
-                {nodeResponse.tags &&
-                    nodeResponse.tags.map(tag => (
-                        <Tag key={tag}>{processNodeTag(tag)}</Tag>
-                    ))}
+                {nodeTags.map(tag => (
+                    <Tag key={tag}>{processNodeTag(tag)}</Tag>
+                ))}
             </div>
 
             <div className="col gap-3">

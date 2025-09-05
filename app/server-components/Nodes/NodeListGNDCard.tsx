@@ -40,6 +40,7 @@ export default async function NodeListGNDCard() {
                 last_epoch_avail: nodeResponse.epochs_vals[0],
             },
             ver: nodeResponse.node_version,
+            tags: nodeResponse.tags,
         };
     } catch (error: any) {
         console.log(error);

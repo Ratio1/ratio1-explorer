@@ -33,19 +33,25 @@ export default async function NodeListNodeCard({
 }: Props) {
     return (
         <BorderedCard useCustomWrapper useFixedWidthLarge>
-            <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6">
-                <Link href={`${routePath.node}/${node.eth_addr}`} className="group min-w-[130px] py-3">
-                    <div className="row gap-1.5">
-                        <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium group-hover:text-primary lg:text-[15px]">
-                            {node.alias}
+            <div className="row items-start justify-between gap-3 py-2 md:py-3 lg:gap-6">
+                <Link
+                    href={`${routePath.node}/${node.eth_addr}`}
+                    className="group w-[130px] shrink-0 py-3"
+                >
+                    <div className="col gap-1">
+                        <div className="row gap-1.5">
+                            <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium group-hover:text-primary lg:text-[15px]">
+                                {node.alias}
+                            </div>
+
+                            {false && <RiEye2Line className="text-lg text-primary" />}
                         </div>
 
-                        {false && <RiEye2Line className="text-lg text-primary" />}
                     </div>
                 </Link>
 
                 {/* Node Addresses */}
-                <div className="flex min-w-[164px]">
+                <div className="flex min-w-[164px] shrink-0">
                     <SmallCard>
                         <div className="row gap-2.5">
                             <div className="h-9 w-1 rounded-full bg-primary-500"></div>
@@ -64,14 +70,16 @@ export default async function NodeListNodeCard({
                 </div>
 
                 {/* License */}
-                <LicenseSmallCard
-                    licenseId={Number(licenseId)}
-                    licenseType={licenseType}
-                    totalAssignedAmount={totalAssignedAmount}
-                    totalClaimedAmount={totalClaimedAmount}
-                    isBanned={isBanned}
-                    isLink
-                />
+                <div className="flex min-w-[244px] shrink-0">
+                    <LicenseSmallCard
+                        licenseId={Number(licenseId)}
+                        licenseType={licenseType}
+                        totalAssignedAmount={totalAssignedAmount}
+                        totalClaimedAmount={totalClaimedAmount}
+                        isBanned={isBanned}
+                        isLink
+                    />
+                </div>
 
                 {/* Owner */}
                 {!isEmptyETHAddr(owner) && (

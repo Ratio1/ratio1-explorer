@@ -121,5 +121,5 @@ body {
 .group\/list::-webkit-scrollbar-thumb {
     background-color: #f5f7fe;
     border: 0;
-    border-radius: 6px;
+    border-radius: 4px;
 }

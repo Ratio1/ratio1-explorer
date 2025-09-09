@@ -51,9 +51,12 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
             value: entry.dailyTokenBurn - entry.dailyNdContractTokenBurn,
             decimals: 18,
             normalizedValue:
-                Number((BigInt(entry.totalTokenBurn) - BigInt(entry.totalNdContractTokenBurn)) / BigInt(10 ** 18)) * 20,
+                (Number(BigInt(entry.dailyTokenBurn) - BigInt(entry.dailyNdContractTokenBurn)) / Number(BigInt(10 ** 18))) *
+                100,
         },
     }));
+
+    console.log(chartData);
 
     const formatValue = (entry: ChartEntry) => {
         if (entry.type === 'number') {

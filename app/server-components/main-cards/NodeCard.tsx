@@ -44,7 +44,7 @@ export default async function NodeCard({
 
     return (
         <BorderedCard>
-            <div className="row flex-wrap items-center gap-2">
+            <div className="row flex-wrap items-center gap-2.5">
                 {!hasLink ? (
                     getTitle()
                 ) : (
@@ -53,18 +53,20 @@ export default async function NodeCard({
                     </Link>
                 )}
 
-                {nodeResponse.node_is_oracle && (
-                    <Tag>
-                        <div className="row gap-1">
-                            <RiEye2Line className="text-lg" />
-                            <div className="text-[15px] font-medium">Oracle</div>
-                        </div>
-                    </Tag>
-                )}
+                <div className="row flex-wrap items-center gap-1">
+                    {nodeResponse.node_is_oracle && (
+                        <Tag>
+                            <div className="row gap-0.5">
+                                <RiEye2Line className="text-lg" />
+                                <div className="uppercase">Oracle</div>
+                            </div>
+                        </Tag>
+                    )}
 
-                {nodeTags.map(tag => (
-                    <Tag key={tag}>{processNodeTag(tag)}</Tag>
-                ))}
+                    {nodeTags.map((tag) => (
+                        <Tag key={tag}>{processNodeTag(tag)}</Tag>
+                    ))}
+                </div>
             </div>
 
             <div className="col gap-3">

@@ -48,7 +48,7 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
         tokenBurned: {
             type: 'bigint',
             label: chartConfig.tokenBurned.label,
-            value: entry.totalTokenBurn - entry.totalNdContractTokenBurn,
+            value: entry.dailyTokenBurn - entry.dailyNdContractTokenBurn,
             decimals: 18,
             normalizedValue:
                 Number((BigInt(entry.totalTokenBurn) - BigInt(entry.totalNdContractTokenBurn)) / BigInt(10 ** 18)) * 20,

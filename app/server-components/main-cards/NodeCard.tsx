@@ -7,7 +7,7 @@ import { CopyableAddress } from '@/components/shared/CopyableValue';
 import config from '@/config';
 import { fetchErc20Balance, fetchEthBalance } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
-import { fBI, fN } from '@/lib/utils';
+import { fBI, fN, processNodeTag } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import clsx from 'clsx';
 import { formatDistanceToNow, subSeconds } from 'date-fns';
@@ -25,6 +25,9 @@ export default async function NodeCard({
 }) {
     const getTitle = () => <CardTitle hasLink={hasLink}>Node • {nodeResponse.node_alias}</CardTitle>;
 
+    // Safe handling for tags - ensure it's an array or empty array
+    const nodeTags = nodeResponse.tags || [];
+
     let nodeR1Balance: bigint | undefined;
     let nodeEthBalance: bigint | undefined;
 
@@ -41,7 +44,7 @@ export default async function NodeCard({
 
     return (
         <BorderedCard>
-            <div className="row gap-3">
+            <div className="row flex-wrap items-center gap-2">
                 {!hasLink ? (
                     getTitle()
                 ) : (
@@ -58,6 +61,10 @@ export default async function NodeCard({
                         </div>
                     </Tag>
                 )}
+
+                {nodeTags.map(tag => (
+                    <Tag key={tag}>{processNodeTag(tag)}</Tag>
+                ))}
             </div>
 
             <div className="col gap-3">

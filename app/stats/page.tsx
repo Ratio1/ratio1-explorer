@@ -43,7 +43,7 @@ export default async function StatsPage() {
 
     try {
         [tokenSupply, tokenStats] = await Promise.all([getTokenSupply(), getTokenStats()]);
-        // console.log('[StatsPage] Token Stats', tokenStats);
+        console.log('[StatsPage] Token Stats', tokenStats);
     } catch (error) {
         console.error(error);
         redirect(routePath.notFound);
@@ -93,7 +93,7 @@ export default async function StatsPage() {
                 <div className="flex flex-col justify-between gap-2 md:gap-3 lg:flex-row">
                     <div className="card-title-big font-bold">Daily PoAI Stats</div>
 
-                    <div className="larger:gap-5 flex flex-col flex-wrap gap-1 sm:flex-row sm:gap-3 md:items-center">
+                    <div className="flex flex-col flex-wrap gap-1 sm:flex-row sm:gap-3 md:items-center larger:gap-5">
                         {getLegendEntries()}
                     </div>
                 </div>

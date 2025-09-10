@@ -43,7 +43,7 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
             label: chartConfig.poaiRewards.label,
             value: entry.dailyPOAIRewards,
             decimals: 6,
-            normalizedValue: Number(BigInt(entry.dailyPOAIRewards) / BigInt(10 ** 6)) * 20,
+            normalizedValue: Number(BigInt(entry.dailyPOAIRewards) / BigInt(10 ** 6)) * 50,
         },
         tokenBurned: {
             type: 'bigint',
@@ -56,7 +56,7 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
         },
     }));
 
-    console.log(chartData);
+    // console.log(chartData);
 
     const formatValue = (entry: ChartEntry) => {
         if (entry.type === 'number') {

@@ -1,4 +1,5 @@
 import DailyStatsAreaChart from '@/components/charts/DailyStatsAreaChart';
+import NodesMap from '@/components/charts/NodesMap';
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { ChartConfig } from '@/components/ui/chart';
 import { getTokenStats, getTokenSupply } from '@/lib/api/general';
@@ -100,6 +101,14 @@ export default async function StatsPage() {
 
                 <ClientWrapper>
                     <DailyStatsAreaChart data={tokenStats.data} chartConfig={chartConfig} />
+                </ClientWrapper>
+            </BorderedCard>
+
+            <BorderedCard>
+                <div className="card-title-big font-bold">Nodes Map</div>
+
+                <ClientWrapper>
+                    <NodesMap />
                 </ClientWrapper>
             </BorderedCard>
         </div>

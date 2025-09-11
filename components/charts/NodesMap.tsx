@@ -18,7 +18,8 @@ export default function NodesMap() {
 
         mapRef.current = new mapboxgl.Map({
             container: mapContainerRef.current,
-            style: 'mapbox://styles/mapbox/light-v11',
+            // style: 'mapbox://styles/mapbox/light-v11',
+            style: 'mapbox://styles/wzrdx1911/cmffhv43i00ch01qwdsix84vf',
             config: {
                 basemap: {
                     theme: 'faded',

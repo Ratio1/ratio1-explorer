@@ -1,4 +1,4 @@
-import { RiBarChartBoxLine, RiComputerLine, RiCpuLine, RiWalletLine } from 'react-icons/ri';
+import { RiBarChartBoxLine, RiComputerLine, RiCpuLine, RiEye2Line, RiWalletLine } from 'react-icons/ri';
 
 export const routePath = {
     // Lists
@@ -6,6 +6,7 @@ export const routePath = {
     licenses: '/licenses',
     owners: '/accounts',
     stats: '/stats',
+    oracles: '/oracles',
     // Individual items
     node: '/node',
     license: '/license',
@@ -20,6 +21,7 @@ export const routeTitles = {
     [routePath.licenses]: 'Licenses',
     [routePath.owners]: 'Accounts',
     [routePath.stats]: 'Stats',
+    [routePath.oracles]: 'Oracles',
 };
 
 export const routeIcons = {
@@ -27,6 +29,7 @@ export const routeIcons = {
     [routePath.licenses]: <RiCpuLine />,
     [routePath.owners]: <RiWalletLine />,
     [routePath.stats]: <RiBarChartBoxLine />,
+    [routePath.oracles]: <RiEye2Line />,
 };
 
-export const navRoutes = [routePath.root, routePath.licenses, routePath.owners, routePath.stats];
+export const navRoutes = [routePath.root, routePath.licenses, routePath.owners, routePath.stats, routePath.oracles];

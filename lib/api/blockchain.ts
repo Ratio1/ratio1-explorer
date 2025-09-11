@@ -9,7 +9,7 @@ import console from 'console';
 import { differenceInSeconds } from 'date-fns';
 import Moralis from 'moralis';
 import { EvmAddress, EvmChain } from 'moralis/common-evm-utils';
-import { isEmptyETHAddr } from '../utils';
+import { isEmptyETHAddr, sleep } from '../utils';
 import { getPublicClient } from './client';
 
 async function startMoralis() {
@@ -21,6 +21,24 @@ async function startMoralis() {
 }
 
 startMoralis();
+
+export async function getOracleFees(): Promise<types.OracleFees[]> {
+    await sleep(500);
+    return [
+        { alias: 'r1s-01', txCount: 4, totalFeeUSD: 0.028649542, totalFeeETH: 0.0000065237 },
+        { alias: 'r1s-02', txCount: 4, totalFeeUSD: 0.096192508, totalFeeETH: 0.0000219038 },
+        { alias: 'r1s-04', txCount: 5, totalFeeUSD: 0.061368311, totalFeeETH: 0.0000139741 },
+        { alias: 'r1s-ai01', txCount: 2, totalFeeUSD: 0.055154022, totalFeeETH: 0.000012559 },
+        { alias: 'r1s-bcps', txCount: 2, totalFeeUSD: 0.006211765, totalFeeETH: 0.0000014145 },
+        { alias: 'r1s-db', txCount: 3, totalFeeUSD: 0.027231684, totalFeeETH: 0.0000062009 },
+        { alias: 'r1s-galifrey', txCount: 1, totalFeeUSD: 0.028326886, totalFeeETH: 0.0000064503 },
+        { alias: 'r1s-slv01', txCount: 1, totalFeeUSD: 0.018429742, totalFeeETH: 0.0000041966 },
+        { alias: 'r1s-sm', txCount: 4, totalFeeUSD: 0.063726994, totalFeeETH: 0.0000145112 },
+        { alias: 'r1s-sprt', txCount: 4, totalFeeUSD: 0.043676902, totalFeeETH: 0.0000099456 },
+        { alias: 'r1s-ssj', txCount: 2, totalFeeUSD: 0.027759022, totalFeeETH: 0.000006321 },
+        { alias: 'r1s-vi01', txCount: 2, totalFeeUSD: 0.056230366, totalFeeETH: 0.0000128041 },
+    ];
+}
 
 export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Promise<types.NodeLicenseDetailsResponse> {
     const publicClient = await getPublicClient();

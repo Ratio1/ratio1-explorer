@@ -134,6 +134,13 @@ type OraclesDefaultResult = {
     server_node_addr: R1Address;
 };
 
+type OracleFees = {
+    alias: string;
+    txCount: number;
+    totalFeeUSD: number;
+    totalFeeETH: number;
+};
+
 export type {
     BuyLicenseRequest,
     ComputeParam,
@@ -142,6 +149,7 @@ export type {
     LicenseInfo,
     NodeLicenseDetailsResponse,
     NodeState,
+    OracleFees,
     OraclesAvailabilityResult,
     OraclesDefaultResult,
     R1Address,

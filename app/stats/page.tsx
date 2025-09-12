@@ -44,7 +44,7 @@ export default async function StatsPage() {
 
     try {
         [tokenSupply, tokenStats] = await Promise.all([getTokenSupply(), getTokenStats()]);
-        console.log('[StatsPage] Token Stats', tokenStats);
+        // console.log('[StatsPage] Token Stats', tokenStats);
     } catch (error) {
         console.error(error);
         redirect(routePath.notFound);
@@ -61,7 +61,7 @@ export default async function StatsPage() {
     return (
         <div className="col w-full flex-1 gap-4 md:gap-6">
             <BorderedCard>
-                <div className="card-title-big font-bold">$R1 Stats</div>
+                <div className="card-title-big font-bold">Token</div>
 
                 <div className="col gap-3">
                     <div className="flexible-row">
@@ -92,7 +92,7 @@ export default async function StatsPage() {
 
             <BorderedCard>
                 <div className="flex flex-col justify-between gap-2 md:gap-3 lg:flex-row">
-                    <div className="card-title-big font-bold">Daily PoAI Stats</div>
+                    <div className="card-title-big font-bold">Daily PoAI</div>
 
                     <div className="flex flex-col flex-wrap gap-1 sm:flex-row sm:gap-3 md:items-center larger:gap-5">
                         {getLegendEntries()}
@@ -105,7 +105,7 @@ export default async function StatsPage() {
             </BorderedCard>
 
             <BorderedCard>
-                <div className="card-title-big font-bold">Nodes Map</div>
+                <div className="card-title-big font-bold">Nodes</div>
 
                 <ClientWrapper>
                     <NodesMap />

@@ -3,31 +3,59 @@
 import { getActiveNodes } from '@/lib/api';
 import { countryCountsToGeoJSON } from '@/lib/gis';
 import { NodeState } from '@/typedefs/blockchain';
+import { Skeleton } from '@heroui/skeleton';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import ListHeader from '../shared/ListHeader';
+
+// Cache for GeoJSON data with expiration
+const geoJSONCache: {
+    data: GeoJSON.FeatureCollection | null;
+    timestamp: number;
+    promise: Promise<GeoJSON.FeatureCollection> | null;
+} = {
+    data: null,
+    timestamp: 0,
+    promise: null,
+};
+
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 export default function NodesMap() {
     const mapContainerRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<mapboxgl.Map | null>(null);
 
+    const [stats, setStats] = useState<
+        {
+            code: string;
+            count: number;
+            datacenterCount: number;
+            kybCount: number;
+        }[]
+    >();
+
     useEffect(() => {
+        (async () => {
+            await fetchGeoJSONData();
+        })();
+
+        // TODO: Hide
         mapboxgl.accessToken = 'pk.eyJ1Ijoid3pyZHgxOTExIiwiYSI6ImNtZmZkZW12NDA0NHAyanM3NmJqaDJtZ2oifQ.3JBuZOd2vNrWi_CNYjGMfw';
 
         if (!mapContainerRef.current) return;
 
         mapRef.current = new mapboxgl.Map({
             container: mapContainerRef.current,
-            // style: 'mapbox://styles/mapbox/light-v11',
-            style: 'mapbox://styles/wzrdx1911/cmffhv43i00ch01qwdsix84vf',
+            style: 'mapbox://styles/wzrdx1911/cmffhv43i00ch01qwdsix84vf', // TODO: Ratio1 account
             config: {
                 basemap: {
                     theme: 'faded',
-                    lightPreset: 'day',
+                    lightPreset: 'dawn',
                 },
             },
-            center: [24, 54],
-            zoom: 3,
+            center: [20, 36],
+            zoom: 1.2,
         });
 
         mapRef.current.on('load', async () => {
@@ -40,33 +68,7 @@ export default function NodesMap() {
                 generateId: true,
                 data,
                 cluster: false,
-                // clusterMaxZoom: 14,
-                // clusterRadius: 50,
             });
-
-            // mapRef.current.addLayer({
-            //     id: 'clusters',
-            //     type: 'circle',
-            //     source: 'nodes',
-            //     filter: ['has', 'point_count'],
-            //     paint: {
-            //         'circle-color': ['step', ['get', 'point_count'], '#51bbd6', 100, '#f1f075', 750, '#f28cb1'],
-            //         'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
-            //         'circle-emissive-strength': 1,
-            //     },
-            // });
-
-            // mapRef.current.addLayer({
-            //     id: 'cluster-count',
-            //     type: 'symbol',
-            //     source: 'nodes',
-            //     filter: ['has', 'point_count'],
-            //     layout: {
-            //         'text-field': ['get', 'point_count_abbreviated'],
-            //         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-            //         'text-size': 12,
-            //     },
-            // });
 
             mapRef.current.addLayer({
                 id: 'unclustered-point',
@@ -75,102 +77,30 @@ export default function NodesMap() {
                 filter: ['!', ['has', 'point_count']],
                 paint: {
                     'circle-color': '#1b47f7',
-                    'circle-radius': 10,
-                    'circle-stroke-width': 2,
-                    'circle-stroke-color': '#fff',
+                    'circle-radius': 20,
+                    'circle-stroke-width': 3,
+                    'circle-stroke-color': '#f1f5f9',
                     'circle-emissive-strength': 1,
                 },
             });
 
-            // inspect a cluster on click
-            // mapRef.current.addInteraction('click-clusters', {
-            //     type: 'click',
-            //     target: { layerId: 'clusters' },
-            //     handler: (e) => {
-            //         if (!mapRef.current) return;
-
-            //         const features = mapRef.current.queryRenderedFeatures(e.point, {
-            //             layers: ['clusters'],
-            //         });
-            //         if (features.length === 0) return;
-
-            //         const clusterId = features[0].properties?.cluster_id;
-            //         if (!clusterId) return;
-
-            //         const source = mapRef.current.getSource('nodes') as mapboxgl.GeoJSONSource;
-            //         source.getClusterExpansionZoom(clusterId, (err, zoom) => {
-            //             if (err || !mapRef.current || !zoom) return;
-
-            //             const geometry = features[0].geometry as mapboxgl.GeoJSONFeature['geometry'];
-            //             if (geometry.type === 'Point') {
-            //                 mapRef.current.easeTo({
-            //                     center: geometry.coordinates as [number, number],
-            //                     zoom: zoom,
-            //                 });
-            //             }
-            //         });
-            //     },
-            // });
-
-            // When a click event occurs on a feature in
-            // the unclustered-point layer, open a popup at
-            // the location of the feature, with
-            // description HTML from its properties.
-            mapRef.current.addInteraction('click-unclustered', {
-                type: 'click',
-                target: { layerId: 'unclustered-point' },
-                handler: (e) => {
-                    if (!mapRef.current || !e.feature) return;
-
-                    const geometry = e.feature.geometry as mapboxgl.GeoJSONFeature['geometry'];
-                    if (geometry.type !== 'Point') return;
-
-                    const coordinates = geometry.coordinates.slice() as [number, number];
-
-                    new mapboxgl.Popup()
-                        .setLngLat(coordinates)
-                        .setHTML(`${e.feature.properties.count} nodes`)
-                        .addTo(mapRef.current);
+            // Add text layer for count values
+            mapRef.current.addLayer({
+                id: 'unclustered-point-text',
+                type: 'symbol',
+                source: 'nodes',
+                filter: ['!', ['has', 'point_count']],
+                layout: {
+                    'text-field': ['get', 'count'],
+                    'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                    'text-size': 14,
+                    'text-anchor': 'center',
+                    'text-offset': [0, 0],
                 },
-            });
-
-            // Change the cursor to a pointer when the mouse is over a cluster of POIs.
-            // mapRef.current.addInteraction('clustered-mouseenter', {
-            //     type: 'mouseenter',
-            //     target: { layerId: 'clusters' },
-            //     handler: () => {
-            //         if (!mapRef.current) return;
-            //         mapRef.current.getCanvas().style.cursor = 'pointer';
-            //     },
-            // });
-
-            // // Change the cursor back to a pointer when it stops hovering over a cluster of POIs.
-            // mapRef.current.addInteraction('clustered-mouseleave', {
-            //     type: 'mouseleave',
-            //     target: { layerId: 'clusters' },
-            //     handler: () => {
-            //         if (!mapRef.current) return;
-            //         mapRef.current.getCanvas().style.cursor = '';
-            //     },
-            // });
-
-            // Change the cursor to a pointer when the mouse is over an individual POI.
-            mapRef.current.addInteraction('unclustered-mouseenter', {
-                type: 'mouseenter',
-                target: { layerId: 'unclustered-point' },
-                handler: () => {
-                    if (!mapRef.current) return;
-                    mapRef.current.getCanvas().style.cursor = 'pointer';
-                },
-            });
-
-            // Change the cursor back to a pointer when it stops hovering over an individual POI.
-            mapRef.current.addInteraction('unclustered-mouseleave', {
-                type: 'mouseleave',
-                target: { layerId: 'unclustered-point' },
-                handler: () => {
-                    if (!mapRef.current) return;
-                    mapRef.current.getCanvas().style.cursor = '';
+                paint: {
+                    'text-color': '#ffffff',
+                    'text-halo-color': '#000000',
+                    'text-halo-width': 1,
                 },
             });
         });
@@ -182,39 +112,111 @@ export default function NodesMap() {
         };
     }, []);
 
-    const fetchGeoJSONData = async () => {
-        const response = await getActiveNodes(1, 999);
+    const fetchGeoJSONData = async (): Promise<GeoJSON.FeatureCollection> => {
+        const now = Date.now();
 
-        const group: Record<string, NodeState[]> = Object.values(response.result.nodes).reduce(
-            (groups, node) => {
-                const countryTag = node.tags?.find((tag) => tag.includes('CT:'));
+        // Check if cache is valid
+        if (geoJSONCache.data && now - geoJSONCache.timestamp < CACHE_DURATION) {
+            console.log('Using cached GeoJSON data');
+            return geoJSONCache.data;
+        }
 
-                if (countryTag) {
-                    const countryCode = countryTag.slice(3);
+        // If there's already a request in progress, wait for it
+        if (geoJSONCache.promise) {
+            console.log('Waiting for ongoing request to complete');
+            return geoJSONCache.promise;
+        }
 
-                    if (!groups[countryCode]) {
-                        groups[countryCode] = [];
-                    }
+        console.log('Fetching fresh GeoJSON data');
 
-                    groups[countryCode].push(node);
-                }
+        // Create the promise and store it to prevent duplicate requests
+        geoJSONCache.promise = (async () => {
+            try {
+                const response = await getActiveNodes(1, 1_000_000);
 
-                return groups;
-            },
-            {} as Record<string, (typeof response.result.nodes)[string][]>,
-        );
+                const group: Record<string, NodeState[]> = Object.values(response.result.nodes).reduce(
+                    (groups, node) => {
+                        const countryTag = node.tags?.find((tag) => tag.includes('CT:'));
 
-        const countryNodeCounts = Object.entries(group).map(([code, nodes]) => ({
-            code,
-            count: nodes.length,
-        }));
+                        if (countryTag) {
+                            const countryCode = countryTag.slice(3);
 
-        const geoJSON = countryCountsToGeoJSON(countryNodeCounts);
+                            if (!groups[countryCode]) {
+                                groups[countryCode] = [];
+                            }
 
-        console.log({ countryNodeCounts, geoJSON });
+                            groups[countryCode].push(node);
+                        }
 
-        return geoJSON;
+                        return groups;
+                    },
+                    {} as Record<string, (typeof response.result.nodes)[string][]>,
+                );
+
+                const stats = Object.entries(group).map(([code, nodes]) => ({
+                    code,
+                    count: nodes.length,
+                    datacenterCount: nodes.filter((node) => node.tags?.some((tag) => tag.includes('DC:'))).length,
+                    kybCount: nodes.filter((node) => node.tags?.some((tag) => tag.includes('KYB'))).length,
+                }));
+
+                console.log(stats);
+
+                setStats(stats);
+
+                const geoJSON = countryCountsToGeoJSON(stats);
+
+                // Update cache with data and timestamp
+                geoJSONCache.data = geoJSON;
+                geoJSONCache.timestamp = now;
+
+                return geoJSON;
+            } finally {
+                // Clear the promise so future requests can make new ones
+                geoJSONCache.promise = null;
+            }
+        })();
+
+        return geoJSONCache.promise;
     };
 
-    return <div className="h-[500px]" id="map" ref={mapContainerRef}></div>;
+    return (
+        <div className="col gap-4">
+            <div className="h-[420px]" id="map" ref={mapContainerRef}></div>
+
+            {!stats ? (
+                <div className="col w-full gap-2">
+                    <Skeleton className="only-lg min-h-[56px] w-full rounded-xl" />
+
+                    {Array(10)
+                        .fill(null)
+                        .map((_, index) => (
+                            <Skeleton className="min-h-[84px] w-full rounded-2xl" key={index} />
+                        ))}
+                </div>
+            ) : (
+                <div className="list-wrapper">
+                    <div id="list" className="list">
+                        <ListHeader>
+                            <div className="min-w-[160px]">Location</div>
+                            <div className="min-w-[100px]">Count</div>
+                            <div className="min-w-[100px]">Datacenter</div>
+                            <div className="min-w-[100px]">KYC/KYB</div>
+                        </ListHeader>
+
+                        {stats.map((country) => (
+                            <div key={country.code} className="row w-full justify-between gap-4">
+                                <div className="font-normal text-slate-600">{country.code}</div>
+                                <div className="font-robotoMono font-medium">{country.count}</div>
+                                <div className="font-robotoMono font-medium">{country.datacenterCount}</div>
+                                <div className="font-robotoMono font-medium">
+                                    {country.count - country.kybCount}/{country.kybCount}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
 }

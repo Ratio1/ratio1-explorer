@@ -1,5 +1,5 @@
 import DailyStatsAreaChart from '@/components/charts/DailyStatsAreaChart';
-import NodesMap from '@/components/charts/NodesMap';
+import MaplibreMap from '@/components/charts/MaplibreMap';
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { ChartConfig } from '@/components/ui/chart';
 import { getTokenStats, getTokenSupply } from '@/lib/api/general';
@@ -108,7 +108,7 @@ export default async function StatsPage() {
                 <div className="card-title-big font-bold">Nodes</div>
 
                 <ClientWrapper>
-                    <NodesMap />
+                    <MaplibreMap />
                 </ClientWrapper>
             </BorderedCard>
         </div>

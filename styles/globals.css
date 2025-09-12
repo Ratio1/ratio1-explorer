@@ -123,3 +123,8 @@ body {
     border: 0;
     border-radius: 4px;
 }
+
+/* Nodes Map */
+.maplibregl-control-container {
+    display: none;
+}

@@ -56,8 +56,6 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
         },
     }));
 
-    // console.log(chartData);
-
     const formatValue = (entry: ChartEntry) => {
         if (entry.type === 'number') {
             return entry.value;

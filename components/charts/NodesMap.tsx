@@ -1,12 +1,16 @@
 'use client';
 
+import { Alert } from '@/app/server-components/shared/Alert';
+import { CardItem } from '@/app/server-components/shared/CardItem';
+import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard';
 import { getActiveNodes } from '@/lib/api';
-import { countryCountsToGeoJSON } from '@/lib/gis';
+import { countryCodeToName, countryCountsToGeoJSON } from '@/lib/gis';
 import { NodeState } from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useEffect, useRef, useState } from 'react';
+import { RiMap2Line } from 'react-icons/ri';
 import ListHeader from '../shared/ListHeader';
 
 // Cache for GeoJSON data with expiration
@@ -35,15 +39,24 @@ export default function NodesMap() {
         }[]
     >();
 
+    const [error, setError] = useState<boolean>(false);
+
     useEffect(() => {
         (async () => {
-            await fetchGeoJSONData();
+            try {
+                await fetchGeoJSONData();
+            } catch (error) {
+                console.error(error);
+                setError(true);
+            }
         })();
 
         // TODO: Hide
         mapboxgl.accessToken = 'pk.eyJ1Ijoid3pyZHgxOTExIiwiYSI6ImNtZmZkZW12NDA0NHAyanM3NmJqaDJtZ2oifQ.3JBuZOd2vNrWi_CNYjGMfw';
 
-        if (!mapContainerRef.current) return;
+        if (!mapContainerRef.current) {
+            return;
+        }
 
         mapRef.current = new mapboxgl.Map({
             container: mapContainerRef.current,
@@ -59,50 +72,56 @@ export default function NodesMap() {
         });
 
         mapRef.current.on('load', async () => {
-            if (!mapRef.current) return;
+            if (!mapRef.current) {
+                return;
+            }
 
-            const data = await fetchGeoJSONData();
+            try {
+                const data = await fetchGeoJSONData();
 
-            mapRef.current.addSource('nodes', {
-                type: 'geojson',
-                generateId: true,
-                data,
-                cluster: false,
-            });
+                mapRef.current.addSource('nodes', {
+                    type: 'geojson',
+                    generateId: true,
+                    data,
+                    cluster: false,
+                });
 
-            mapRef.current.addLayer({
-                id: 'unclustered-point',
-                type: 'circle',
-                source: 'nodes',
-                filter: ['!', ['has', 'point_count']],
-                paint: {
-                    'circle-color': '#1b47f7',
-                    'circle-radius': 20,
-                    'circle-stroke-width': 3,
-                    'circle-stroke-color': '#f1f5f9',
-                    'circle-emissive-strength': 1,
-                },
-            });
+                mapRef.current.addLayer({
+                    id: 'unclustered-point',
+                    type: 'circle',
+                    source: 'nodes',
+                    filter: ['!', ['has', 'point_count']],
+                    paint: {
+                        'circle-color': '#1b47f7',
+                        'circle-radius': 20,
+                        'circle-stroke-width': 3,
+                        'circle-stroke-color': '#f1f5f9',
+                        'circle-emissive-strength': 1,
+                    },
+                });
 
-            // Add text layer for count values
-            mapRef.current.addLayer({
-                id: 'unclustered-point-text',
-                type: 'symbol',
-                source: 'nodes',
-                filter: ['!', ['has', 'point_count']],
-                layout: {
-                    'text-field': ['get', 'count'],
-                    'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
-                    'text-size': 14,
-                    'text-anchor': 'center',
-                    'text-offset': [0, 0],
-                },
-                paint: {
-                    'text-color': '#ffffff',
-                    'text-halo-color': '#000000',
-                    'text-halo-width': 1,
-                },
-            });
+                // Add text layer for count values
+                mapRef.current.addLayer({
+                    id: 'unclustered-point-text',
+                    type: 'symbol',
+                    source: 'nodes',
+                    filter: ['!', ['has', 'point_count']],
+                    layout: {
+                        'text-field': ['get', 'count'],
+                        'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                        'text-size': 14,
+                        'text-anchor': 'center',
+                        'text-offset': [0, 0],
+                    },
+                    paint: {
+                        'text-color': '#ffffff',
+                        'text-halo-color': '#000000',
+                        'text-halo-width': 1,
+                    },
+                });
+            } catch (error) {
+                console.error(error);
+            }
         });
 
         return () => {
@@ -160,9 +179,7 @@ export default function NodesMap() {
                     kybCount: nodes.filter((node) => node.tags?.some((tag) => tag.includes('KYB'))).length,
                 }));
 
-                console.log(stats);
-
-                setStats(stats);
+                setStats(stats.sort((a, b) => b.count - a.count));
 
                 const geoJSON = countryCountsToGeoJSON(stats);
 
@@ -171,9 +188,12 @@ export default function NodesMap() {
                 geoJSONCache.timestamp = now;
 
                 return geoJSON;
-            } finally {
-                // Clear the promise so future requests can make new ones
+            } catch (error) {
+                console.error('Failed to fetch GeoJSON data:', error);
+                // Clear the promise so future requests can retry
                 geoJSONCache.promise = null;
+                // Re-throw the error so callers can handle it appropriately
+                throw error;
             }
         })();
 
@@ -185,38 +205,71 @@ export default function NodesMap() {
             <div className="h-[420px]" id="map" ref={mapContainerRef}></div>
 
             {!stats ? (
-                <div className="col w-full gap-2">
-                    <Skeleton className="only-lg min-h-[56px] w-full rounded-xl" />
+                !error ? (
+                    <div className="col w-full gap-2">
+                        <Skeleton className="only-lg min-h-[56px] w-full rounded-xl" />
 
-                    {Array(10)
-                        .fill(null)
-                        .map((_, index) => (
-                            <Skeleton className="min-h-[84px] w-full rounded-2xl" key={index} />
-                        ))}
-                </div>
+                        {Array(10)
+                            .fill(null)
+                            .map((_, index) => (
+                                <Skeleton className="min-h-10 w-full rounded-xl" key={index} />
+                            ))}
+                    </div>
+                ) : (
+                    <Alert
+                        variant="warning"
+                        icon={<RiMap2Line className="text-lg" />}
+                        title="Error"
+                        description="An error occured while trying to fetch the map data."
+                    />
+                )
             ) : (
                 <div className="list-wrapper">
                     <div id="list" className="list">
                         <ListHeader>
                             <div className="min-w-[160px]">Location</div>
-                            <div className="min-w-[100px]">Count</div>
-                            <div className="min-w-[100px]">Datacenter</div>
-                            <div className="min-w-[100px]">KYC/KYB</div>
+                            <div className="min-w-[100px]">Toal Count</div>
+                            <div className="min-w-[140px]">Datacenter Nodes</div>
+                            <div className="min-w-[100px] text-right">KYC/KYB</div>
                         </ListHeader>
 
                         {stats.map((country) => (
-                            <div key={country.code} className="row w-full justify-between gap-4">
-                                <div className="font-normal text-slate-600">{country.code}</div>
-                                <div className="font-robotoMono font-medium">{country.count}</div>
-                                <div className="font-robotoMono font-medium">{country.datacenterCount}</div>
-                                <div className="font-robotoMono font-medium">
-                                    {country.count - country.kybCount}/{country.kybCount}
-                                </div>
-                            </div>
+                            <Entry country={country} key={country.code} />
                         ))}
                     </div>
                 </div>
             )}
         </div>
+    );
+}
+
+function Entry({ country }: { country: { code: string; count: number; datacenterCount: number; kybCount: number } }) {
+    return (
+        <BorderedCard useCustomWrapper useFixedWidthSmall roundedSmall>
+            <div className="row items-start justify-between gap-3 py-2 lg:gap-6">
+                <div className="w-[160px] overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium lg:text-[15px]">
+                    {countryCodeToName(country.code)}
+                </div>
+
+                <div className="min-w-[100px]">
+                    <CardItem label="Toal Count" value={country.count} />
+                </div>
+
+                <div className="min-w-[140px]">
+                    <CardItem label="Datacenter Nodes" value={country.datacenterCount} />
+                </div>
+
+                <div className="min-w-[100px]">
+                    <CardItem
+                        label="KYC/KYB"
+                        value={
+                            <div className="text-left lg:text-right">
+                                {country.count - country.kybCount} / {country.kybCount}
+                            </div>
+                        }
+                    />
+                </div>
+            </div>
+        </BorderedCard>
     );
 }

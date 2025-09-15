@@ -123,8 +123,9 @@ export const isNonZeroInteger = (value: string): boolean => {
 
 export const processNodeTag = (tag: string): string => {
     if (tag.startsWith('DC:')) {
-        return 'DATACENTER';
+        return 'DATA CENTER';
     }
+
     return tag.includes(':') ? tag.split(':')[1] : tag;
 };
 

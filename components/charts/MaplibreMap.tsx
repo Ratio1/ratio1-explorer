@@ -195,8 +195,8 @@ export default function MaplibreMap() {
                     <div id="list" className="list">
                         <ListHeader>
                             <div className="min-w-[160px]">Location</div>
-                            <div className="min-w-[100px]">Toal Count</div>
-                            <div className="min-w-[140px]">Datacenter Nodes</div>
+                            <div className="min-w-[100px]">Total Count</div>
+                            <div className="min-w-[140px]">Data Center Nodes</div>
                             <div className="min-w-[100px] text-right">KYC/KYB</div>
                         </ListHeader>
 
@@ -219,11 +219,11 @@ function Entry({ country }: { country: { code: string; count: number; datacenter
                 </div>
 
                 <div className="min-w-[100px]">
-                    <CardItem label="Toal Count" value={country.count} />
+                    <CardItem label="Total Count" value={country.count} />
                 </div>
 
                 <div className="min-w-[140px]">
-                    <CardItem label="Datacenter Nodes" value={country.datacenterCount} />
+                    <CardItem label="Data Center Nodes" value={country.datacenterCount} />
                 </div>
 
                 <div className="min-w-[100px]">

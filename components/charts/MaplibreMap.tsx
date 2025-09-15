@@ -7,8 +7,8 @@ import { getActiveNodes } from '@/lib/api';
 import { countryCodeToName, countryCountsToGeoJSON } from '@/lib/gis';
 import { NodeState } from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { Layer, LayerProps, Map, MapRef, Source } from 'react-map-gl/maplibre';
+
 import { useEffect, useRef, useState } from 'react';
 import { RiMap2Line } from 'react-icons/ri';
 import ListHeader from '../shared/ListHeader';
@@ -26,9 +26,40 @@ const geoJSONCache: {
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 
-export default function NodesMap() {
-    const mapContainerRef = useRef<HTMLDivElement>(null);
-    const mapRef = useRef<mapboxgl.Map | null>(null);
+const unclusteredPointLayer: LayerProps = {
+    id: 'unclustered-point',
+    type: 'circle',
+    source: 'nodes',
+    filter: ['!', ['has', 'point_count']],
+    paint: {
+        'circle-color': '#1b47f7',
+        'circle-radius': 20,
+        'circle-stroke-width': 3,
+        'circle-stroke-color': '#f1f5f9',
+    },
+};
+
+const unclusteredPointTextLayer: LayerProps = {
+    id: 'unclustered-point-text',
+    type: 'symbol',
+    source: 'nodes',
+    filter: ['!', ['has', 'point_count']],
+    layout: {
+        'text-field': ['get', 'count'],
+        'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+        'text-size': 14,
+        'text-anchor': 'center',
+        'text-offset': [0, 0],
+    },
+    paint: {
+        'text-color': '#ffffff',
+        'text-halo-color': '#000000',
+        'text-halo-width': 1,
+    },
+};
+
+export default function MaplibreMap() {
+    const mapRef = useRef<MapRef>(null);
 
     const [stats, setStats] = useState<
         {
@@ -39,96 +70,19 @@ export default function NodesMap() {
         }[]
     >();
 
+    const [geoJSONData, setGeoJSONData] = useState<GeoJSON.FeatureCollection | null>(null);
     const [error, setError] = useState<boolean>(false);
 
     useEffect(() => {
         (async () => {
             try {
-                await fetchGeoJSONData();
+                const data = await fetchGeoJSONData();
+                setGeoJSONData(data);
             } catch (error) {
                 console.error(error);
                 setError(true);
             }
         })();
-
-        // TODO: Hide
-        mapboxgl.accessToken = 'pk.eyJ1Ijoid3pyZHgxOTExIiwiYSI6ImNtZmZkZW12NDA0NHAyanM3NmJqaDJtZ2oifQ.3JBuZOd2vNrWi_CNYjGMfw';
-
-        if (!mapContainerRef.current) {
-            return;
-        }
-
-        mapRef.current = new mapboxgl.Map({
-            container: mapContainerRef.current,
-            style: 'mapbox://styles/wzrdx1911/cmffhv43i00ch01qwdsix84vf', // TODO: Ratio1 account
-            config: {
-                basemap: {
-                    theme: 'faded',
-                    lightPreset: 'dawn',
-                },
-            },
-            center: [20, 36],
-            zoom: 1.2,
-        });
-
-        mapRef.current.on('load', async () => {
-            if (!mapRef.current) {
-                return;
-            }
-
-            try {
-                const data = await fetchGeoJSONData();
-
-                mapRef.current.addSource('nodes', {
-                    type: 'geojson',
-                    generateId: true,
-                    data,
-                    cluster: false,
-                });
-
-                mapRef.current.addLayer({
-                    id: 'unclustered-point',
-                    type: 'circle',
-                    source: 'nodes',
-                    filter: ['!', ['has', 'point_count']],
-                    paint: {
-                        'circle-color': '#1b47f7',
-                        'circle-radius': 20,
-                        'circle-stroke-width': 3,
-                        'circle-stroke-color': '#f1f5f9',
-                        'circle-emissive-strength': 1,
-                    },
-                });
-
-                // Add text layer for count values
-                mapRef.current.addLayer({
-                    id: 'unclustered-point-text',
-                    type: 'symbol',
-                    source: 'nodes',
-                    filter: ['!', ['has', 'point_count']],
-                    layout: {
-                        'text-field': ['get', 'count'],
-                        'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
-                        'text-size': 14,
-                        'text-anchor': 'center',
-                        'text-offset': [0, 0],
-                    },
-                    paint: {
-                        'text-color': '#ffffff',
-                        'text-halo-color': '#000000',
-                        'text-halo-width': 1,
-                    },
-                });
-            } catch (error) {
-                console.error(error);
-            }
-        });
-
-        return () => {
-            if (mapRef.current) {
-                mapRef.current.remove();
-            }
-        };
     }, []);
 
     const fetchGeoJSONData = async (): Promise<GeoJSON.FeatureCollection> => {
@@ -136,17 +90,13 @@ export default function NodesMap() {
 
         // Check if cache is valid
         if (geoJSONCache.data && now - geoJSONCache.timestamp < CACHE_DURATION) {
-            console.log('Using cached GeoJSON data');
             return geoJSONCache.data;
         }
 
         // If there's already a request in progress, wait for it
         if (geoJSONCache.promise) {
-            console.log('Waiting for ongoing request to complete');
             return geoJSONCache.promise;
         }
-
-        console.log('Fetching fresh GeoJSON data');
 
         // Create the promise and store it to prevent duplicate requests
         geoJSONCache.promise = (async () => {
@@ -202,7 +152,24 @@ export default function NodesMap() {
 
     return (
         <div className="col gap-4">
-            <div className="h-[420px]" id="map" ref={mapContainerRef}></div>
+            <div className="min-h-[420px] w-full">
+                <Map
+                    initialViewState={{
+                        latitude: 10,
+                        longitude: 36,
+                        zoom: 1.3,
+                    }}
+                    mapStyle="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
+                    ref={mapRef}
+                >
+                    {geoJSONData && (
+                        <Source id="nodes" type="geojson" data={geoJSONData} cluster={false}>
+                            <Layer {...unclusteredPointLayer} />
+                            <Layer {...unclusteredPointTextLayer} />
+                        </Source>
+                    )}
+                </Map>
+            </div>
 
             {!stats ? (
                 !error ? (
@@ -229,7 +196,7 @@ export default function NodesMap() {
                         <ListHeader>
                             <div className="min-w-[160px]">Location</div>
                             <div className="min-w-[100px]">Total Count</div>
-                            <div className="min-w-[140px]">Datacenter Nodes</div>
+                            <div className="min-w-[140px]">Data Center Nodes</div>
                             <div className="min-w-[100px] text-right">KYC/KYB</div>
                         </ListHeader>
 
@@ -256,7 +223,7 @@ function Entry({ country }: { country: { code: string; count: number; datacenter
                 </div>
 
                 <div className="min-w-[140px]">
-                    <CardItem label="Datacenter Nodes" value={country.datacenterCount} />
+                    <CardItem label="Data Center Nodes" value={country.datacenterCount} />
                 </div>
 
                 <div className="min-w-[100px]">

@@ -156,8 +156,8 @@ export default function NodesMap() {
             <div className="min-h-[420px] w-full">
                 <Map
                     initialViewState={{
-                        latitude: 10,
-                        longitude: 36,
+                        latitude: 33.5,
+                        longitude: 0,
                         zoom: 1.3,
                     }}
                     mapStyle="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"

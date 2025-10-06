@@ -1,8 +1,11 @@
 'use client';
 
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { getTokenStats } from '@/lib/api/general';
 import { fBI } from '@/lib/utils';
 import { TokenStatsEntry } from '@/typedefs/general';
+import { Skeleton } from '@heroui/skeleton';
+import { useEffect, useState } from 'react';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 
 type BaseChartEntry = {
@@ -22,7 +25,16 @@ type NumberChartEntry = BaseChartEntry & {
 
 type ChartEntry = BigIntChartEntry | NumberChartEntry;
 
-export default function DailyStatsAreaChart({ data, chartConfig }: { data: TokenStatsEntry[]; chartConfig: ChartConfig }) {
+export default function DailyStatsAreaChart({ chartConfig }: { chartConfig: ChartConfig }) {
+    const [data, setData] = useState<TokenStatsEntry[]>([]);
+
+    useEffect(() => {
+        (async () => {
+            const response = await getTokenStats();
+            setData(response.data);
+        })();
+    }, []);
+
     const chartData = data.map((entry) => ({
         date: new Date(entry.creationTimestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
         usdcLocked: {
@@ -63,6 +75,10 @@ export default function DailyStatsAreaChart({ data, chartConfig }: { data: Token
             return fBI(BigInt(entry.value), entry.decimals, 2);
         }
     };
+
+    if (!data.length) {
+        return <Skeleton className="h-[240px] w-full rounded-xl" />;
+    }
 
     return (
         <div className="col -mx-[5px] gap-0.5">

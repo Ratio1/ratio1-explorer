@@ -19,7 +19,7 @@ export async function getTokenSupply(): Promise<TokenSupplyResponse> {
 
 export async function getTokenStats(): Promise<TokenStatsResponse> {
     const response: Response | undefined = await fetch(`${dappApiUrl}/token/stats`, {
-        next: { revalidate: 300 },
+        cache: 'no-store',
     });
 
     if (!response.ok) {

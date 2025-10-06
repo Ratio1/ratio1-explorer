@@ -2,10 +2,10 @@ import DailyStatsAreaChart from '@/components/charts/DailyStatsAreaChart';
 import NodesMap from '@/components/charts/NodesMap';
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { ChartConfig } from '@/components/ui/chart';
-import { getTokenStats, getTokenSupply } from '@/lib/api/general';
+import { getTokenSupply } from '@/lib/api/general';
 import { routePath } from '@/lib/routes';
 import { fN } from '@/lib/utils';
-import { TokenStatsResponse, TokenSupplyResponse } from '@/typedefs/general';
+import { TokenSupplyResponse } from '@/typedefs/general';
 import { redirect } from 'next/navigation';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
@@ -40,11 +40,9 @@ export async function generateMetadata() {
 
 export default async function StatsPage() {
     let tokenSupply: TokenSupplyResponse;
-    let tokenStats: TokenStatsResponse;
 
     try {
-        [tokenSupply, tokenStats] = await Promise.all([getTokenSupply(), getTokenStats()]);
-        // console.log('[StatsPage] Token Stats', tokenStats);
+        tokenSupply = await getTokenSupply();
     } catch (error) {
         console.error(error);
         redirect(routePath.notFound);
@@ -100,7 +98,7 @@ export default async function StatsPage() {
                 </div>
 
                 <ClientWrapper>
-                    <DailyStatsAreaChart data={tokenStats.data} chartConfig={chartConfig} />
+                    <DailyStatsAreaChart chartConfig={chartConfig} />
                 </ClientWrapper>
             </BorderedCard>
 

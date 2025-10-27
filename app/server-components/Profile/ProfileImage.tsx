@@ -12,7 +12,7 @@ export default function ProfileImage({ ownerEthAddr }) {
     if (hasError) {
         return (
             // Placeholder user icon when no image exists
-            <div className="center-all h-full w-full rounded-full bg-slate-200 text-2xl text-white">
+            <div className="center-all h-full w-full rounded-full bg-slate-200 text-3xl text-white">
                 <HiUser />
             </div>
         );

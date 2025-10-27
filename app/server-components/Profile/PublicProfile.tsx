@@ -1,13 +1,21 @@
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { getBrandingPlatforms, getPublicProfileInfo } from '@/lib/api/backend';
 import { cachedGetENSName, getShortAddress } from '@/lib/utils';
+import { EthAddress } from '@/typedefs/blockchain';
 import { PublicProfileInfo } from '@/typedefs/general';
 import Link from 'next/link';
+import { RiGlobalLine, RiLinkedinBoxFill, RiTwitterXLine } from 'react-icons/ri';
 import { BorderedCard } from '../shared/cards/BorderedCard';
 import { CardHorizontal } from '../shared/cards/CardHorizontal';
 import ProfileImage from './ProfileImage';
 
-export default async function PublicProfile({ ownerEthAddr }) {
+const PLATFORM_ICONS = {
+    Linkedin: <RiLinkedinBoxFill />,
+    X: <RiTwitterXLine />,
+    Website: <RiGlobalLine />,
+};
+
+export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: EthAddress }) {
     let ensName: string | undefined,
         brandingPlatforms: string[] = [],
         brandsResponse: { brands: Array<PublicProfileInfo> } = { brands: [] },
@@ -20,12 +28,14 @@ export default async function PublicProfile({ ownerEthAddr }) {
             getPublicProfileInfo(ownerEthAddr),
         ]);
 
-        publicProfileInfo = brandsResponse.brands[0];
+        console.log('[PublicProfile]', { brandsResponse });
 
-        console.log('[PublicProfile] publicProfileInfo', publicProfileInfo);
+        if (brandsResponse.brands && brandsResponse.brands.length > 0) {
+            publicProfileInfo = brandsResponse.brands[0];
+            console.log('[PublicProfile] publicProfileInfo', publicProfileInfo);
+        }
     } catch (error) {
         console.error(error);
-        console.log(`[PublicProfile] Failed to fetch ENS name for address: ${ownerEthAddr}`);
         return null;
     }
 
@@ -65,7 +75,7 @@ export default async function PublicProfile({ ownerEthAddr }) {
                     return (
                         <CardHorizontal
                             key={platform}
-                            label={platform}
+                            label={PLATFORM_ICONS[platform] ?? platform}
                             value={
                                 isEmptyLink ? (
                                     <div>—</div>

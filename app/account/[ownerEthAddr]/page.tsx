@@ -53,18 +53,17 @@ export default async function OwnerPage({ params }) {
         ]);
     } catch (error) {
         console.error(error);
-        console.log(`[Account Page] Failed to fetch account data for address: ${ownerEthAddr}`);
+        console.log(`[Account Page] Failed to fetch data for address: ${ownerEthAddr}`);
         redirect(routePath.notFound);
     }
 
     return (
         <div className="responsive-col">
-            <PublicProfile ownerEthAddr={ownerEthAddr} />
-
             <BorderedCard>
-                <div className="card-title-big font-bold">Account</div>
+                {/* <div className="card-title-big font-bold">Account</div> */}
+                <PublicProfile ownerEthAddr={ownerEthAddr} />
 
-                <div className="col gap-3">
+                <div className="col gap-3 pt-2">
                     <div className="flexible-row">
                         <CardHorizontal
                             label="Address"

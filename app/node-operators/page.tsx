@@ -4,7 +4,6 @@ import { routePath } from '@/lib/routes';
 import * as types from '@/typedefs/blockchain';
 import { LicenseItem } from '@/typedefs/general';
 import { redirect } from 'next/navigation';
-import { cache } from 'react';
 import List from '../server-components/NodeOperators/List';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
@@ -18,7 +17,7 @@ export async function generateMetadata() {
     };
 }
 
-const fetchCachedLicenseHolders = cache(async (environment: 'mainnet' | 'testnet' | 'devnet') => {
+const fetchLicenseHolders = async (environment: 'mainnet' | 'testnet' | 'devnet') => {
     const url = await getSSURL(`license-holders?env=${environment}`);
 
     const res = await fetch(url, {
@@ -36,7 +35,7 @@ const fetchCachedLicenseHolders = cache(async (environment: 'mainnet' | 'testnet
         }[];
     } = await res.json();
     return data;
-});
+};
 
 export default async function NodeOperatorsPage(props: {
     searchParams?: Promise<{
@@ -65,7 +64,7 @@ export default async function NodeOperatorsPage(props: {
     }[];
 
     try {
-        ({ ndHolders, mndHolders } = await fetchCachedLicenseHolders(config.environment));
+        ({ ndHolders, mndHolders } = await fetchLicenseHolders(config.environment));
 
         ndHolders.forEach((holder) => {
             if (!holders[holder.ethAddress]) {

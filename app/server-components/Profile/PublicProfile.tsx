@@ -38,6 +38,8 @@ export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: Et
             getPublicProfileInfo(ownerEthAddr),
         ]);
 
+        console.log('[PublicProfile]', { brandsResponse });
+
         if (brandsResponse.brands && brandsResponse.brands.length > 0) {
             publicProfileInfo = brandsResponse.brands[0];
         }
@@ -46,8 +48,16 @@ export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: Et
         return null;
     }
 
+    if (!publicProfileInfo) {
+        return (
+            <div className="card-title-big font-bold">
+                Account • {ensName ? <>{ensName}</> : <span className="roboto">{getShortAddress(ownerEthAddr, 4, true)}</span>}
+            </div>
+        );
+    }
+
     return (
-        <div className="flex items-start gap-3 md:items-center">
+        <div className="flex items-start gap-3 md:items-center md:gap-4">
             <div className="center-all relative h-[60px] w-[60px] min-w-[60px] overflow-hidden rounded-[37.5%] sm:h-[84px] sm:w-[84px] sm:min-w-[84px]">
                 <ClientWrapper>
                     <ProfileImage ownerEthAddr={ownerEthAddr} />
@@ -57,9 +67,9 @@ export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: Et
             <div className="col gap-1">
                 <div className="card-title-big font-bold !leading-none">
                     {publicProfileInfo?.name ? (
-                        <span>{publicProfileInfo.name}</span>
+                        <>{publicProfileInfo.name}</>
                     ) : ensName ? (
-                        <span>{ensName}</span>
+                        <>{ensName}</>
                     ) : (
                         <span className="roboto">{getShortAddress(ownerEthAddr, 4, true)}</span>
                     )}

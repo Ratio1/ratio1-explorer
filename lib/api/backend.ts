@@ -62,7 +62,6 @@ const axiosBackend = axios.create({
 });
 
 axiosBackend.interceptors.request.use((request) => {
-    // Surface when outbound requests are triggered to verify caching behaviour.
-    console.log(`[backend] ${request.method?.toUpperCase()} ${request.baseURL}${request.url}`);
+    // console.log(`[backend] ${request.method?.toUpperCase()} ${request.baseURL}${request.url}`);
     return request;
 });

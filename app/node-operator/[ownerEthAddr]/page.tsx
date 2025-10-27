@@ -25,14 +25,18 @@ export async function generateMetadata({ params }) {
         };
     }
 
-    const ensName = await cachedGetENSName(ownerEthAddr);
+    try {
+        const ensName = await cachedGetENSName(ownerEthAddr);
 
-    return {
-        title: `Node Operator • ${ensName || getShortAddress(ownerEthAddr, 4, true)}`,
-        openGraph: {
+        return {
             title: `Node Operator • ${ensName || getShortAddress(ownerEthAddr, 4, true)}`,
-        },
-    };
+            openGraph: {
+                title: `Node Operator • ${ensName || getShortAddress(ownerEthAddr, 4, true)}`,
+            },
+        };
+    } catch (error) {
+        return null;
+    }
 }
 
 export default async function NodeOperatorPage({ params }) {

@@ -1,5 +1,5 @@
 import ClientWrapper from '@/components/shared/ClientWrapper';
-import { getBrandingPlatforms, getPublicProfileInfo } from '@/lib/api/backend';
+import { getBrandingPlatforms, getPublicProfiles } from '@/lib/api/backend';
 import { cachedGetENSName, getShortAddress } from '@/lib/utils';
 import { EthAddress } from '@/typedefs/blockchain';
 import { PublicProfileInfo } from '@/typedefs/general';
@@ -35,7 +35,7 @@ export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: Et
         [ensName, brandingPlatforms, brandsResponse] = await Promise.all([
             cachedGetENSName(ownerEthAddr),
             getBrandingPlatforms(),
-            getPublicProfileInfo(ownerEthAddr),
+            getPublicProfiles([ownerEthAddr]),
         ]);
 
         console.log('[PublicProfile]', { brandsResponse });

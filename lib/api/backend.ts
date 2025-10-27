@@ -18,10 +18,10 @@ const getCachedBrandingPlatforms = unstable_cache(
 export const getBrandingPlatforms = async () => getCachedBrandingPlatforms();
 
 // POST
-export const getPublicProfileInfo = async (address: EthAddress) =>
+export const getPublicProfiles = async (addresses: EthAddress[]) =>
     _doPost<{
         brands: Array<PublicProfileInfo>;
-    }>('/branding/get-brands', { brandAddresses: [address] });
+    }>('/branding/get-brands', { brandAddresses: addresses });
 
 async function _doGet<T>(endpoint: string) {
     const { data } = await axiosBackend.get<{

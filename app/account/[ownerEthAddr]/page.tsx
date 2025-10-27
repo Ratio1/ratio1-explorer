@@ -6,7 +6,6 @@ import UsageStats from '@/app/server-components/shared/Licenses/UsageStats';
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import config from '@/config';
-import { getBrandingPlatforms } from '@/lib/api/backend';
 import { fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
 import { cachedGetENSName, fBI, getShortAddress, isEmptyETHAddr } from '@/lib/utils';
@@ -44,17 +43,14 @@ export default async function OwnerPage({ params }) {
         notFound();
     }
 
-    let licenses: types.LicenseInfo[], ensName: string | undefined, r1Balance: bigint, brandingPlatforms: string[];
+    let licenses: types.LicenseInfo[], ensName: string | undefined, r1Balance: bigint;
 
     try {
-        [licenses, ensName, r1Balance, brandingPlatforms] = await Promise.all([
+        [licenses, ensName, r1Balance] = await Promise.all([
             getLicenses(ownerEthAddr),
             cachedGetENSName(ownerEthAddr),
             fetchErc20Balance(ownerEthAddr, config.r1ContractAddress),
-            getBrandingPlatforms(),
         ]);
-
-        console.log('[Account Page] brandingPlatforms', brandingPlatforms);
     } catch (error) {
         console.error(error);
         console.log(`[Account Page] Failed to fetch account data for address: ${ownerEthAddr}`);

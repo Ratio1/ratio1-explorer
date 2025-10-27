@@ -1,8 +1,10 @@
+import config from '@/config';
+import { EthAddress } from '@/typedefs/blockchain';
+import { PublicProfileInfo } from '@/typedefs/general';
 import axios from 'axios';
 import { unstable_cache } from 'next/cache';
-import config from '@/config';
 
-// GET
+// CACHED
 const getCachedBrandingPlatforms = unstable_cache(
     () => _doGet<string[]>('/branding/get-platforms'),
     ['backend:getBrandingPlatforms'],
@@ -12,13 +14,35 @@ const getCachedBrandingPlatforms = unstable_cache(
     },
 );
 
+// GET
 export const getBrandingPlatforms = async () => getCachedBrandingPlatforms();
+
+// POST
+export const getPublicProfileInfo = async (address: EthAddress) =>
+    _doPost<{
+        brands: Array<PublicProfileInfo>;
+    }>('/branding/get-brands', { brandAddresses: [address] });
 
 async function _doGet<T>(endpoint: string) {
     const { data } = await axiosBackend.get<{
         data: T;
         error: string;
     }>(endpoint);
+
+    if (data.error) {
+        throw new Error(data.error);
+    }
+
+    return data.data;
+}
+
+async function _doPost<T>(endpoint: string, body: any, headers?: Record<string, string>) {
+    const { data } = await axiosBackend.post<{
+        data: T;
+        error: string;
+    }>(endpoint, body, {
+        headers,
+    });
 
     if (data.error) {
         throw new Error(data.error);

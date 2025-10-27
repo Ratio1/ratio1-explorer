@@ -83,7 +83,13 @@ export default async function OwnerPage({ params }) {
                             isFlexible
                         />
 
-                        <CardHorizontal label="Licenses Owned" value={<div>{licenses.length}</div>} isSmall isFlexible />
+                        <CardHorizontal
+                            label="Licenses Owned"
+                            value={<div>{licenses.length}</div>}
+                            isSmall
+                            isFlexible
+                            widthClasses="min-w-[180px]"
+                        />
 
                         <CardHorizontal
                             label="Total $R1 Claimed"

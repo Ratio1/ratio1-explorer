@@ -47,8 +47,8 @@ export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: Et
     }
 
     return (
-        <div className="row gap-3">
-            <div className="center-all relative h-[84px] w-[84px] overflow-hidden rounded-[40%]">
+        <div className="flex items-start gap-3 md:items-center">
+            <div className="center-all relative h-[60px] w-[60px] min-w-[60px] overflow-hidden rounded-[37.5%] sm:h-[84px] sm:w-[84px] sm:min-w-[84px]">
                 <ClientWrapper>
                     <ProfileImage ownerEthAddr={ownerEthAddr} />
                 </ClientWrapper>
@@ -65,7 +65,7 @@ export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: Et
                     )}
                 </div>
 
-                <div>
+                <div className="leading-5">
                     {publicProfileInfo?.description && <div className="compact-slate">{publicProfileInfo?.description}</div>}
                 </div>
 

@@ -22,7 +22,7 @@ export default function ProfileImage({ ownerEthAddr }) {
         <Image
             src={src}
             alt="Profile Image"
-            className="rounded-full object-cover"
+            className="object-cover"
             fill
             sizes="128px"
             priority

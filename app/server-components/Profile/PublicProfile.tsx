@@ -9,17 +9,17 @@ import ProfileImage from './ProfileImage';
 
 const PLATFORM_ICONS = {
     Linkedin: (
-        <div className="text-[20px]">
+        <div className="text-[22px]">
             <RiLinkedinBoxFill />
         </div>
     ),
     X: (
-        <div className="text-lg">
+        <div className="text-xl">
             <RiTwitterXLine />
         </div>
     ),
     Website: (
-        <div className="text-lg">
+        <div className="text-xl">
             <RiGlobalLine />
         </div>
     ),
@@ -48,7 +48,7 @@ export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: Et
 
     return (
         <div className="row gap-3">
-            <div className="center-all relative h-[88px] w-[88px] overflow-hidden rounded-full">
+            <div className="center-all relative h-[84px] w-[84px] overflow-hidden rounded-[40%]">
                 <ClientWrapper>
                     <ProfileImage ownerEthAddr={ownerEthAddr} />
                 </ClientWrapper>
@@ -69,7 +69,7 @@ export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: Et
                     {publicProfileInfo?.description && <div className="compact-slate">{publicProfileInfo?.description}</div>}
                 </div>
 
-                <div className="row gap-4">
+                <div className="row gap-2">
                     {brandingPlatforms.map((platform) => {
                         const link = publicProfileInfo?.links[platform];
                         const isEmptyLink = !link || link === '';
@@ -78,16 +78,10 @@ export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: Et
                             return null;
                         }
 
-                        const shortLink = platform === 'Linkedin' ? link.slice(12) : link.slice(8);
-
                         return (
-                            <div key={platform} className="row gap-1">
-                                {PLATFORM_ICONS[platform] ?? platform}
-
-                                <Link className="hover:opacity-75" href={link} target="_blank">
-                                    <div className="text-sm font-medium text-primary">{shortLink}</div>
-                                </Link>
-                            </div>
+                            <Link key={platform} className="hover:text-primary" href={link} target="_blank">
+                                <div>{PLATFORM_ICONS[platform] ?? platform}</div>
+                            </Link>
                         );
                     })}
                 </div>

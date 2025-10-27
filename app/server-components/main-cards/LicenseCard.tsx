@@ -70,7 +70,7 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                         label="Owner"
                         value={
                             <ClientWrapper>
-                                <CopyableAddress value={owner} size={4} isLarge link={`${routePath.owner}/${owner}`} />
+                                <CopyableAddress value={owner} size={4} isLarge link={`${routePath.nodeOperator}/${owner}`} />
                             </ClientWrapper>
                         }
                         isSmall

@@ -5,15 +5,15 @@ import * as types from '@/typedefs/blockchain';
 import { LicenseItem } from '@/typedefs/general';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
-import List from '../server-components/Accounts/List';
+import List from '../server-components/NodeOperators/List';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
 
 export async function generateMetadata() {
     return {
-        title: 'Accounts',
+        title: 'Node Operators',
         openGraph: {
-            title: 'Accounts',
+            title: 'Node Operators',
         },
     };
 }
@@ -38,7 +38,7 @@ const fetchCachedLicenseHolders = cache(async (environment: 'mainnet' | 'testnet
     return data;
 });
 
-export default async function AccountsPage(props: {
+export default async function NodeOperatorsPage(props: {
     searchParams?: Promise<{
         page?: string;
     }>;
@@ -93,7 +93,7 @@ export default async function AccountsPage(props: {
             .sort((a, b) => b.licenses.length - a.licenses.length);
     } catch (error) {
         console.error(error);
-        console.log('[Accounts Page] Failed to fetch account data');
+        console.log('[NodeOperatorsPage] Failed to fetch data');
         redirect(routePath.notFound);
     }
 
@@ -101,7 +101,7 @@ export default async function AccountsPage(props: {
         <>
             <div className="w-full">
                 <BorderedCard>
-                    <div className="card-title-big font-bold">Accounts</div>
+                    <div className="card-title-big font-bold">Node Operators</div>
 
                     <div className="flexible-row">
                         <CardHorizontal

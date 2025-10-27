@@ -114,13 +114,17 @@ export default function SearchResultsList({ results, variant, getSectionTitle, o
                         'gap-2': variant === 'modal',
                     })}
                 >
-                    {getSectionTitle('Accounts')}
+                    {getSectionTitle('Node Operators')}
 
                     {results
                         .filter((r): r is Extract<SearchResult, { type: 'owner' }> => r.type === 'owner')
                         .map((owner, index) => (
                             <div key={index}>
-                                <Link href={`${routePath.owner}/${owner.address}`} className={linkClassName} onClick={onClose}>
+                                <Link
+                                    href={`${routePath.nodeOperator}/${owner.address}`}
+                                    className={linkClassName}
+                                    onClick={onClose}
+                                >
                                     <div className="row gap-3">
                                         <div className="relative h-8 w-8">
                                             <Identicon value={`owner_${owner.address}`} />

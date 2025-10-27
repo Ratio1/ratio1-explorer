@@ -51,7 +51,8 @@ export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: Et
     if (!publicProfileInfo) {
         return (
             <div className="card-title-big font-bold">
-                Account • {ensName ? <>{ensName}</> : <span className="roboto">{getShortAddress(ownerEthAddr, 4, true)}</span>}
+                Node Operator •{' '}
+                {ensName ? <>{ensName}</> : <span className="roboto">{getShortAddress(ownerEthAddr, 4, true)}</span>}
             </div>
         );
     }

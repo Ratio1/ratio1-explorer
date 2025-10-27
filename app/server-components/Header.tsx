@@ -5,7 +5,7 @@ import config from '@/config';
 import { Button } from '@heroui/button';
 import Image from 'next/image';
 import Link from 'next/link';
-import { RiFunctionLine } from 'react-icons/ri';
+import { RiBox3Line } from 'react-icons/ri';
 
 export default async function Header() {
     return (
@@ -31,7 +31,7 @@ export default async function Header() {
 
             <div className="row gap-2">
                 <div className="web-only-flex gap-2">
-                    <div className="hidden lg:block">
+                    <div className="hidden min-[1100px]:block">
                         <CardRounded>
                             <div className="row gap-1.5 px-4 py-3">
                                 <Image className="h-6 w-auto" src="/base.webp" width={32} height={32} alt="Blockchain" />
@@ -50,7 +50,7 @@ export default async function Header() {
                         target="_blank"
                     >
                         <div className="row gap-1.5">
-                            <RiFunctionLine className="text-lg" />
+                            <RiBox3Line className="text-lg" />
                             <div className="font-medium">App</div>
                         </div>
                     </Button>

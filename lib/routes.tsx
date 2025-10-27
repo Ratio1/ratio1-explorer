@@ -4,12 +4,12 @@ export const routePath = {
     // Lists
     root: '/', // Nodes
     licenses: '/licenses',
-    owners: '/accounts',
+    nodeOperators: '/node-operators',
     stats: '/stats',
     // Individual items
     node: '/node',
     license: '/license',
-    owner: '/account',
+    nodeOperator: '/node-operator',
     // Other
     search: '/search',
     notFound: '/404',
@@ -18,15 +18,15 @@ export const routePath = {
 export const routeTitles = {
     [routePath.root]: 'Nodes',
     [routePath.licenses]: 'Licenses',
-    [routePath.owners]: 'Accounts',
+    [routePath.nodeOperators]: 'Node Operators',
     [routePath.stats]: 'Stats',
 };
 
 export const routeIcons = {
     [routePath.root]: <RiComputerLine />,
     [routePath.licenses]: <RiCpuLine />,
-    [routePath.owners]: <RiWalletLine />,
+    [routePath.nodeOperators]: <RiWalletLine />,
     [routePath.stats]: <RiBarChartBoxLine />,
 };
 
-export const navRoutes = [routePath.root, routePath.licenses, routePath.owners, routePath.stats];
+export const navRoutes = [routePath.root, routePath.licenses, routePath.nodeOperators, routePath.stats];

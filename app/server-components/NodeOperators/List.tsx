@@ -4,7 +4,7 @@ import { LicenseItem } from '@/typedefs/general';
 import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
 import ListHeader from '../shared/ListHeader';
-import Account from './Account';
+import NodeOperatorCard from './NodeOperatorCard';
 
 const PAGE_SIZE = 10;
 
@@ -36,7 +36,7 @@ export default async function List({
 
                 {getPage().map((item, index) => (
                     <Suspense key={index} fallback={<Skeleton className="min-h-[92px] w-full rounded-2xl" />}>
-                        <Account ethAddress={item.ethAddress} licenses={item.licenses} />
+                        <NodeOperatorCard ethAddress={item.ethAddress} licenses={item.licenses} />
                     </Suspense>
                 ))}
             </div>

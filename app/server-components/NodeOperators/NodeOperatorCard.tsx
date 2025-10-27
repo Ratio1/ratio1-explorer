@@ -15,7 +15,7 @@ interface Props {
     licenses: LicenseItem[];
 }
 
-export default async function Account({ ethAddress, licenses }: Props) {
+export default async function NodeOperatorCard({ ethAddress, licenses }: Props) {
     return (
         <BorderedCard useCustomWrapper useFixedWidthSmall>
             <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6 lg:py-4">
@@ -25,7 +25,11 @@ export default async function Account({ ethAddress, licenses }: Props) {
                         value={
                             <div className="row gap-2">
                                 <ClientWrapper>
-                                    <CopyableAddress value={ethAddress} size={4} link={`${routePath.owner}/${ethAddress}`} />
+                                    <CopyableAddress
+                                        value={ethAddress}
+                                        size={4}
+                                        link={`${routePath.nodeOperator}/${ethAddress}`}
+                                    />
                                 </ClientWrapper>
 
                                 {licenses.findIndex((license) => license.licenseType === 'GND') !== -1 && (

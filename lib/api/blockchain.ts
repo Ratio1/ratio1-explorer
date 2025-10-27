@@ -50,7 +50,7 @@ export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: n
                 args: [BigInt(licenseId)],
             })
             .then((license) => {
-                console.log('[getLicense (Reader)]', license);
+                // console.log('[getLicense (Reader)]', license);
 
                 const isLinked = !isEmptyETHAddr(license.nodeAddress);
                 const licenseType = [undefined, 'ND', 'MND', 'GND'][license.licenseType] as 'ND' | 'MND' | 'GND' | undefined;

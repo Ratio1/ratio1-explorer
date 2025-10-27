@@ -1,5 +1,4 @@
 import withBundleAnalyzer from '@next/bundle-analyzer';
-import { execSync } from 'child_process';
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = withBundleAnalyzer({
@@ -13,6 +12,22 @@ const nextConfig: NextConfig = withBundleAnalyzer({
             config.optimization.chunkIds = 'deterministic';
         }
         return config;
+    },
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'dapp-api.ratio1.ai',
+            },
+            {
+                protocol: 'https',
+                hostname: 'testnet-dapp-api.ratio1.ai',
+            },
+            {
+                protocol: 'https',
+                hostname: 'devnet-dapp-api.ratio1.ai',
+            },
+        ],
     },
     output: 'standalone',
 });

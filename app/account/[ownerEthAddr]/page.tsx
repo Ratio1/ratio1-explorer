@@ -1,10 +1,12 @@
 import CompactLicenseCard from '@/app/server-components/main-cards/CompactLicenseCard';
+import ProfileImage from '@/app/server-components/Profile/ProfileImage';
 import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import UsageStats from '@/app/server-components/shared/Licenses/UsageStats';
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import config from '@/config';
+import { getBrandingPlatforms } from '@/lib/api/backend';
 import { fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
 import { cachedGetENSName, fBI, getShortAddress, isEmptyETHAddr } from '@/lib/utils';
@@ -42,14 +44,17 @@ export default async function OwnerPage({ params }) {
         notFound();
     }
 
-    let licenses: types.LicenseInfo[], ensName: string | undefined, r1Balance: bigint;
+    let licenses: types.LicenseInfo[], ensName: string | undefined, r1Balance: bigint, brandingPlatforms: string[];
 
     try {
-        [licenses, ensName, r1Balance] = await Promise.all([
+        [licenses, ensName, r1Balance, brandingPlatforms] = await Promise.all([
             getLicenses(ownerEthAddr),
             cachedGetENSName(ownerEthAddr),
             fetchErc20Balance(ownerEthAddr, config.r1ContractAddress),
+            getBrandingPlatforms(),
         ]);
+
+        console.log('[Account Page] brandingPlatforms', brandingPlatforms);
     } catch (error) {
         console.error(error);
         console.log(`[Account Page] Failed to fetch account data for address: ${ownerEthAddr}`);
@@ -59,13 +64,21 @@ export default async function OwnerPage({ params }) {
     return (
         <div className="responsive-col">
             <BorderedCard>
-                <div className="card-title-big font-bold">
-                    Account •{' '}
-                    {ensName ? (
-                        <span>{ensName}</span>
-                    ) : (
-                        <span className="roboto">{getShortAddress(ownerEthAddr, 4, true)}</span>
-                    )}
+                <div className="row gap-2.5">
+                    <div className="center-all relative h-[40px] w-[40px] overflow-hidden rounded-full">
+                        <ClientWrapper>
+                            <ProfileImage ownerEthAddr={ownerEthAddr} />
+                        </ClientWrapper>
+                    </div>
+
+                    <div className="card-title-big font-bold">
+                        Account •{' '}
+                        {ensName ? (
+                            <span>{ensName}</span>
+                        ) : (
+                            <span className="roboto">{getShortAddress(ownerEthAddr, 4, true)}</span>
+                        )}
+                    </div>
                 </div>
 
                 <div className="col gap-3">

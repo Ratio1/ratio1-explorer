@@ -1,5 +1,5 @@
 import CompactLicenseCard from '@/app/server-components/main-cards/CompactLicenseCard';
-import ProfileImage from '@/app/server-components/Profile/ProfileImage';
+import PublicProfile from '@/app/server-components/Profile/PublicProfile';
 import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import UsageStats from '@/app/server-components/shared/Licenses/UsageStats';
@@ -63,23 +63,10 @@ export default async function OwnerPage({ params }) {
 
     return (
         <div className="responsive-col">
-            <BorderedCard>
-                <div className="row gap-2.5">
-                    <div className="center-all relative h-[40px] w-[40px] overflow-hidden rounded-full">
-                        <ClientWrapper>
-                            <ProfileImage ownerEthAddr={ownerEthAddr} />
-                        </ClientWrapper>
-                    </div>
+            <PublicProfile ownerEthAddr={ownerEthAddr} />
 
-                    <div className="card-title-big font-bold">
-                        Account •{' '}
-                        {ensName ? (
-                            <span>{ensName}</span>
-                        ) : (
-                            <span className="roboto">{getShortAddress(ownerEthAddr, 4, true)}</span>
-                        )}
-                    </div>
-                </div>
+            <BorderedCard>
+                <div className="card-title-big font-bold">Account</div>
 
                 <div className="col gap-3">
                     <div className="flexible-row">

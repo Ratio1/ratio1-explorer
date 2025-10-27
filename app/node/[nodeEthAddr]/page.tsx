@@ -9,7 +9,6 @@ import { routePath } from '@/lib/routes';
 import { isEmptyETHAddr } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { notFound, redirect } from 'next/navigation';
-import { cache } from 'react';
 import { RiCloseLine } from 'react-icons/ri';
 import { isAddress } from 'viem';
 
@@ -48,53 +47,30 @@ export async function generateMetadata({ params }) {
     };
 }
 
-const getCachedLicenseDetailsAndNodeAvailability = cache(
-    async (
-        nodeEthAddr: types.EthAddress,
-        _environment: 'mainnet' | 'testnet' | 'devnet',
-    ): Promise<{
-        license: types.License;
-        licenseId: bigint;
-        licenseType: 'ND' | 'MND' | 'GND';
-        owner: types.EthAddress;
-        nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
-    }> => {
-        let nodeAddress: types.EthAddress,
-            totalAssignedAmount: bigint,
-            totalClaimedAmount: bigint,
-            lastClaimEpoch: bigint,
-            assignTimestamp: bigint,
-            lastClaimOracle: types.EthAddress,
-            isBanned: boolean,
-            licenseId: bigint,
-            licenseType: 'ND' | 'MND' | 'GND' | undefined,
-            owner: types.EthAddress,
-            r1PoaiRewards: bigint;
+const getCachedLicenseDetailsAndNodeAvailability = async (
+    nodeEthAddr: types.EthAddress,
+    _environment: 'mainnet' | 'testnet' | 'devnet',
+): Promise<{
+    license: types.License;
+    licenseId: bigint;
+    licenseType: 'ND' | 'MND' | 'GND';
+    owner: types.EthAddress;
+    nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
+}> => {
+    let nodeAddress: types.EthAddress,
+        totalAssignedAmount: bigint,
+        totalClaimedAmount: bigint,
+        lastClaimEpoch: bigint,
+        assignTimestamp: bigint,
+        lastClaimOracle: types.EthAddress,
+        isBanned: boolean,
+        licenseId: bigint,
+        licenseType: 'ND' | 'MND' | 'GND' | undefined,
+        owner: types.EthAddress,
+        r1PoaiRewards: bigint;
 
-        try {
-            ({
-                nodeAddress,
-                totalAssignedAmount,
-                totalClaimedAmount,
-                lastClaimEpoch,
-                assignTimestamp,
-                lastClaimOracle,
-                isBanned,
-                licenseId,
-                licenseType,
-                owner,
-                r1PoaiRewards,
-            } = await getNodeLicenseDetails(nodeEthAddr));
-        } catch (error) {
-            console.error(error);
-            throw new Error('Failed to get node license details.');
-        }
-
-        if (!licenseId || !licenseType) {
-            redirect(routePath.notFound);
-        }
-
-        const license: types.License = {
+    try {
+        ({
             nodeAddress,
             totalAssignedAmount,
             totalClaimedAmount,
@@ -102,21 +78,42 @@ const getCachedLicenseDetailsAndNodeAvailability = cache(
             assignTimestamp,
             lastClaimOracle,
             isBanned,
-            owner,
-            r1PoaiRewards,
-        };
-
-        const nodeResponse = await getNodeAvailability(nodeEthAddr, assignTimestamp);
-
-        return {
-            license,
             licenseId,
             licenseType,
             owner,
-            nodeResponse,
-        };
-    },
-);
+            r1PoaiRewards,
+        } = await getNodeLicenseDetails(nodeEthAddr));
+    } catch (error) {
+        console.error(error);
+        throw new Error('Failed to get node license details.');
+    }
+
+    if (!licenseId || !licenseType) {
+        redirect(routePath.notFound);
+    }
+
+    const license: types.License = {
+        nodeAddress,
+        totalAssignedAmount,
+        totalClaimedAmount,
+        lastClaimEpoch,
+        assignTimestamp,
+        lastClaimOracle,
+        isBanned,
+        owner,
+        r1PoaiRewards,
+    };
+
+    const nodeResponse = await getNodeAvailability(nodeEthAddr, assignTimestamp);
+
+    return {
+        license,
+        licenseId,
+        licenseType,
+        owner,
+        nodeResponse,
+    };
+};
 
 export default async function NodePage({ params }) {
     const { nodeEthAddr } = await params;

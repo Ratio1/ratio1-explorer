@@ -1,4 +1,5 @@
 import CompactLicenseCard from '@/app/server-components/main-cards/CompactLicenseCard';
+import PublicProfile from '@/app/server-components/Profile/PublicProfile';
 import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import UsageStats from '@/app/server-components/shared/Licenses/UsageStats';
@@ -24,21 +25,25 @@ export async function generateMetadata({ params }) {
         };
     }
 
-    const ensName = await cachedGetENSName(ownerEthAddr);
+    try {
+        const ensName = await cachedGetENSName(ownerEthAddr);
 
-    return {
-        title: `Account • ${ensName || getShortAddress(ownerEthAddr, 4, true)}`,
-        openGraph: {
-            title: `Account • ${ensName || getShortAddress(ownerEthAddr, 4, true)}`,
-        },
-    };
+        return {
+            title: `Node Operator • ${ensName || getShortAddress(ownerEthAddr, 4, true)}`,
+            openGraph: {
+                title: `Node Operator • ${ensName || getShortAddress(ownerEthAddr, 4, true)}`,
+            },
+        };
+    } catch (error) {
+        return null;
+    }
 }
 
-export default async function OwnerPage({ params }) {
+export default async function NodeOperatorPage({ params }) {
     const { ownerEthAddr } = await params;
 
     if (!ownerEthAddr || !isAddress(ownerEthAddr) || isEmptyETHAddr(ownerEthAddr)) {
-        console.log(`[Account Page] Invalid owner address: ${ownerEthAddr}`);
+        console.log(`[NodeOperatorPage] Invalid owner address: ${ownerEthAddr}`);
         notFound();
     }
 
@@ -52,23 +57,16 @@ export default async function OwnerPage({ params }) {
         ]);
     } catch (error) {
         console.error(error);
-        console.log(`[Account Page] Failed to fetch account data for address: ${ownerEthAddr}`);
+        console.log(`[Node Operator Page] Failed to fetch data for address: ${ownerEthAddr}`);
         redirect(routePath.notFound);
     }
 
     return (
         <div className="responsive-col">
             <BorderedCard>
-                <div className="card-title-big font-bold">
-                    Account •{' '}
-                    {ensName ? (
-                        <span>{ensName}</span>
-                    ) : (
-                        <span className="roboto">{getShortAddress(ownerEthAddr, 4, true)}</span>
-                    )}
-                </div>
+                <PublicProfile ownerEthAddr={ownerEthAddr} />
 
-                <div className="col gap-3">
+                <div className="col gap-3 pt-2">
                     <div className="flexible-row">
                         <CardHorizontal
                             label="Address"
@@ -83,7 +81,13 @@ export default async function OwnerPage({ params }) {
                             isFlexible
                         />
 
-                        <CardHorizontal label="Licenses Owned" value={<div>{licenses.length}</div>} isSmall isFlexible />
+                        <CardHorizontal
+                            label="Licenses Owned"
+                            value={<div>{licenses.length}</div>}
+                            isSmall
+                            isFlexible
+                            widthClasses="min-w-[180px]"
+                        />
 
                         <CardHorizontal
                             label="Total $R1 Claimed"

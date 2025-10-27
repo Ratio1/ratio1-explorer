@@ -31,7 +31,9 @@ export default async function TopBar() {
             <div className="flex-1">
                 <div className="hidden flex-wrap items-center justify-between gap-2 sm:flex lg:flex-nowrap lg:justify-end lg:gap-3">
                     <Suspense>
-                        <LazyTopBarEpochCard />
+                        <ClientWrapper>
+                            <LazyTopBarEpochCard />
+                        </ClientWrapper>
                     </Suspense>
 
                     <Suspense>
@@ -45,7 +47,9 @@ export default async function TopBar() {
 
                 <div className="flex w-full flex-col gap-1.5 rounded-xl bg-slate-100 px-4 py-4 sm:hidden">
                     <Suspense>
-                        <LazyTopBarEpochCard />
+                        <ClientWrapper>
+                            <LazyTopBarEpochCard />
+                        </ClientWrapper>
                     </Suspense>
 
                     <Suspense>

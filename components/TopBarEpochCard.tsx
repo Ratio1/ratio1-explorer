@@ -25,7 +25,10 @@ export default function TopBarEpochCard() {
         <>
             <div className="hidden sm:block">
                 <CardWithIcon icon={<RiTimeLine />} label={`${formatDistanceToNow(getNextEpochTimestamp())} left`}>
-                    <span className="font-medium text-body">Epoch</span> <span className="text-primary">{currentEpoch}</span>
+                    <div className="whitespace-nowrap">
+                        <span className="font-medium text-body">Epoch</span>{' '}
+                        <span className="text-primary">{currentEpoch}</span>
+                    </div>
                 </CardWithIcon>
             </div>
 

@@ -53,11 +53,13 @@ export async function generateMetadata({ params }) {
     };
 }
 
-const cachedGetLicense = cache(
-    async (licenseType: 'ND' | 'MND' | 'GND', licenseId: string, _environment: 'mainnet' | 'testnet' | 'devnet') => {
-        return await getLicense(licenseType, licenseId);
-    },
-);
+const cachedGetLicense = async (
+    licenseType: 'ND' | 'MND' | 'GND',
+    licenseId: string,
+    _environment: 'mainnet' | 'testnet' | 'devnet',
+) => {
+    return await getLicense(licenseType, licenseId);
+};
 
 export default async function LicensePage({ params }) {
     const { licenseType, licenseId } = await params;

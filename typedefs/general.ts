@@ -43,4 +43,11 @@ type TokenStatsResponse = {
     nodeAddress: types.EthAddress;
 };
 
-export type { LicenseItem, SearchResult, TokenStatsEntry, TokenStatsResponse, TokenSupplyResponse };
+type PublicProfileInfo = {
+    brandAddress: types.EthAddress;
+    name: string;
+    description: string;
+    links: Record<string, string>;
+};
+
+export type { LicenseItem, PublicProfileInfo, SearchResult, TokenStatsEntry, TokenStatsResponse, TokenSupplyResponse };

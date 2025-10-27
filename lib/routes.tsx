@@ -9,7 +9,7 @@ export const routePath = {
     // Individual items
     node: '/node',
     license: '/license',
-    nodeOperator: '/node-operator',
+    account: '/account',
     // Other
     search: '/search',
     notFound: '/404',

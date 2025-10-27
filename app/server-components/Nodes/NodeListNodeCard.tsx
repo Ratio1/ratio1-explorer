@@ -77,7 +77,7 @@ export default async function NodeListNodeCard({
                             label="Owner"
                             value={
                                 <ClientWrapper>
-                                    <CopyableAddress value={owner} size={4} link={`${routePath.nodeOperator}/${owner}`} />
+                                    <CopyableAddress value={owner} size={4} link={`${routePath.account}/${owner}`} />
                                 </ClientWrapper>
                             }
                         />

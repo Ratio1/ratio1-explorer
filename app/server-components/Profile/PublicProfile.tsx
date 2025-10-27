@@ -65,7 +65,7 @@ export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: Et
                 </ClientWrapper>
             </div>
 
-            <div className="col gap-1">
+            <div className="col gap-1.5">
                 <div className="card-title-big font-bold !leading-none">
                     {publicProfileInfo?.name ? (
                         <>{publicProfileInfo.name}</>
@@ -77,7 +77,9 @@ export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: Et
                 </div>
 
                 <div className="leading-5">
-                    {publicProfileInfo?.description && <div className="compact-slate">{publicProfileInfo?.description}</div>}
+                    {publicProfileInfo?.description && (
+                        <div className="font-medium text-slate-500">{publicProfileInfo?.description}</div>
+                    )}
                 </div>
 
                 <div className="row gap-2">

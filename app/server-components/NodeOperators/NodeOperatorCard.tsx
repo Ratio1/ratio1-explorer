@@ -20,7 +20,7 @@ interface Props {
 
 export default async function NodeOperatorCard({ name, ethAddress, licenses }: Props) {
     let ensName: string | undefined;
-    const link = `${routePath.nodeOperator}/${ethAddress}`;
+    const link = `${routePath.account}/${ethAddress}`;
 
     try {
         ensName = await cachedGetENSName(ethAddress);
@@ -36,7 +36,7 @@ export default async function NodeOperatorCard({ name, ethAddress, licenses }: P
 
     return (
         <BorderedCard useCustomWrapper useFixedWidthSmall>
-            <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6 lg:py-4">
+            <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6">
                 <div className="min-w-[282px]">
                     <CardItem
                         label="Name"

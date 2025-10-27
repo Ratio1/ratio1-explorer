@@ -121,7 +121,7 @@ export default function SearchResultsList({ results, variant, getSectionTitle, o
                         .map((owner, index) => (
                             <div key={index}>
                                 <Link
-                                    href={`${routePath.nodeOperator}/${owner.address}`}
+                                    href={`${routePath.account}/${owner.address}`}
                                     className={linkClassName}
                                     onClick={onClose}
                                 >

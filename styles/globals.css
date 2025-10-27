@@ -67,10 +67,6 @@ body {
     @apply bg-slate-150 hover:!opacity-75;
 }
 
-.compact-slate {
-    @apply text-[15px] font-medium text-slate-500;
-}
-
 /* Responsiveness */
 .web-only-flex {
     @apply hidden md:flex;

@@ -178,6 +178,6 @@ export const search = async (
     }
 };
 
-export const cachedLayoutFunction = async () => {
+export const layoutDataFunction = async () => {
     return await getActiveNodes(1);
 };

@@ -35,7 +35,7 @@ export async function generateMetadata({ params }) {
     }
 
     try {
-        await cachedGetLicense(licenseType, licenseId, config.environment);
+        await fetchLicense(licenseType, licenseId, config.environment);
     } catch (error) {
         return {
             title: 'Error',
@@ -53,7 +53,7 @@ export async function generateMetadata({ params }) {
     };
 }
 
-const cachedGetLicense = async (
+const fetchLicense = async (
     licenseType: 'ND' | 'MND' | 'GND',
     licenseId: string,
     _environment: 'mainnet' | 'testnet' | 'devnet',
@@ -79,9 +79,7 @@ export default async function LicensePage({ params }) {
     let license: types.License;
 
     try {
-        license = await cachedGetLicense(licenseType, licenseId, config.environment);
-
-        // console.log('[LicensePage] cachedGetLicense', license);
+        license = await fetchLicense(licenseType, licenseId, config.environment);
     } catch (error) {
         console.error(error);
         console.log(`[License Page] Failed to fetch license: ${licenseType}-${licenseId}`);

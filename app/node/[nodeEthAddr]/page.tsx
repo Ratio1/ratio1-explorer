@@ -23,7 +23,7 @@ export async function generateMetadata({ params }) {
     let nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
 
     try {
-        ({ nodeResponse } = await getCachedLicenseDetailsAndNodeAvailability(nodeEthAddr, config.environment));
+        ({ nodeResponse } = await fetchLicenseDetailsAndNodeAvailability(nodeEthAddr, config.environment));
 
         if (!nodeResponse) {
             console.log(`[Node Page] No node response found for address: ${nodeEthAddr}`);
@@ -47,7 +47,7 @@ export async function generateMetadata({ params }) {
     };
 }
 
-const getCachedLicenseDetailsAndNodeAvailability = async (
+const fetchLicenseDetailsAndNodeAvailability = async (
     nodeEthAddr: types.EthAddress,
     _environment: 'mainnet' | 'testnet' | 'devnet',
 ): Promise<{
@@ -130,7 +130,7 @@ export default async function NodePage({ params }) {
     let nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
 
     try {
-        ({ license, licenseId, licenseType, owner, nodeResponse } = await getCachedLicenseDetailsAndNodeAvailability(
+        ({ license, licenseId, licenseType, owner, nodeResponse } = await fetchLicenseDetailsAndNodeAvailability(
             nodeEthAddr,
             config.environment,
         ));

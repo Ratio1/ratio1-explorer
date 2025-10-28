@@ -172,6 +172,47 @@ export const ReaderAbi = [
         type: 'function',
     },
     {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'owner',
+                type: 'address',
+            },
+        ],
+        name: 'getEscrowDetailsByOwner',
+        outputs: [
+            {
+                components: [
+                    {
+                        internalType: 'address',
+                        name: 'escrowAddress',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'owner',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'int256',
+                        name: 'tvl',
+                        type: 'int256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'activeJobsCount',
+                        type: 'uint256',
+                    },
+                ],
+                internalType: 'struct EscrowDetails',
+                name: '',
+                type: 'tuple',
+            },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+    },
+    {
         inputs: [],
         name: 'getLicensesTotalSupply',
         outputs: [

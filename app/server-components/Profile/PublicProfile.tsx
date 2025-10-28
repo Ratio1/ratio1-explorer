@@ -38,10 +38,9 @@ export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: Et
             getPublicProfiles([ownerEthAddr]),
         ]);
 
-        console.log('[PublicProfile]', { brandsResponse });
-
         if (brandsResponse.brands && brandsResponse.brands.length > 0) {
             publicProfileInfo = brandsResponse.brands[0];
+            console.log('[PublicProfile]', { publicProfileInfo });
         }
     } catch (error) {
         console.error(error);
@@ -65,39 +64,41 @@ export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: Et
                 </ClientWrapper>
             </div>
 
-            <div className="col gap-1.5">
-                <div className="card-title-big font-bold !leading-none">
-                    {publicProfileInfo?.name ? (
-                        <>{publicProfileInfo.name}</>
-                    ) : ensName ? (
-                        <>{ensName}</>
-                    ) : (
-                        <span className="roboto">{getShortAddress(ownerEthAddr, 4, true)}</span>
-                    )}
-                </div>
+            <div className="col gap-2">
+                <div className="col gap-0.5">
+                    <div className="card-title-big font-bold !leading-none">
+                        {publicProfileInfo?.name ? (
+                            <>{publicProfileInfo.name}</>
+                        ) : ensName ? (
+                            <>{ensName}</>
+                        ) : (
+                            <span className="roboto">{getShortAddress(ownerEthAddr, 4, true)}</span>
+                        )}
+                    </div>
 
-                <div className="leading-5">
                     {publicProfileInfo?.description && (
-                        <div className="font-medium text-slate-500">{publicProfileInfo?.description}</div>
+                        <div className="font-medium leading-5 text-slate-500">{publicProfileInfo?.description}</div>
                     )}
                 </div>
 
-                <div className="row gap-2">
-                    {brandingPlatforms.map((platform) => {
-                        const link = publicProfileInfo?.links[platform];
-                        const isEmptyLink = !link || link === '';
+                {!!publicProfileInfo?.links && Object.keys(publicProfileInfo?.links).length > 0 && (
+                    <div className="row gap-2">
+                        {brandingPlatforms.map((platform) => {
+                            const link = publicProfileInfo?.links?.[platform];
+                            const isEmptyLink = !link || link === '';
 
-                        if (isEmptyLink) {
-                            return null;
-                        }
+                            if (isEmptyLink) {
+                                return null;
+                            }
 
-                        return (
-                            <Link key={platform} className="hover:text-primary" href={link} target="_blank">
-                                <div>{PLATFORM_ICONS[platform] ?? platform}</div>
-                            </Link>
-                        );
-                    })}
-                </div>
+                            return (
+                                <Link key={platform} className="hover:text-primary" href={link} target="_blank">
+                                    <div>{PLATFORM_ICONS[platform] ?? platform}</div>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
         </div>
     );

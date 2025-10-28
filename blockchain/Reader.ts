@@ -73,6 +73,106 @@ export const ReaderAbi = [
     },
     {
         inputs: [],
+        name: 'getAllEscrowsDetails',
+        outputs: [
+            {
+                components: [
+                    {
+                        internalType: 'address',
+                        name: 'escrowAddress',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'owner',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'int256',
+                        name: 'tvl',
+                        type: 'int256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'activeJobsCount',
+                        type: 'uint256',
+                    },
+                ],
+                internalType: 'struct EscrowDetails[]',
+                name: '',
+                type: 'tuple[]',
+            },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+    },
+    {
+        inputs: [],
+        name: 'getAllMndsDetails',
+        outputs: [
+            {
+                components: [
+                    {
+                        internalType: 'uint256',
+                        name: 'licenseId',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'owner',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'nodeAddress',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'totalAssignedAmount',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'totalClaimedAmount',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'firstMiningEpoch',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'lastClaimEpoch',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'assignTimestamp',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'lastClaimOracle',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'remainingAmount',
+                        type: 'uint256',
+                    },
+                ],
+                internalType: 'struct MndDetails[]',
+                name: 'mnds',
+                type: 'tuple[]',
+            },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+    },
+    {
+        inputs: [],
         name: 'getLicensesTotalSupply',
         outputs: [
             {
@@ -486,6 +586,25 @@ export const ReaderAbi = [
                 internalType: 'address[]',
                 name: 'nodes',
                 type: 'address[]',
+            },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'user',
+                type: 'address',
+            },
+        ],
+        name: 'hasOracleNode',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool',
             },
         ],
         stateMutability: 'view',

@@ -1,5 +1,5 @@
 import ClientWrapper from '@/components/shared/ClientWrapper';
-import { getBrandingPlatforms, getPublicProfiles } from '@/lib/api/backend';
+import { getBrandingPlatforms } from '@/lib/api/backend';
 import { cachedGetENSName, getShortAddress } from '@/lib/utils';
 import { EthAddress } from '@/typedefs/blockchain';
 import { PublicProfileInfo } from '@/typedefs/general';
@@ -25,23 +25,20 @@ const PLATFORM_ICONS = {
     ),
 };
 
-export default async function PublicProfile({ ownerEthAddr }: { ownerEthAddr: EthAddress }) {
-    let ensName: string | undefined,
-        brandingPlatforms: string[] = [],
-        brandsResponse: { brands: Array<PublicProfileInfo> } = { brands: [] },
-        publicProfileInfo: PublicProfileInfo | undefined;
+export default async function PublicProfile({
+    ownerEthAddr,
+    publicProfileInfo,
+}: {
+    ownerEthAddr: EthAddress;
+    publicProfileInfo?: PublicProfileInfo;
+}) {
+    let ensName: string | undefined, brandingPlatforms: string[] = [];
 
     try {
-        [ensName, brandingPlatforms, brandsResponse] = await Promise.all([
+        [ensName, brandingPlatforms] = await Promise.all([
             cachedGetENSName(ownerEthAddr),
             getBrandingPlatforms(),
-            getPublicProfiles([ownerEthAddr]),
         ]);
-
-        if (brandsResponse.brands && brandsResponse.brands.length > 0) {
-            publicProfileInfo = brandsResponse.brands[0];
-            console.log('[PublicProfile]', { publicProfileInfo });
-        }
     } catch (error) {
         console.error(error);
         return null;

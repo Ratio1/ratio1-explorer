@@ -94,102 +94,95 @@ export default async function NodeOperatorPage({ params }) {
             <BorderedCard>
                 <PublicProfile ownerEthAddr={ownerEthAddr} publicProfileInfo={publicProfileInfo} />
 
-                <div className="col gap-4 pt-2 lg:gap-5">
-                    {!!cspDetails && (
-                        <>
-                            <div className="card-title font-bold">Cloud Service Provider</div>
+                <div className="flexible-row">
+                    <CardHorizontal
+                        label="Address"
+                        value={
+                            <div>
+                                <ClientWrapper>
+                                    <CopyableAddress value={ownerEthAddr} size={4} isLarge />
+                                </ClientWrapper>
+                            </div>
+                        }
+                        isSmall
+                        isFlexible
+                    />
 
-                            <div className="flexible-row">
-                                <CardHorizontal
-                                    label="Escrow SC. Address"
-                                    value={<CopyableAddress value={cspDetails.escrowAddress} size={4} />}
-                                    isFlexible
-                                    widthClasses="min-w-[192px]"
-                                />
-                                <CardHorizontal
-                                    label="Total Value Locked"
-                                    value={fBI(cspDetails.tvl, 6)}
-                                    isFlexible
-                                    widthClasses="min-w-[192px]"
-                                />
-                                <CardHorizontal
-                                    label="Active Jobs"
-                                    value={cspDetails.activeJobsCount}
-                                    isFlexible
-                                    widthClasses="min-w-[192px]"
+                    <CardHorizontal
+                        label="Licenses Owned"
+                        value={<div>{licenses.length}</div>}
+                        isSmall
+                        isFlexible
+                        widthClasses="min-w-[180px]"
+                    />
+
+                    <CardHorizontal
+                        label="Total $R1 Claimed"
+                        value={
+                            <div className="text-primary">
+                                {fBI(
+                                    licenses.reduce((acc, license) => acc + license.totalClaimedAmount, 0n),
+                                    18,
+                                )}
+                            </div>
+                        }
+                        isSmall
+                        isFlexible
+                        widthClasses="min-w-[268px]"
+                    />
+
+                    <CardHorizontal
+                        label="Licenses Usage (Total)"
+                        value={
+                            <div className="w-full min-w-52 xs:min-w-56 md:min-w-60">
+                                <UsageStats
+                                    totalClaimedAmount={licenses.reduce((acc, license) => acc + license.totalClaimedAmount, 0n)}
+                                    totalAssignedAmount={licenses.reduce(
+                                        (acc, license) => acc + license.totalAssignedAmount,
+                                        0n,
+                                    )}
                                 />
                             </div>
+                        }
+                        isSmall
+                        isFlexible
+                        widthClasses="min-[520px]:min-w-[440px] md:max-w-[500px]"
+                    />
 
-                            <div className="card-title font-bold">Account</div>
-                        </>
-                    )}
+                    <CardHorizontal
+                        label="Wallet $R1 Balance"
+                        value={<div className="text-primary">{fBI(r1Balance, 18)}</div>}
+                        isSmall
+                    />
+                </div>
+            </BorderedCard>
+
+            {!!cspDetails && (
+                <BorderedCard>
+                    <div className="card-title font-bold">Cloud Service Provider</div>
 
                     <div className="flexible-row">
                         <CardHorizontal
-                            label="Address"
-                            value={
-                                <div>
-                                    <ClientWrapper>
-                                        <CopyableAddress value={ownerEthAddr} size={4} isLarge />
-                                    </ClientWrapper>
-                                </div>
-                            }
-                            isSmall
+                            label="Escrow SC. Address"
+                            value={<CopyableAddress value={cspDetails.escrowAddress} size={4} />}
                             isFlexible
+                            widthClasses="min-w-[192px]"
                         />
-
                         <CardHorizontal
-                            label="Licenses Owned"
-                            value={<div>{licenses.length}</div>}
-                            isSmall
+                            label="Total Value Locked"
+                            value={fBI(cspDetails.tvl, 6)}
                             isFlexible
-                            widthClasses="min-w-[180px]"
+                            widthClasses="min-w-[192px]"
                         />
-
                         <CardHorizontal
-                            label="Total $R1 Claimed"
-                            value={
-                                <div className="text-primary">
-                                    {fBI(
-                                        licenses.reduce((acc, license) => acc + license.totalClaimedAmount, 0n),
-                                        18,
-                                    )}
-                                </div>
-                            }
-                            isSmall
+                            label="Active Jobs"
+                            value={cspDetails.activeJobsCount}
                             isFlexible
-                            widthClasses="min-w-[268px]"
-                        />
-
-                        <CardHorizontal
-                            label="Licenses Usage (Total)"
-                            value={
-                                <div className="w-full min-w-52 xs:min-w-56 md:min-w-60">
-                                    <UsageStats
-                                        totalClaimedAmount={licenses.reduce(
-                                            (acc, license) => acc + license.totalClaimedAmount,
-                                            0n,
-                                        )}
-                                        totalAssignedAmount={licenses.reduce(
-                                            (acc, license) => acc + license.totalAssignedAmount,
-                                            0n,
-                                        )}
-                                    />
-                                </div>
-                            }
-                            isSmall
-                            isFlexible
-                            widthClasses="min-[520px]:min-w-[440px] md:max-w-[500px]"
-                        />
-
-                        <CardHorizontal
-                            label="Wallet $R1 Balance"
-                            value={<div className="text-primary">{fBI(r1Balance, 18)}</div>}
-                            isSmall
+                            widthClasses="min-w-[192px]"
                         />
                     </div>
-                </div>
-            </BorderedCard>
+                </BorderedCard>
+            )}
 
             {licenses.map((license, index) => (
                 <div key={index}>

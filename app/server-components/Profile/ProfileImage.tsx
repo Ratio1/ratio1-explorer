@@ -34,7 +34,9 @@ export default function ProfileImage({ ownerEthAddr, isSmall = false }) {
             <Image
                 src={src}
                 alt="Profile Image"
-                className="object-cover"
+                className={clsx('object-cover', {
+                    'opacity-0': isLoading || hasError,
+                })}
                 fill
                 sizes="128px"
                 priority

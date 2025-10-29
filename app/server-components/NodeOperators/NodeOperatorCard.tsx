@@ -29,17 +29,16 @@ export default async function NodeOperatorCard({ name, ethAddress, licenses }: P
     }
 
     const getLinkWrapper = (children: React.ReactNode) => (
-        <Link href={link} className="font-medium hover:text-primary">
-            {children}
+        <Link href={link} className="font-medium text-body hover:text-primary">
+            <div className="max-w-[240px] overflow-hidden text-ellipsis whitespace-nowrap">{children}</div>
         </Link>
     );
 
     return (
         <BorderedCard useCustomWrapper useFixedWidthSmall>
-            <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6">
-                <div className="min-w-[282px]">
+            <div className="row justify-between gap-4 py-2 md:py-3 lg:gap-6">
+                <div className="min-w-[284px]">
                     <CardItem
-                        label="Name"
                         value={
                             <div className="row gap-2">
                                 <div className="center-all relative mr-0.5 h-[32px] w-[32px] min-w-[32px] overflow-hidden rounded-[37.5%]">

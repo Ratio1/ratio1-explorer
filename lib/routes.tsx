@@ -24,6 +24,14 @@ export const routeTitles = {
     [routePath.stats]: 'Stats',
 };
 
+export const mobileRouteTitles = {
+    [routePath.root]: 'Nodes',
+    [routePath.licenses]: 'Licenses',
+    [routePath.nodeOperators]: 'Operators',
+    [routePath.csps]: 'CSPs',
+    [routePath.stats]: 'Stats',
+};
+
 export const routeIcons = {
     [routePath.root]: <RiComputerLine />,
     [routePath.licenses]: <RiCpuLine />,

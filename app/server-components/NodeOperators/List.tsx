@@ -55,7 +55,7 @@ export default async function List({
         <div className="list-wrapper">
             <div id="list" className="list">
                 <ListHeader useFixedWidthSmall>
-                    <div className="min-w-[282px]">Name</div>
+                    <div className="min-w-[284px]">Name</div>
                     <div className="min-w-[188px]">Licenses Owned (ND / MND)</div>
                     <div className="min-w-[128px]">Wallet $R1 Balance</div>
                     <div className="min-w-[118px]">Last Claim Epoch</div>

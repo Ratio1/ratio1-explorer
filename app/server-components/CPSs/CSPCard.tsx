@@ -18,8 +18,8 @@ export default async function CSPCard({ csp }: { csp: types.CSP }) {
     }
 
     const getLinkWrapper = (children: React.ReactNode) => (
-        <Link href={`${routePath.account}/${csp.owner}`} className="font-medium hover:text-primary">
-            {children}
+        <Link href={`${routePath.account}/${csp.owner}`} className="font-medium text-body hover:text-primary">
+            <div className="max-w-[240px] overflow-hidden text-ellipsis whitespace-nowrap">{children}</div>
         </Link>
     );
 
@@ -28,7 +28,6 @@ export default async function CSPCard({ csp }: { csp: types.CSP }) {
             <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6">
                 <div className="min-w-[280px]">
                     <CardItem
-                        label="Name"
                         value={
                             <div className="row gap-2">
                                 <div className="center-all relative mr-0.5 h-[32px] w-[32px] min-w-[32px] overflow-hidden rounded-[37.5%]">
@@ -51,7 +50,7 @@ export default async function CSPCard({ csp }: { csp: types.CSP }) {
                     <CardItem label="Escrow SC. Address" value={<CopyableAddress value={csp.escrowAddress} size={4} />} />
                 </div>
 
-                <div className="flex min-w-[100px]">
+                <div className="flex min-w-[70px]">
                     <CardItem label="TVL" value={fBI(csp.tvl, 6)} />
                 </div>
 

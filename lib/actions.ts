@@ -7,7 +7,7 @@ import { headers } from 'next/headers';
 import { getActiveNodes } from './api';
 import { getLicense } from './api/blockchain';
 import { getNodeEpochsRange, getNodeLastEpoch } from './api/oracles';
-import { cachedGetENSName, isEmptyETHAddr, isNonZeroInteger } from './utils';
+import { cachedGetENSName, isNonZeroInteger, isZeroAddress } from './utils';
 
 const URL_SAFE_PATTERN = /^[a-zA-Z0-9x\s\-_\.]+$/;
 
@@ -99,7 +99,7 @@ export const search = async (
 
             try {
                 const ndLicense = await getLicense('ND', licenseId);
-                if (ndLicense && !isEmptyETHAddr(ndLicense.nodeAddress)) {
+                if (ndLicense && !isZeroAddress(ndLicense.nodeAddress)) {
                     resultsArray.push({
                         type: 'license',
                         licenseId,
@@ -113,7 +113,7 @@ export const search = async (
 
             try {
                 const mndLicense = await getLicense('MND', licenseId);
-                if (!isEmptyETHAddr(mndLicense.nodeAddress)) {
+                if (!isZeroAddress(mndLicense.nodeAddress)) {
                     resultsArray.push({
                         type: 'license',
                         licenseId,

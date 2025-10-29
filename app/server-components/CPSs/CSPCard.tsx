@@ -48,7 +48,7 @@ export default async function CSPCard({ csp }: { csp: types.CSP }) {
                 </div>
 
                 <div className="flex min-w-[130px]">
-                    <CardItem label="Escrow Address" value={<CopyableAddress value={csp.escrowAddress} size={4} />} />
+                    <CardItem label="Escrow SC. Address" value={<CopyableAddress value={csp.escrowAddress} size={4} />} />
                 </div>
 
                 <div className="flex min-w-[100px]">

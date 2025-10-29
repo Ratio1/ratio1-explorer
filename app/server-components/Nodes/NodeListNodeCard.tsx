@@ -2,7 +2,7 @@ import { SmallCard } from '@/app/server-components/shared/Licenses/SmallCard';
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { routePath } from '@/lib/routes';
-import { isEmptyETHAddr } from '@/lib/utils';
+import { isZeroAddress } from '@/lib/utils';
 import { NodeState, R1Address } from '@/typedefs/blockchain';
 import Link from 'next/link';
 import { CardItem } from '../shared/CardItem';
@@ -71,7 +71,7 @@ export default async function NodeListNodeCard({
                 </div>
 
                 {/* Owner */}
-                {!isEmptyETHAddr(owner) && (
+                {!isZeroAddress(owner) && (
                     <div className="flex min-w-[112px]">
                         <CardItem
                             label="Owner"

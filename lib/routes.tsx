@@ -1,10 +1,11 @@
-import { RiBarChartBoxLine, RiComputerLine, RiCpuLine, RiWalletLine } from 'react-icons/ri';
+import { RiBarChartBoxLine, RiCloudLine, RiComputerLine, RiCpuLine, RiWalletLine } from 'react-icons/ri';
 
 export const routePath = {
-    // Lists
+    // Main navigation
     root: '/', // Nodes
     licenses: '/licenses',
     nodeOperators: '/node-operators',
+    csps: '/cloud-service-providers',
     stats: '/stats',
     // Individual items
     node: '/node',
@@ -19,6 +20,7 @@ export const routeTitles = {
     [routePath.root]: 'Nodes',
     [routePath.licenses]: 'Licenses',
     [routePath.nodeOperators]: 'Node Operators',
+    [routePath.csps]: 'CSPs',
     [routePath.stats]: 'Stats',
 };
 
@@ -27,6 +29,7 @@ export const routeIcons = {
     [routePath.licenses]: <RiCpuLine />,
     [routePath.nodeOperators]: <RiWalletLine />,
     [routePath.stats]: <RiBarChartBoxLine />,
+    [routePath.csps]: <RiCloudLine />,
 };
 
-export const navRoutes = [routePath.root, routePath.licenses, routePath.nodeOperators, routePath.stats];
+export const navRoutes = [routePath.root, routePath.licenses, routePath.nodeOperators, routePath.csps, routePath.stats];

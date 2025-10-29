@@ -6,7 +6,7 @@ import config from '@/config';
 import { getNodeAvailability } from '@/lib/actions';
 import { getNodeLicenseDetails } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
-import { isEmptyETHAddr } from '@/lib/utils';
+import { isZeroAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { notFound, redirect } from 'next/navigation';
 import { RiCloseLine } from 'react-icons/ri';
@@ -15,7 +15,7 @@ import { isAddress } from 'viem';
 export async function generateMetadata({ params }) {
     const { nodeEthAddr } = await params;
 
-    if (!nodeEthAddr || !isAddress(nodeEthAddr) || isEmptyETHAddr(nodeEthAddr)) {
+    if (!nodeEthAddr || !isAddress(nodeEthAddr) || isZeroAddress(nodeEthAddr)) {
         console.log(`[Node Page] Invalid node address: ${nodeEthAddr}`);
         notFound();
     }
@@ -118,7 +118,7 @@ const fetchLicenseDetailsAndNodeAvailability = async (
 export default async function NodePage({ params }) {
     const { nodeEthAddr } = await params;
 
-    if (!nodeEthAddr || !isAddress(nodeEthAddr) || isEmptyETHAddr(nodeEthAddr)) {
+    if (!nodeEthAddr || !isAddress(nodeEthAddr) || isZeroAddress(nodeEthAddr)) {
         console.log(`[Node Page] Invalid node address in page component: ${nodeEthAddr}`);
         notFound();
     }

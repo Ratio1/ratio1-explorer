@@ -6,10 +6,10 @@ import UsageStats from '@/app/server-components/shared/Licenses/UsageStats';
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import config from '@/config';
-import { fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
 import { getPublicProfiles } from '@/lib/api/backend';
+import { fetchCSPDetails, fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
-import { cachedGetENSName, fBI, getShortAddress, isEmptyETHAddr } from '@/lib/utils';
+import { cachedGetENSName, fBI, getShortAddress, isZeroAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import type { PublicProfileInfo } from '@/typedefs/general';
 import { unstable_cache } from 'next/cache';
@@ -33,7 +33,7 @@ const getCachedNodeOperatorProfile = unstable_cache(
 export async function generateMetadata({ params }) {
     const { ownerEthAddr } = await params;
 
-    if (!ownerEthAddr || !isAddress(ownerEthAddr) || isEmptyETHAddr(ownerEthAddr)) {
+    if (!ownerEthAddr || !isAddress(ownerEthAddr) || isZeroAddress(ownerEthAddr)) {
         return {
             title: 'Error',
             openGraph: {
@@ -64,7 +64,7 @@ export async function generateMetadata({ params }) {
 export default async function NodeOperatorPage({ params }) {
     const { ownerEthAddr } = await params;
 
-    if (!ownerEthAddr || !isAddress(ownerEthAddr) || isEmptyETHAddr(ownerEthAddr)) {
+    if (!ownerEthAddr || !isAddress(ownerEthAddr) || isZeroAddress(ownerEthAddr)) {
         console.log(`[NodeOperatorPage] Invalid owner address: ${ownerEthAddr}`);
         notFound();
     }
@@ -72,14 +72,16 @@ export default async function NodeOperatorPage({ params }) {
     let licenses: types.LicenseInfo[],
         ensName: string | undefined,
         r1Balance: bigint,
-        publicProfileInfo: PublicProfileInfo | undefined;
+        publicProfileInfo: PublicProfileInfo | undefined,
+        cspDetails: types.CSP | undefined;
 
     try {
-        [licenses, ensName, r1Balance, publicProfileInfo] = await Promise.all([
+        [licenses, ensName, r1Balance, publicProfileInfo, cspDetails] = await Promise.all([
             getLicenses(ownerEthAddr),
             cachedGetENSName(ownerEthAddr),
             fetchErc20Balance(ownerEthAddr, config.r1ContractAddress),
             getCachedNodeOperatorProfile(ownerEthAddr as types.EthAddress),
+            fetchCSPDetails(ownerEthAddr),
         ]);
     } catch (error) {
         console.error(error);
@@ -92,73 +94,95 @@ export default async function NodeOperatorPage({ params }) {
             <BorderedCard>
                 <PublicProfile ownerEthAddr={ownerEthAddr} publicProfileInfo={publicProfileInfo} />
 
-                <div className="col gap-3 pt-2">
-                    <div className="flexible-row">
-                        <CardHorizontal
-                            label="Address"
-                            value={
-                                <div>
-                                    <ClientWrapper>
-                                        <CopyableAddress value={ownerEthAddr} size={4} isLarge />
-                                    </ClientWrapper>
-                                </div>
-                            }
-                            isSmall
-                            isFlexible
-                        />
+                <div className="flexible-row">
+                    <CardHorizontal
+                        label="Address"
+                        value={
+                            <div>
+                                <ClientWrapper>
+                                    <CopyableAddress value={ownerEthAddr} size={4} isLarge />
+                                </ClientWrapper>
+                            </div>
+                        }
+                        isSmall
+                        isFlexible
+                    />
 
-                        <CardHorizontal
-                            label="Licenses Owned"
-                            value={<div>{licenses.length}</div>}
-                            isSmall
-                            isFlexible
-                            widthClasses="min-w-[180px]"
-                        />
+                    <CardHorizontal
+                        label="Licenses Owned"
+                        value={<div>{licenses.length}</div>}
+                        isSmall
+                        isFlexible
+                        widthClasses="min-w-[180px]"
+                    />
 
-                        <CardHorizontal
-                            label="Total $R1 Claimed"
-                            value={
-                                <div className="text-primary">
-                                    {fBI(
-                                        licenses.reduce((acc, license) => acc + license.totalClaimedAmount, 0n),
-                                        18,
+                    <CardHorizontal
+                        label="Total $R1 Claimed"
+                        value={
+                            <div className="text-primary">
+                                {fBI(
+                                    licenses.reduce((acc, license) => acc + license.totalClaimedAmount, 0n),
+                                    18,
+                                )}
+                            </div>
+                        }
+                        isSmall
+                        isFlexible
+                        widthClasses="min-w-[268px]"
+                    />
+
+                    <CardHorizontal
+                        label="Licenses Usage (Total)"
+                        value={
+                            <div className="w-full min-w-52 xs:min-w-56 md:min-w-60">
+                                <UsageStats
+                                    totalClaimedAmount={licenses.reduce((acc, license) => acc + license.totalClaimedAmount, 0n)}
+                                    totalAssignedAmount={licenses.reduce(
+                                        (acc, license) => acc + license.totalAssignedAmount,
+                                        0n,
                                     )}
-                                </div>
-                            }
-                            isSmall
-                            isFlexible
-                            widthClasses="min-w-[268px]"
-                        />
+                                />
+                            </div>
+                        }
+                        isSmall
+                        isFlexible
+                        widthClasses="min-[520px]:min-w-[440px] md:max-w-[500px]"
+                    />
 
-                        <CardHorizontal
-                            label="Licenses Usage (Total)"
-                            value={
-                                <div className="w-full min-w-52 xs:min-w-56 md:min-w-60">
-                                    <UsageStats
-                                        totalClaimedAmount={licenses.reduce(
-                                            (acc, license) => acc + license.totalClaimedAmount,
-                                            0n,
-                                        )}
-                                        totalAssignedAmount={licenses.reduce(
-                                            (acc, license) => acc + license.totalAssignedAmount,
-                                            0n,
-                                        )}
-                                    />
-                                </div>
-                            }
-                            isSmall
-                            isFlexible
-                            widthClasses="min-[520px]:min-w-[440px] md:max-w-[500px]"
-                        />
-
-                        <CardHorizontal
-                            label="Wallet $R1 Balance"
-                            value={<div className="text-primary">{fBI(r1Balance, 18)}</div>}
-                            isSmall
-                        />
-                    </div>
+                    <CardHorizontal
+                        label="Wallet $R1 Balance"
+                        value={<div className="text-primary">{fBI(r1Balance, 18)}</div>}
+                        isSmall
+                    />
                 </div>
             </BorderedCard>
+
+            {!!cspDetails && (
+                <BorderedCard>
+                    <div className="card-title font-bold">Cloud Service Provider</div>
+
+                    <div className="flexible-row">
+                        <CardHorizontal
+                            label="Escrow SC. Address"
+                            value={<CopyableAddress value={cspDetails.escrowAddress} size={4} />}
+                            isFlexible
+                            widthClasses="min-w-[192px]"
+                        />
+                        <CardHorizontal
+                            label="Total Value Locked"
+                            value={fBI(cspDetails.tvl, 6)}
+                            isFlexible
+                            widthClasses="min-w-[192px]"
+                        />
+                        <CardHorizontal
+                            label="Active Jobs"
+                            value={cspDetails.activeJobsCount}
+                            isFlexible
+                            widthClasses="min-w-[192px]"
+                        />
+                    </div>
+                </BorderedCard>
+            )}
 
             {licenses.map((license, index) => (
                 <div key={index}>

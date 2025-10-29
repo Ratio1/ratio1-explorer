@@ -62,7 +62,7 @@ export default async function List({
                 </ListHeader>
 
                 {nodeOperators.map((item, index) => (
-                    <Suspense key={index} fallback={<Skeleton className="min-h-[92px] w-full rounded-2xl" />}>
+                    <Suspense key={index} fallback={<Skeleton className="min-h-[68px] w-full rounded-2xl" />}>
                         <NodeOperatorCard name={item.name} ethAddress={item.ethAddress} licenses={item.licenses} />
                     </Suspense>
                 ))}

@@ -9,7 +9,7 @@ import console from 'console';
 import { differenceInSeconds } from 'date-fns';
 import Moralis from 'moralis';
 import { EvmAddress, EvmChain } from 'moralis/common-evm-utils';
-import { isEmptyETHAddr } from '../utils';
+import { isZeroAddress } from '../utils';
 import { getPublicClient } from './client';
 
 async function startMoralis() {
@@ -21,6 +21,40 @@ async function startMoralis() {
 }
 
 startMoralis();
+
+export async function fetchCSPDetails(address: types.EthAddress): Promise<types.CSP | undefined> {
+    const publicClient = await getPublicClient();
+
+    const result = await publicClient.readContract({
+        address: config.readerContractAddress,
+        abi: ReaderAbi,
+        functionName: 'getEscrowDetailsByOwner',
+        args: [address],
+    });
+
+    return isZeroAddress(result.escrowAddress)
+        ? undefined
+        : {
+              ...result,
+              activeJobsCount: Number(result.activeJobsCount),
+          };
+}
+
+export async function fetchCSPs(): Promise<types.CSP[]> {
+    const publicClient = await getPublicClient();
+
+    const result = await publicClient.readContract({
+        address: config.readerContractAddress,
+        abi: ReaderAbi,
+        functionName: 'getAllEscrowsDetails',
+        args: [],
+    });
+
+    return result.map((item) => ({
+        ...item,
+        activeJobsCount: Number(item.activeJobsCount),
+    }));
+}
 
 export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Promise<types.NodeLicenseDetailsResponse> {
     const publicClient = await getPublicClient();
@@ -52,7 +86,7 @@ export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: n
             .then((license) => {
                 // console.log('[getLicense (Reader)]', license);
 
-                const isLinked = !isEmptyETHAddr(license.nodeAddress);
+                const isLinked = !isZeroAddress(license.nodeAddress);
                 const licenseType = [undefined, 'ND', 'MND', 'GND'][license.licenseType] as 'ND' | 'MND' | 'GND' | undefined;
                 if (licenseType === undefined) {
                     throw new Error('License does not exist');
@@ -76,7 +110,7 @@ export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: n
                 args: [BigInt(licenseId)],
             })
             .then((license) => {
-                const isLinked = !isEmptyETHAddr(license.nodeAddress);
+                const isLinked = !isZeroAddress(license.nodeAddress);
                 const licenseType = [undefined, 'ND', 'MND', 'GND'][license.licenseType] as 'ND' | 'MND' | 'GND' | undefined;
                 if (licenseType === undefined) {
                     throw new Error('License does not exist');
@@ -106,7 +140,7 @@ export const getLicenses = async (address: types.EthAddress): Promise<types.Lice
         })
         .then((licenses) => {
             return licenses.map((license) => {
-                const isLinked = !isEmptyETHAddr(license.nodeAddress);
+                const isLinked = !isZeroAddress(license.nodeAddress);
                 const licenseType = [undefined, 'ND', 'MND', 'GND'][license.licenseType] as 'ND' | 'MND' | 'GND';
 
                 return {

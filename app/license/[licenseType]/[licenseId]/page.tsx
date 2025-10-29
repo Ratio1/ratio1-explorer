@@ -5,7 +5,7 @@ import config from '@/config';
 import { getNodeAvailability } from '@/lib/actions';
 import { getLicense } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
-import { isEmptyETHAddr } from '@/lib/utils';
+import { isZeroAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import { notFound, redirect } from 'next/navigation';
@@ -88,7 +88,7 @@ export default async function LicensePage({ params }) {
 
     const cachedGetNodeAvailability = cache(async () => {
         try {
-            const isLinked = !isEmptyETHAddr(license.nodeAddress);
+            const isLinked = !isZeroAddress(license.nodeAddress);
 
             if (!isLinked) {
                 return;

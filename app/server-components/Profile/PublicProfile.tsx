@@ -3,6 +3,7 @@ import { getBrandingPlatforms } from '@/lib/api/backend';
 import { cachedGetENSName, getShortAddress } from '@/lib/utils';
 import { EthAddress } from '@/typedefs/blockchain';
 import { PublicProfileInfo } from '@/typedefs/general';
+import clsx from 'clsx';
 import Link from 'next/link';
 import { RiGlobalLine, RiLinkedinBoxFill, RiTwitterXLine } from 'react-icons/ri';
 import ProfileImage from './ProfileImage';
@@ -32,13 +33,11 @@ export default async function PublicProfile({
     ownerEthAddr: EthAddress;
     publicProfileInfo?: PublicProfileInfo;
 }) {
-    let ensName: string | undefined, brandingPlatforms: string[] = [];
+    let ensName: string | undefined,
+        brandingPlatforms: string[] = [];
 
     try {
-        [ensName, brandingPlatforms] = await Promise.all([
-            cachedGetENSName(ownerEthAddr),
-            getBrandingPlatforms(),
-        ]);
+        [ensName, brandingPlatforms] = await Promise.all([cachedGetENSName(ownerEthAddr), getBrandingPlatforms()]);
     } catch (error) {
         console.error(error);
         return null;
@@ -53,8 +52,15 @@ export default async function PublicProfile({
         );
     }
 
+    const hasDescription: boolean = !!publicProfileInfo?.description && publicProfileInfo?.description !== '';
+    const hasSocialLinks: boolean = !!publicProfileInfo?.links && Object.keys(publicProfileInfo?.links).length > 0;
+
     return (
-        <div className="flex items-start gap-3 md:items-center md:gap-4">
+        <div
+            className={clsx('flex items-center gap-3 md:items-center md:gap-4', {
+                '!items-start': hasDescription || hasSocialLinks,
+            })}
+        >
             <div className="center-all relative h-[60px] w-[60px] min-w-[60px] overflow-hidden rounded-[37.5%] sm:h-[84px] sm:w-[84px] sm:min-w-[84px]">
                 <ClientWrapper>
                     <ProfileImage ownerEthAddr={ownerEthAddr} />
@@ -73,12 +79,12 @@ export default async function PublicProfile({
                         )}
                     </div>
 
-                    {publicProfileInfo?.description && (
+                    {hasDescription && (
                         <div className="font-medium leading-5 text-slate-500">{publicProfileInfo?.description}</div>
                     )}
                 </div>
 
-                {!!publicProfileInfo?.links && Object.keys(publicProfileInfo?.links).length > 0 && (
+                {hasSocialLinks && (
                     <div className="row gap-2">
                         {brandingPlatforms.map((platform) => {
                             const link = publicProfileInfo?.links?.[platform];

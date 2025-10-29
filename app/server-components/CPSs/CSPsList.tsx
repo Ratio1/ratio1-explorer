@@ -40,8 +40,8 @@ export default async function CSPsList({ csps, currentPage }: { csps: readonly t
                     <div className="min-w-[100px]">Active Jobs</div>
                 </ListHeader>
 
-                {entriesWithNames.map((item, index) => (
-                    <Suspense key={index} fallback={<Skeleton className="min-h-[68px] w-full rounded-2xl" />}>
+                {entriesWithNames.map((item) => (
+                    <Suspense key={item.owner} fallback={<Skeleton className="min-h-[68px] w-full rounded-2xl" />}>
                         <CSPCard csp={item} />
                     </Suspense>
                 ))}

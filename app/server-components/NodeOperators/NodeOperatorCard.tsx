@@ -24,6 +24,7 @@ export default async function NodeOperatorCard({ name, ethAddress, licenses }: P
 
     try {
         ensName = await cachedGetENSName(ethAddress);
+        console.log(name || ensName || getShortAddress(ethAddress, 4, true));
     } catch (error) {
         console.error(error);
     }

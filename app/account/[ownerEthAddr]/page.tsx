@@ -14,6 +14,7 @@ import * as types from '@/typedefs/blockchain';
 import type { PublicProfileInfo } from '@/typedefs/general';
 import { unstable_cache } from 'next/cache';
 import { notFound, redirect } from 'next/navigation';
+import { RiCloudLine } from 'react-icons/ri';
 import { isAddress } from 'viem';
 
 const getCachedNodeOperatorProfile = unstable_cache(
@@ -159,7 +160,13 @@ export default async function NodeOperatorPage({ params }) {
 
             {!!cspDetails && (
                 <BorderedCard>
-                    <div className="card-title font-bold">Cloud Service Provider</div>
+                    <div className="row gap-2.5">
+                        <div className="center-all rounded-full border-2 border-slate-150 p-1.5 text-2xl text-primary">
+                            <RiCloudLine />
+                        </div>
+
+                        <div className="card-title font-bold">Cloud Service Provider Info</div>
+                    </div>
 
                     <div className="flexible-row">
                         <CardHorizontal

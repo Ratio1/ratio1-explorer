@@ -61,8 +61,8 @@ export default async function List({
                     <div className="min-w-[118px]">Last Claim Epoch</div>
                 </ListHeader>
 
-                {nodeOperators.map((item, index) => (
-                    <Suspense key={index} fallback={<Skeleton className="min-h-[68px] w-full rounded-2xl" />}>
+                {nodeOperators.map((item) => (
+                    <Suspense key={item.ethAddress} fallback={<Skeleton className="min-h-[68px] w-full rounded-2xl" />}>
                         <NodeOperatorCard name={item.name} ethAddress={item.ethAddress} licenses={item.licenses} />
                     </Suspense>
                 ))}

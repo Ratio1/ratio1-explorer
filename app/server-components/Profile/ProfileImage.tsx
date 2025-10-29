@@ -40,7 +40,6 @@ export default function ProfileImage({ ownerEthAddr, isSmall = false }) {
                 priority
                 onLoadingComplete={() => setLoading(false)}
                 onError={() => {
-                    console.log('Error loading profile image:', src);
                     setLoading(false);
                     setHasError(true);
                 }}

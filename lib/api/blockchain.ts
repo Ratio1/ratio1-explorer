@@ -22,6 +22,22 @@ async function startMoralis() {
 
 startMoralis();
 
+export async function fetchCSPs(): Promise<types.CSP[]> {
+    const publicClient = await getPublicClient();
+
+    const result = await publicClient.readContract({
+        address: config.readerContractAddress,
+        abi: ReaderAbi,
+        functionName: 'getAllEscrowsDetails',
+        args: [],
+    });
+
+    return result.map((item) => ({
+        ...item,
+        activeJobsCount: Number(item.activeJobsCount),
+    }));
+}
+
 export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Promise<types.NodeLicenseDetailsResponse> {
     const publicClient = await getPublicClient();
 

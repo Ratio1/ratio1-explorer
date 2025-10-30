@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { HiUser } from 'react-icons/hi';
 
-export default function ProfileImage({ ownerEthAddr, isSmall = false }) {
+export default function ProfileImage({ ownerEthAddr, isSmall = false }: { ownerEthAddr: string; isSmall?: boolean }) {
     const src = `${config.backendUrl}/branding/get-brand-logo?address=${ownerEthAddr}`;
 
     const [hasError, setHasError] = useState(false);

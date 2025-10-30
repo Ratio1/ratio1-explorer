@@ -2,7 +2,7 @@ import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { getLicense } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
-import { isEmptyETHAddr } from '@/lib/utils';
+import { isZeroAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import clsx from 'clsx';
@@ -70,13 +70,13 @@ export default async function License({ licenseType, licenseId }: Props) {
                 </div>
 
                 {/* Owner */}
-                {!isEmptyETHAddr(owner) && (
+                {!isZeroAddress(owner) && (
                     <div className="flex min-w-[112px]">
                         <CardItem
                             label="Owner"
                             value={
                                 <ClientWrapper>
-                                    <CopyableAddress value={owner} size={4} link={`${routePath.owner}/${owner}`} />
+                                    <CopyableAddress value={owner} size={4} link={`${routePath.account}/${owner}`} />
                                 </ClientWrapper>
                             }
                         />
@@ -106,7 +106,7 @@ export default async function License({ licenseType, licenseId }: Props) {
 
                 {/* Node */}
                 <div className="flex min-w-[256px] justify-end">
-                    {!isEmptyETHAddr(nodeAddress) && (
+                    {!isZeroAddress(nodeAddress) && (
                         <Suspense fallback={<Skeleton className="min-h-[64px] w-[256px] rounded-xl" />}>
                             <NodeSmallCard nodeEthAddr={nodeAddress} />
                         </Suspense>

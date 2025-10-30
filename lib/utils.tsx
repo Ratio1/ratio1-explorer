@@ -10,7 +10,7 @@ import { getNodeLastEpoch } from './api/oracles';
 const URL_SAFE_PATTERN = /^[a-zA-Z0-9x\s\-_\.]+$/;
 export const ETH_EMPTY_ADDR = '0x0000000000000000000000000000000000000000';
 
-export const isEmptyETHAddr = (addr: string): boolean => addr === ETH_EMPTY_ADDR;
+export const isZeroAddress = (addr: string): boolean => addr === ETH_EMPTY_ADDR;
 
 export const getShortAddress = (address: string, size = 4, asString = false): string | JSX.Element => {
     const str = `${address.slice(0, size)}•••${address.slice(-size)}`;
@@ -209,7 +209,7 @@ export const clientSearch = async (
 
             try {
                 const ndLicense = await getLicense('ND', licenseId);
-                if (ndLicense && !isEmptyETHAddr(ndLicense.nodeAddress)) {
+                if (ndLicense && !isZeroAddress(ndLicense.nodeAddress)) {
                     resultsArray.push({
                         type: 'license',
                         licenseId,
@@ -223,7 +223,7 @@ export const clientSearch = async (
 
             try {
                 const mndLicense = await getLicense('MND', licenseId);
-                if (!isEmptyETHAddr(mndLicense.nodeAddress)) {
+                if (!isZeroAddress(mndLicense.nodeAddress)) {
                     resultsArray.push({
                         type: 'license',
                         licenseId,

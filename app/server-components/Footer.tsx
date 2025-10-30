@@ -1,5 +1,5 @@
 import ApiStatusCard from '@/app/server-components/shared/ApiStatusCard';
-import { cachedLayoutFunction } from '@/lib/actions';
+import { layoutDataFunction } from '@/lib/actions';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import Image from 'next/image';
@@ -15,13 +15,12 @@ const socialLinks = [
 ];
 
 export default async function Footer() {
-    let activeNodes: types.OraclesDefaultResult;
+    let activeNodes: types.OraclesDefaultResult | undefined;
 
     try {
-        activeNodes = await cachedLayoutFunction();
+        activeNodes = await layoutDataFunction();
     } catch (error) {
         console.error(error);
-        return null;
     }
 
     return (
@@ -47,9 +46,11 @@ export default async function Footer() {
                 ))}
             </div>
 
-            <div className="text-center text-sm font-medium text-slate-400">
-                {activeNodes.result.server_alias} • v{activeNodes.result.server_version}
-            </div>
+            {activeNodes && (
+                <div className="text-center text-sm font-medium text-slate-400">
+                    {activeNodes.result.server_alias} • v{activeNodes.result.server_version}
+                </div>
+            )}
 
             <div className="col items-center gap-2">
                 <Suspense fallback={<Skeleton className="min-h-[40px] w-full max-w-[116px] rounded-xl" />}>

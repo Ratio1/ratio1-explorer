@@ -5,7 +5,7 @@ import { RiErrorWarningLine } from 'react-icons/ri';
 import Hero from './server-components/Nodes/Hero';
 import List from './server-components/Nodes/List';
 import NodesListSkeleton from './server-components/Skeletons/NodesListSkeleton';
-import { Alert } from './server-components/shared/Alert';
+import { DetailedAlert } from './server-components/shared/DetailedAlert';
 
 export default async function HomePage(props: {
     searchParams?: Promise<{
@@ -44,12 +44,16 @@ export default async function HomePage(props: {
         console.log('Failed to fetch active nodes:', error);
 
         return (
-            <div className="mx-auto w-full flex-1 px-4 py-8">
-                <Alert
-                    variant="warning"
-                    icon={<RiErrorWarningLine className="text-lg" />}
-                    title="Failed to fetch nodes"
-                    description="An error occured while trying to fetch the active nodes. If the problem persists, please contact support."
+            <div className="center-all flex-1 py-4">
+                <DetailedAlert
+                    icon={<RiErrorWarningLine />}
+                    title="API Issues"
+                    description={
+                        <div className="col">
+                            <div>The Explorer is unable to retrieve node data at this time.</div>
+                            <div>If the problem persists, please contact support.</div>
+                        </div>
+                    }
                 />
             </div>
         );

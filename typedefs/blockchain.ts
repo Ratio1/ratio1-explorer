@@ -134,9 +134,18 @@ type OraclesDefaultResult = {
     server_node_addr: R1Address;
 };
 
+type CSP = {
+    activeJobsCount: number;
+    escrowAddress: EthAddress;
+    owner: EthAddress;
+    tvl: bigint;
+    name?: string; // Added after fetching branding data (if it exists)
+};
+
 export type {
     BuyLicenseRequest,
     ComputeParam,
+    CSP,
     EthAddress,
     License,
     LicenseInfo,

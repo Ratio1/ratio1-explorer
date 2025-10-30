@@ -3,7 +3,7 @@ import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizon
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { routePath } from '@/lib/routes';
-import { isEmptyETHAddr } from '@/lib/utils';
+import { isZeroAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import Link from 'next/link';
 import PoA from '../Licenses/PoA';
@@ -65,7 +65,7 @@ export default async function CompactLicenseCard({ license, licenseType, license
 
                 <PoA license={license} />
 
-                {!isEmptyETHAddr(nodeEthAddress) && (
+                {!isZeroAddress(nodeEthAddress) && (
                     <CardHorizontal
                         label="Node"
                         value={

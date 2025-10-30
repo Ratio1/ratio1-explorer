@@ -3,7 +3,7 @@ import { fN } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import { round } from 'lodash';
-import { Suspense, cache, memo } from 'react';
+import { Suspense, memo } from 'react';
 import R1MintedLastEpoch from '../R1MintedLastEpoch';
 import { BorderedCard } from '../shared/cards/BorderedCard';
 import { CardHorizontal } from '../shared/cards/CardHorizontal';
@@ -49,7 +49,7 @@ const HeroStats = memo(({ nodesTotalItems, resourcesTotal }: { nodesTotalItems: 
 
 HeroStats.displayName = 'HeroStats';
 
-const CachedHeroContent = cache(async () => (
+const CachedHeroContent = async () => (
     <>
         <CardHorizontal
             label={
@@ -77,7 +77,7 @@ const CachedHeroContent = cache(async () => (
 
         <HeroEpochCard />
     </>
-));
+);
 
 export default async function Hero({
     nodesTotalItems,

@@ -5,7 +5,7 @@ import config from '@/config';
 import { getNodeAvailability } from '@/lib/actions';
 import { getLicense } from '@/lib/api/blockchain';
 import { routePath } from '@/lib/routes';
-import { isEmptyETHAddr } from '@/lib/utils';
+import { isZeroAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import { notFound, redirect } from 'next/navigation';
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }) {
     }
 
     try {
-        await cachedGetLicense(licenseType, licenseId, config.environment);
+        await fetchLicense(licenseType, licenseId, config.environment);
     } catch (error) {
         return {
             title: 'Error',
@@ -53,11 +53,13 @@ export async function generateMetadata({ params }) {
     };
 }
 
-const cachedGetLicense = cache(
-    async (licenseType: 'ND' | 'MND' | 'GND', licenseId: string, _environment: 'mainnet' | 'testnet' | 'devnet') => {
-        return await getLicense(licenseType, licenseId);
-    },
-);
+const fetchLicense = async (
+    licenseType: 'ND' | 'MND' | 'GND',
+    licenseId: string,
+    _environment: 'mainnet' | 'testnet' | 'devnet',
+) => {
+    return await getLicense(licenseType, licenseId);
+};
 
 export default async function LicensePage({ params }) {
     const { licenseType, licenseId } = await params;
@@ -77,9 +79,7 @@ export default async function LicensePage({ params }) {
     let license: types.License;
 
     try {
-        license = await cachedGetLicense(licenseType, licenseId, config.environment);
-
-        // console.log('[LicensePage] cachedGetLicense', license);
+        license = await fetchLicense(licenseType, licenseId, config.environment);
     } catch (error) {
         console.error(error);
         console.log(`[License Page] Failed to fetch license: ${licenseType}-${licenseId}`);
@@ -88,7 +88,7 @@ export default async function LicensePage({ params }) {
 
     const cachedGetNodeAvailability = cache(async () => {
         try {
-            const isLinked = !isEmptyETHAddr(license.nodeAddress);
+            const isLinked = !isZeroAddress(license.nodeAddress);
 
             if (!isLinked) {
                 return;

@@ -57,8 +57,8 @@ export default async function PublicProfile({
 
     return (
         <div
-            className={clsx('flex items-center gap-3 md:items-center md:gap-4', {
-                '!items-start': hasDescription || hasSocialLinks,
+            className={clsx('flex items-start gap-3 sm:items-center md:gap-4', {
+                '!items-center': !hasDescription && !hasSocialLinks,
             })}
         >
             <div className="center-all relative h-[60px] w-[60px] min-w-[60px] overflow-hidden rounded-[37.5%] sm:h-[84px] sm:w-[84px] sm:min-w-[84px]">
@@ -67,7 +67,7 @@ export default async function PublicProfile({
                 </ClientWrapper>
             </div>
 
-            <div className="col gap-2">
+            <div className="col gap-1 sm:gap-2">
                 <div className="col gap-0.5">
                     <div className="card-title-big font-bold !leading-none">
                         {publicProfileInfo?.name ? (

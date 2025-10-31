@@ -1,12 +1,12 @@
 'use client';
 
 import config from '@/config';
+import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { useState } from 'react';
 import { HiUser } from 'react-icons/hi';
-import * as types from '@/typedefs/blockchain';
 
 export default function ProfileImage({ ownerEthAddr, isSmall = false }: { ownerEthAddr: types.EthAddress; isSmall?: boolean }) {
     const src = `${config.backendUrl}/branding/get-brand-logo?address=${ownerEthAddr}`;
@@ -41,7 +41,7 @@ export default function ProfileImage({ ownerEthAddr, isSmall = false }: { ownerE
                 fill
                 sizes="128px"
                 priority
-                onLoadingComplete={() => setLoading(false)}
+                onLoad={() => setLoading(false)}
                 onError={() => {
                     setLoading(false);
                     setHasError(true);

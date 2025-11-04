@@ -59,7 +59,7 @@ export const search = async (
     try {
         const resultsArray: SearchResult[] = [];
 
-        if (query.startsWith('0x') && query.length === 42) {
+        if (/^0x(?!_ai)/.test(query) && query.length === 42) {
             console.log('Searching for ETH address...');
 
             const ethAddress = query as types.EthAddress;

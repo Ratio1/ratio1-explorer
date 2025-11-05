@@ -26,6 +26,7 @@ type TokenStatsEntry = {
     dailyMinted: number;
     dailyNdContractTokenBurn: number;
     dailyPOAIRewards: number;
+    dailyPoaiTokenBurn: number;
     dailyTokenBurn: number;
     dailyUsdcLocked: number;
     lastBlockNumber: number;

@@ -31,6 +31,7 @@ export default function DailyStatsAreaChart({ chartConfig }: { chartConfig: Char
     useEffect(() => {
         (async () => {
             const response = await getTokenStats();
+            console.log('getTokenStats', response.data);
             setData(response.data);
         })();
     }, []);
@@ -60,11 +61,9 @@ export default function DailyStatsAreaChart({ chartConfig }: { chartConfig: Char
         tokenBurned: {
             type: 'bigint',
             label: chartConfig.tokenBurned.label,
-            value: entry.dailyTokenBurn - entry.dailyNdContractTokenBurn,
+            value: entry.dailyPoaiTokenBurn,
             decimals: 18,
-            normalizedValue:
-                (Number(BigInt(entry.dailyTokenBurn) - BigInt(entry.dailyNdContractTokenBurn)) / Number(BigInt(10 ** 18))) *
-                100,
+            normalizedValue: (Number(BigInt(entry.dailyPoaiTokenBurn)) / Number(BigInt(10 ** 18))) * 100,
         },
     }));
 

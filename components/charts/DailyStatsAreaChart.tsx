@@ -31,7 +31,6 @@ export default function DailyStatsAreaChart({ chartConfig }: { chartConfig: Char
     useEffect(() => {
         (async () => {
             const response = await getTokenStats();
-            console.log('getTokenStats', response.data);
             setData(response.data);
         })();
     }, []);

@@ -7,10 +7,6 @@ if (!process.env.NEXT_PUBLIC_RPC) {
     throw new Error('NEXT_PUBLIC_RPC is not set');
 }
 
-if (!process.env.ALCHEMY_API_KEY) {
-    throw new Error('ALCHEMY_API_KEY is not set');
-}
-
 const publicNodeRPC: string = process.env.NEXT_PUBLIC_RPC;
 
 const publicNodeClient: PublicClient = createPublicClient({

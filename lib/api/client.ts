@@ -1,20 +1,23 @@
 'use server';
 
-import config, { chain } from '@/config';
+import { chain } from '@/config';
 import { createPublicClient, http, PublicClient } from 'viem';
 
-let publicClient: PublicClient | null = null;
+if (!process.env.NEXT_PUBLIC_RPC) {
+    throw new Error('NEXT_PUBLIC_RPC is not set');
+}
 
-export const getPublicClient = async () => {
-    if (!publicClient) {
-        // ! Replace with a paid RPC at some point
-        publicClient = createPublicClient({
-            chain,
-            transport: http(
-                `https://base-${config.environment === 'mainnet' ? 'mainnet' : 'sepolia'}.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
-            ),
-        }) as PublicClient;
-    }
+if (!process.env.ALCHEMY_API_KEY) {
+    throw new Error('ALCHEMY_API_KEY is not set');
+}
 
-    return publicClient;
+const publicNodeRPC: string = process.env.NEXT_PUBLIC_RPC;
+
+const publicNodeClient: PublicClient = createPublicClient({
+    chain,
+    transport: http(publicNodeRPC),
+}) as PublicClient;
+
+export const getPublicClient = async (): Promise<PublicClient> => {
+    return publicNodeClient;
 };

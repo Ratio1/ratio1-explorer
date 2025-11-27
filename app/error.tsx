@@ -4,13 +4,6 @@ import { Button } from '@heroui/button';
 import { useEffect } from 'react';
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
-    // IMPORTANT: Rethrow redirect and notFound errors immediately before any hooks
-    // These are special Next.js errors that should not be caught by error boundaries
-    if (error?.digest?.startsWith('NEXT_REDIRECT') || error?.digest?.startsWith('NEXT_NOT_FOUND')) {
-        console.log('[Error] Redirect error detected:', error);
-        throw error;
-    }
-
     useEffect(() => {
         console.error(error);
     }, [error]);

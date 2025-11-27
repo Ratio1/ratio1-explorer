@@ -2,11 +2,10 @@ import LicenseCard from '@/app/server-components/main-cards/LicenseCard';
 import NodeCard from '@/app/server-components/main-cards/NodeCard';
 import NodePerformanceCard from '@/app/server-components/main-cards/NodePerformanceCard';
 import { DetailedAlert } from '@/app/server-components/shared/DetailedAlert';
-import ClientRedirect from '@/components/ClientRedirect';
+import ErrorComponent from '@/app/server-components/shared/ErrorComponent';
 import config from '@/config';
 import { getNodeAvailability } from '@/lib/actions';
 import { getNodeLicenseDetails } from '@/lib/api/blockchain';
-import { routePath } from '@/lib/routes';
 import { isZeroAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { RiCloseLine } from 'react-icons/ri';
@@ -31,10 +30,6 @@ export async function generateMetadata({ params }) {
 
     try {
         ({ nodeResponse } = await fetchLicenseDetailsAndNodeAvailability(nodeEthAddr, config.environment));
-
-        if (!nodeResponse) {
-            console.log(`[Node Page] No node response found for address: ${nodeEthAddr}`);
-        }
     } catch (error) {
         console.error(error);
         return errorMetadata;
@@ -121,8 +116,7 @@ export default async function NodePage({ params }) {
     const { nodeEthAddr } = await params;
 
     if (!nodeEthAddr || !isAddress(nodeEthAddr) || isZeroAddress(nodeEthAddr)) {
-        console.log(`[Node Page] Invalid node address in page component: ${nodeEthAddr}`);
-        return <ClientRedirect to={routePath.notFound} />;
+        return <NotFound />;
     }
 
     let license: types.License;
@@ -151,9 +145,7 @@ export default async function NodePage({ params }) {
             );
         }
 
-        // Redirect for any other error, including "No license ID or type found"
-        console.log(`[Node Page] Error fetching node details for address: ${nodeEthAddr}`, error?.message);
-        return <ClientRedirect to={routePath.notFound} />;
+        return <NotFound />;
     }
 
     return (
@@ -173,5 +165,14 @@ export default async function NodePage({ params }) {
 
             <NodePerformanceCard nodeResponse={nodeResponse} />
         </div>
+    );
+}
+
+function NotFound() {
+    return (
+        <ErrorComponent
+            title="Node Not Found"
+            description="The node you are looking for could not be found. The address might be incorrect, or the node may not exist on the network."
+        />
     );
 }

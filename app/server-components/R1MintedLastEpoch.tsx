@@ -29,12 +29,6 @@ const getCachedR1MintedLastEpoch = async (): Promise<string> => {
             const value = await fetchR1MintedLastEpoch();
             const valueString = value.toString();
 
-            console.log('[R1MintedLastEpoch] Setting cache entry', {
-                value: valueString,
-                epoch: currentEpoch,
-                timestamp: now,
-            });
-
             cacheEntry = {
                 value: valueString,
                 epoch: currentEpoch,
@@ -58,7 +52,6 @@ export default async function R1MintedLastEpoch() {
 
     try {
         const cachedValue = await getCachedR1MintedLastEpoch();
-        console.log('[R1MintedLastEpoch] Getting cached value', cachedValue);
         value = BigInt(cachedValue);
     } catch (error) {
         console.log('[R1MintedLastEpoch] error', error);

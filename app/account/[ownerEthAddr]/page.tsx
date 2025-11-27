@@ -2,18 +2,17 @@ import CompactLicenseCard from '@/app/server-components/main-cards/CompactLicens
 import PublicProfile from '@/app/server-components/Profile/PublicProfile';
 import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
+import ErrorComponent from '@/app/server-components/shared/ErrorComponent';
 import UsageStats from '@/app/server-components/shared/Licenses/UsageStats';
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import config from '@/config';
 import { getPublicProfiles } from '@/lib/api/backend';
 import { fetchCSPDetails, fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
-import { routePath } from '@/lib/routes';
 import { cachedGetENSName, fBI, getShortAddress, isZeroAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import type { PublicProfileInfo } from '@/typedefs/general';
 import { unstable_cache } from 'next/cache';
-import { notFound, redirect } from 'next/navigation';
 import { RiCloudLine } from 'react-icons/ri';
 import { isAddress } from 'viem';
 
@@ -58,7 +57,12 @@ export async function generateMetadata({ params }) {
             },
         };
     } catch (error) {
-        return null;
+        return {
+            title: 'Error',
+            openGraph: {
+                title: 'Error',
+            },
+        };
     }
 }
 
@@ -67,7 +71,7 @@ export default async function NodeOperatorPage({ params }) {
 
     if (!ownerEthAddr || !isAddress(ownerEthAddr) || isZeroAddress(ownerEthAddr)) {
         console.log(`[NodeOperatorPage] Invalid owner address: ${ownerEthAddr}`);
-        notFound();
+        return <NotFound />;
     }
 
     let licenses: types.LicenseInfo[],
@@ -87,7 +91,7 @@ export default async function NodeOperatorPage({ params }) {
     } catch (error) {
         console.error(error);
         console.log(`[Node Operator Page] Failed to fetch data for address: ${ownerEthAddr}`);
-        redirect(routePath.notFound);
+        return <NotFound />;
     }
 
     return (
@@ -202,5 +206,14 @@ export default async function NodeOperatorPage({ params }) {
                 </div>
             ))}
         </div>
+    );
+}
+
+function NotFound() {
+    return (
+        <ErrorComponent
+            title="Node Operator Not Found"
+            description="The node operator you are looking for could not be found. The address might be incorrect, or the address may not own any licenses on the network."
+        />
     );
 }

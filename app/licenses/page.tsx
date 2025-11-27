@@ -1,7 +1,6 @@
+import ErrorComponent from '@/app/server-components/shared/ErrorComponent';
 import { getLicensesTotalSupply } from '@/lib/api/blockchain';
-import { routePath } from '@/lib/routes';
 import { LicenseItem } from '@/typedefs/general';
-import { redirect } from 'next/navigation';
 import List from '../server-components/Licenses/List';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
@@ -41,7 +40,7 @@ export default async function LicensesPage(props: {
     } catch (error) {
         console.error(error);
         console.log('[Licenses Page] Failed to fetch license data');
-        redirect(routePath.notFound);
+        return <NotFound />;
     }
 
     return (
@@ -66,4 +65,8 @@ export default async function LicensesPage(props: {
             <List licenses={licenses} currentPage={currentPage} />
         </>
     );
+}
+
+function NotFound() {
+    return <ErrorComponent title="Error" description="The licenses data could not be loaded. Please try again later." />;
 }

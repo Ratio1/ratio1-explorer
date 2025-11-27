@@ -2,15 +2,29 @@ import * as types from '@/typedefs/blockchain';
 import { SearchResult } from '@/typedefs/general';
 import { Metadata } from 'next';
 import { cache, JSX } from 'react';
-import { formatUnits } from 'viem';
+import { secp256k1 } from '@noble/curves/secp256k1';
+import { bytesToHex, formatUnits, getAddress, hexToBytes, keccak256 } from 'viem';
 import { getActiveNodes } from './api';
 import { getLicense } from './api/blockchain';
 import { getNodeLastEpoch } from './api/oracles';
 
 const URL_SAFE_PATTERN = /^[a-zA-Z0-9x\s\-_\.]+$/;
 export const ETH_EMPTY_ADDR = '0x0000000000000000000000000000000000000000';
+const INTERNAL_ADDRESS_PREFIX = '0xai_';
 
 export const isZeroAddress = (addr: string): boolean => addr === ETH_EMPTY_ADDR;
+
+export const internalNodeAddressToEthAddress = (address: string): `0x${string}` => {
+    const raw = address.startsWith(INTERNAL_ADDRESS_PREFIX) ? address.slice(INTERNAL_ADDRESS_PREFIX.length) : address;
+    const pad = (4 - (raw.length % 4)) % 4;
+    const b64 = (raw + '='.repeat(pad)).replace(/-/g, '+').replace(/_/g, '/');
+    const compressed = Uint8Array.from(Buffer.from(b64, 'base64')); // 33-byte compressed pk
+    const uncompressed = secp256k1.ProjectivePoint.fromHex(compressed).toRawBytes(false); // 65 bytes, 0x04 + X + Y
+    const pubkey = uncompressed.slice(1); // drop 0x04
+    const hash = keccak256(pubkey);
+    const ethBytes = hexToBytes(hash).slice(-20);
+    return getAddress(bytesToHex(ethBytes));
+};
 
 export const getShortAddress = (address: string, size = 4, asString = false): string | JSX.Element => {
     const str = `${address.slice(0, size)}•••${address.slice(-size)}`;
@@ -158,7 +172,7 @@ export const clientSearch = async (
         };
     }
 
-    if (query.length > 42 || !URL_SAFE_PATTERN.test(query)) {
+    if (query.length > 50 || !URL_SAFE_PATTERN.test(query)) {
         if (isLoggingEnabled) console.log('Search query is invalid.');
         return {
             results: [],
@@ -168,6 +182,11 @@ export const clientSearch = async (
 
     try {
         const resultsArray: SearchResult[] = [];
+
+        if (query.startsWith('0xai_') || query.startsWith('aixp_')) {
+            const ethAddress = internalNodeAddressToEthAddress(query);
+            console.log('Converted ETH Address:', ethAddress);
+        }
 
         if (/^0x(?!_ai)/.test(query) && query.length === 42) {
             if (isLoggingEnabled) console.log('Searching for ETH address...');

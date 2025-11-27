@@ -4,7 +4,7 @@ import SearchResultsList from '@/app/server-components/SearchResultsList';
 import { Alert } from '@/app/server-components/shared/Alert';
 import { routePath } from '@/lib/routes';
 import useDebounce from '@/lib/useDebounce';
-import { clientSearch as search } from '@/lib/utils';
+import { internalNodeAddressToEthAddress, clientSearch as search } from '@/lib/utils';
 import { SearchResult } from '@/typedefs/general';
 import { Input } from '@heroui/input';
 import { Modal, ModalContent, useDisclosure } from '@heroui/modal';
@@ -142,7 +142,7 @@ export default function Search() {
                                     </div>
                                 ) : null
                             }
-                            maxLength={42}
+                            maxLength={80}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                     onClose();

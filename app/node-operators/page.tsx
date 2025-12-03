@@ -1,9 +1,8 @@
+import ErrorComponent from '@/app/server-components/shared/ErrorComponent';
 import config from '@/config';
 import { getSSURL } from '@/lib/actions';
-import { routePath } from '@/lib/routes';
 import * as types from '@/typedefs/blockchain';
 import { LicenseItem } from '@/typedefs/general';
-import { redirect } from 'next/navigation';
 import List from '../server-components/NodeOperators/List';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
@@ -93,7 +92,7 @@ export default async function NodeOperatorsPage(props: {
     } catch (error) {
         console.error(error);
         console.log('[NodeOperatorsPage] Failed to fetch data');
-        redirect(routePath.notFound);
+        return <NotFound />;
     }
 
     return (
@@ -135,4 +134,8 @@ export default async function NodeOperatorsPage(props: {
             <List owners={sortedHolders} currentPage={currentPage} />
         </>
     );
+}
+
+function NotFound() {
+    return <ErrorComponent title="Error" description="The node operators data could not be loaded. Please try again later." />;
 }

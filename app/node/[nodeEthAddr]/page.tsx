@@ -2,41 +2,37 @@ import LicenseCard from '@/app/server-components/main-cards/LicenseCard';
 import NodeCard from '@/app/server-components/main-cards/NodeCard';
 import NodePerformanceCard from '@/app/server-components/main-cards/NodePerformanceCard';
 import { DetailedAlert } from '@/app/server-components/shared/DetailedAlert';
+import ErrorComponent from '@/app/server-components/shared/ErrorComponent';
 import config from '@/config';
 import { getNodeAvailability } from '@/lib/actions';
 import { getNodeLicenseDetails } from '@/lib/api/blockchain';
-import { routePath } from '@/lib/routes';
 import { isZeroAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
-import { notFound, redirect } from 'next/navigation';
 import { RiCloseLine } from 'react-icons/ri';
 import { isAddress } from 'viem';
+
+const errorMetadata = {
+    title: 'Error',
+    openGraph: {
+        title: 'Error',
+    },
+};
 
 export async function generateMetadata({ params }) {
     const { nodeEthAddr } = await params;
 
     if (!nodeEthAddr || !isAddress(nodeEthAddr) || isZeroAddress(nodeEthAddr)) {
         console.log(`[Node Page] Invalid node address: ${nodeEthAddr}`);
-        notFound();
+        return errorMetadata;
     }
 
     let nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
 
     try {
         ({ nodeResponse } = await fetchLicenseDetailsAndNodeAvailability(nodeEthAddr, config.environment));
-
-        if (!nodeResponse) {
-            console.log(`[Node Page] No node response found for address: ${nodeEthAddr}`);
-            redirect(routePath.notFound);
-        }
     } catch (error) {
         console.error(error);
-        return {
-            title: 'Error',
-            openGraph: {
-                title: 'Error',
-            },
-        };
+        return errorMetadata;
     }
 
     return {
@@ -89,7 +85,8 @@ const fetchLicenseDetailsAndNodeAvailability = async (
     }
 
     if (!licenseId || !licenseType) {
-        redirect(routePath.notFound);
+        console.log(`[Node Page] No license ID or type found for node: ${nodeEthAddr}`);
+        throw new Error('No license ID or type found');
     }
 
     const license: types.License = {
@@ -119,8 +116,7 @@ export default async function NodePage({ params }) {
     const { nodeEthAddr } = await params;
 
     if (!nodeEthAddr || !isAddress(nodeEthAddr) || isZeroAddress(nodeEthAddr)) {
-        console.log(`[Node Page] Invalid node address in page component: ${nodeEthAddr}`);
-        notFound();
+        return <NotFound />;
     }
 
     let license: types.License;
@@ -134,12 +130,10 @@ export default async function NodePage({ params }) {
             nodeEthAddr,
             config.environment,
         ));
-
-        // console.log('[Node Page] license', license);
     } catch (error: any) {
         console.error(error);
 
-        if (error.message.includes('Oracle state is not valid')) {
+        if (error?.message?.includes('Oracle state is not valid')) {
             return (
                 <div className="center-all flex-1 py-4">
                     <DetailedAlert
@@ -149,10 +143,9 @@ export default async function NodePage({ params }) {
                     />
                 </div>
             );
-        } else {
-            console.log(`[Node Page] Error fetching node details for address: ${nodeEthAddr}`, error.message);
-            redirect(routePath.notFound);
         }
+
+        return <NotFound />;
     }
 
     return (
@@ -172,5 +165,14 @@ export default async function NodePage({ params }) {
 
             <NodePerformanceCard nodeResponse={nodeResponse} />
         </div>
+    );
+}
+
+function NotFound() {
+    return (
+        <ErrorComponent
+            title="Node Not Found"
+            description="The node you are looking for could not be found. The address might be incorrect, or the node may not exist on the network."
+        />
     );
 }

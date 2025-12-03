@@ -129,7 +129,6 @@ export default function NodesMap() {
                     kybCount: nodes.filter((node) => node.tags?.some((tag) => tag.includes('KYB'))).length,
                 }));
 
-                console.log(stats.sort((a, b) => b.count - a.count));
                 setStats(stats.sort((a, b) => b.count - a.count));
 
                 const geoJSON = countryCountsToGeoJSON(stats);

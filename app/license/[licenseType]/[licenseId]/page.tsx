@@ -1,48 +1,39 @@
 import LicensePageNodeCardWrapper from '@/app/server-components/LicensePage/LicensePageNodeCardWrapper';
 import LicensePageNodePerformanceCardWrapper from '@/app/server-components/LicensePage/LicensePageNodePerformanceCardWrapper';
 import LicenseCard from '@/app/server-components/main-cards/LicenseCard';
+import ErrorComponent from '@/app/server-components/shared/ErrorComponent';
 import config from '@/config';
 import { getNodeAvailability } from '@/lib/actions';
 import { getLicense } from '@/lib/api/blockchain';
-import { routePath } from '@/lib/routes';
 import { isZeroAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
-import { notFound, redirect } from 'next/navigation';
 import { cache, Suspense } from 'react';
+
+const errorMetadata = {
+    title: 'Error',
+    openGraph: {
+        title: 'Error',
+    },
+};
 
 export async function generateMetadata({ params }) {
     const { licenseType, licenseId } = await params;
 
     if (!licenseType || !['ND', 'MND', 'GND'].includes(licenseType)) {
-        return {
-            title: 'Error',
-            openGraph: {
-                title: 'Error',
-            },
-        };
+        return errorMetadata;
     }
 
     const licenseIdNum = parseInt(licenseId);
 
     if (isNaN(licenseIdNum) || licenseIdNum < 0 || licenseIdNum > 10000) {
-        return {
-            title: 'Error',
-            openGraph: {
-                title: 'Error',
-            },
-        };
+        return errorMetadata;
     }
 
     try {
         await fetchLicense(licenseType, licenseId, config.environment);
     } catch (error) {
-        return {
-            title: 'Error',
-            openGraph: {
-                title: 'Error',
-            },
-        };
+        return errorMetadata;
     }
 
     return {
@@ -66,14 +57,14 @@ export default async function LicensePage({ params }) {
 
     if (!licenseType || !['ND', 'MND', 'GND'].includes(licenseType)) {
         console.log(`[License Page] Invalid license type: ${licenseType}`);
-        notFound();
+        return <NotFound />;
     }
 
     const licenseIdNum = parseInt(licenseId);
 
     if (isNaN(licenseIdNum) || licenseIdNum < 0 || licenseIdNum > 10000) {
         console.log(`[License Page] Invalid license ID: ${licenseId}`);
-        notFound();
+        return <NotFound />;
     }
 
     let license: types.License;
@@ -83,7 +74,7 @@ export default async function LicensePage({ params }) {
     } catch (error) {
         console.error(error);
         console.log(`[License Page] Failed to fetch license: ${licenseType}-${licenseId}`);
-        redirect(routePath.notFound);
+        return <NotFound />;
     }
 
     const cachedGetNodeAvailability = cache(async () => {
@@ -118,5 +109,14 @@ export default async function LicensePage({ params }) {
                 <LicensePageNodePerformanceCardWrapper cachedGetNodeAvailability={cachedGetNodeAvailability} />
             </Suspense>
         </div>
+    );
+}
+
+function NotFound() {
+    return (
+        <ErrorComponent
+            title="License Not Found"
+            description="The license you are looking for could not be found. The license ID might be incorrect."
+        />
     );
 }

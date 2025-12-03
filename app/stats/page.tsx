@@ -1,12 +1,11 @@
+import ErrorComponent from '@/app/server-components/shared/ErrorComponent';
 import DailyStatsAreaChart from '@/components/charts/DailyStatsAreaChart';
 import NodesMap from '@/components/charts/NodesMap';
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { ChartConfig } from '@/components/ui/chart';
 import { getTokenSupply } from '@/lib/api/general';
-import { routePath } from '@/lib/routes';
 import { fN } from '@/lib/utils';
 import { TokenSupplyResponse } from '@/typedefs/general';
-import { redirect } from 'next/navigation';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
 
@@ -45,7 +44,7 @@ export default async function StatsPage() {
         tokenSupply = await getTokenSupply();
     } catch (error) {
         console.error(error);
-        redirect(routePath.notFound);
+        return <NotFound />;
     }
 
     const getLegendEntries = () =>
@@ -111,4 +110,8 @@ export default async function StatsPage() {
             </BorderedCard>
         </div>
     );
+}
+
+function NotFound() {
+    return <ErrorComponent title="Error" description="The stats data could not be loaded. Please try again later." />;
 }

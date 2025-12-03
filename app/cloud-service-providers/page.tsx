@@ -1,8 +1,7 @@
+import ErrorComponent from '@/app/server-components/shared/ErrorComponent';
 import { fetchCSPs } from '@/lib/api/blockchain';
-import { routePath } from '@/lib/routes';
 import { fBI } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
-import { redirect } from 'next/navigation';
 import CSPsList from '../server-components/CPSs/CSPsList';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
@@ -33,7 +32,7 @@ export default async function CSPsPage(props: {
     } catch (error) {
         console.error(error);
         console.log('[CSPsPage] Failed to fetch data');
-        redirect(routePath.notFound);
+        return <NotFound />;
     }
 
     return (
@@ -72,5 +71,14 @@ export default async function CSPsPage(props: {
 
             <CSPsList csps={csps} currentPage={currentPage} />
         </>
+    );
+}
+
+function NotFound() {
+    return (
+        <ErrorComponent
+            title="Error"
+            description="The cloud service providers data could not be loaded. Please try again later."
+        />
     );
 }

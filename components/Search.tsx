@@ -142,7 +142,7 @@ export default function Search() {
                                     </div>
                                 ) : null
                             }
-                            maxLength={42}
+                            maxLength={49}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                     onClose();

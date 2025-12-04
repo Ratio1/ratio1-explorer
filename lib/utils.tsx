@@ -1,8 +1,8 @@
 import * as types from '@/typedefs/blockchain';
 import { SearchResult } from '@/typedefs/general';
+import { secp256k1 } from '@noble/curves/secp256k1';
 import { Metadata } from 'next';
 import { cache, JSX } from 'react';
-import { secp256k1 } from '@noble/curves/secp256k1';
 import { bytesToHex, formatUnits, getAddress, hexToBytes, keccak256 } from 'viem';
 import { getActiveNodes } from './api';
 import { getLicense } from './api/blockchain';
@@ -15,11 +15,56 @@ const INTERNAL_ADDRESS_PREFIX = '0xai_';
 export const isZeroAddress = (addr: string): boolean => addr === ETH_EMPTY_ADDR;
 
 export const internalNodeAddressToEthAddress = (address: string): `0x${string}` => {
+    const base64UrlToBytes = (value: string): Uint8Array => {
+        const padded = value
+            .replace(/-/g, '+')
+            .replace(/_/g, '/')
+            .padEnd(Math.ceil(value.length / 4) * 4, '=');
+
+        if (typeof atob === 'function') {
+            const binary = atob(padded);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i += 1) {
+                bytes[i] = binary.charCodeAt(i);
+            }
+            return bytes;
+        }
+
+        if (typeof Buffer !== 'undefined') {
+            return Uint8Array.from(Buffer.from(padded, 'base64'));
+        }
+
+        throw new Error('No base64 decoder available in this environment.');
+    };
+
     const raw = address.startsWith(INTERNAL_ADDRESS_PREFIX) ? address.slice(INTERNAL_ADDRESS_PREFIX.length) : address;
-    const pad = (4 - (raw.length % 4)) % 4;
-    const b64 = (raw + '='.repeat(pad)).replace(/-/g, '+').replace(/_/g, '/');
-    const compressed = Uint8Array.from(Buffer.from(b64, 'base64')); // 33-byte compressed pk
-    const uncompressed = secp256k1.ProjectivePoint.fromHex(compressed).toRawBytes(false); // 65 bytes, 0x04 + X + Y
+
+    if (!raw) {
+        throw new Error('Internal node address is empty.');
+    }
+
+    if (raw.length !== 44 || !/^[A-Za-z0-9_-]+$/.test(raw)) {
+        throw new Error('Internal node address is not in the expected format.');
+    }
+
+    let compressed: Uint8Array;
+    try {
+        compressed = base64UrlToBytes(raw); // 33-byte compressed pk
+    } catch (error) {
+        throw new Error(`Unable to decode internal node address: ${(error as Error).message}`);
+    }
+
+    if (compressed.length !== 33) {
+        throw new Error('Internal node address decodes to an invalid public key.');
+    }
+
+    let uncompressed: Uint8Array;
+    try {
+        uncompressed = secp256k1.ProjectivePoint.fromHex(compressed).toRawBytes(false); // 65 bytes, 0x04 + X + Y
+    } catch (error) {
+        throw new Error(`Invalid compressed public key for internal node address: ${(error as Error).message}`);
+    }
+
     const pubkey = uncompressed.slice(1); // drop 0x04
     const hash = keccak256(pubkey);
     const ethBytes = hexToBytes(hash).slice(-20);
@@ -182,23 +227,28 @@ export const clientSearch = async (
 
     try {
         const resultsArray: SearchResult[] = [];
+        let ethAddress: types.EthAddress | null = null;
+        const isInternalAddress = query.startsWith('0xai_') && query.length === 49;
 
-        if (query.startsWith('0xai_') || query.startsWith('aixp_')) {
-            const ethAddress = internalNodeAddressToEthAddress(query);
-            console.log('Converted ETH Address:', ethAddress);
+        if (isInternalAddress) {
+            ethAddress = internalNodeAddressToEthAddress(query) as types.EthAddress;
+            if (isLoggingEnabled) console.log('Converted Internal Address to ETH Address:', ethAddress);
+        } else if (/^0x(?!_ai)/.test(query) && query.length === 42) {
+            ethAddress = query as types.EthAddress;
         }
 
-        if (/^0x(?!_ai)/.test(query) && query.length === 42) {
+        if (ethAddress) {
             if (isLoggingEnabled) console.log('Searching for ETH address...');
 
-            const ethAddress = query as types.EthAddress;
-            const ensName = await cachedGetENSName(ethAddress);
+            if (!isInternalAddress) {
+                const ensName = await cachedGetENSName(ethAddress);
 
-            resultsArray.push({
-                type: 'owner',
-                address: ethAddress,
-                ensName,
-            });
+                resultsArray.push({
+                    type: 'owner',
+                    address: ethAddress,
+                    ensName,
+                });
+            }
 
             try {
                 const nodeResponse = await getNodeLastEpoch(ethAddress);
@@ -219,7 +269,7 @@ export const clientSearch = async (
             } finally {
                 return {
                     results: resultsArray,
-                    error: false,
+                    error: isInternalAddress ? resultsArray.length === 0 : false,
                 };
             }
         } else if (isNonZeroInteger(query)) {

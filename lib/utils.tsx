@@ -233,7 +233,7 @@ export const clientSearch = async (
         if (isInternalAddress) {
             ethAddress = internalNodeAddressToEthAddress(query) as types.EthAddress;
             if (isLoggingEnabled) console.log('Converted Internal Address to ETH Address:', ethAddress);
-        } else if (/^0x(?!_ai)/.test(query) && query.length === 42) {
+        } else if (/^0x(?!ai_)/.test(query) && query.length === 42) {
             ethAddress = query as types.EthAddress;
         }
 

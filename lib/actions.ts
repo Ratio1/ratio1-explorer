@@ -64,7 +64,7 @@ export const search = async (
         if (isInternalAddress) {
             ethAddress = internalNodeAddressToEthAddress(query) as types.EthAddress;
             console.log('Converted Internal Address to ETH Address', ethAddress);
-        } else if (/^0x(?!_ai)/.test(query) && query.length === 42) {
+        } else if (/^0x(?!ai_)/.test(query) && query.length === 42) {
             ethAddress = query as types.EthAddress;
         }
 

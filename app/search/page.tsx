@@ -23,16 +23,18 @@ export default async function SearchPage(props: {
                 {!results.length ? (
                     <div className="text-sm text-slate-500">0 matching results</div>
                 ) : (
-                    <div className="col font-medium">
+                    <div className="col gap-0.5 font-medium">
                         <div>
-                            Displaying results for:{' '}
+                            <span className="text-slate-500">Displaying results for:</span>{' '}
                             <span className="font-semibold">
                                 {isNonZeroInteger(query) && 'License #'}
                                 {query}
                             </span>
                         </div>
 
-                        <div className="text-sm text-slate-500">{results.length} results found</div>
+                        <div className="text-sm">
+                            {results.length} result{results.length > 1 || results.length === 0 ? 's' : ''} found
+                        </div>
                     </div>
                 )}
             </BorderedCard>

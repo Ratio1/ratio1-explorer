@@ -7,7 +7,7 @@ import { headers } from 'next/headers';
 import { getActiveNodes } from './api';
 import { getLicense } from './api/blockchain';
 import { getNodeEpochsRange, getNodeLastEpoch } from './api/oracles';
-import { cachedGetENSName, isNonZeroInteger, isZeroAddress } from './utils';
+import { cachedGetENSName, internalNodeAddressToEthAddress, isNonZeroInteger, isZeroAddress } from './utils';
 
 const URL_SAFE_PATTERN = /^[a-zA-Z0-9x\s\-_\.]+$/;
 
@@ -48,7 +48,7 @@ export const search = async (
         };
     }
 
-    if (query.length > 42 || !URL_SAFE_PATTERN.test(query)) {
+    if (query.length > 50 || !URL_SAFE_PATTERN.test(query)) {
         console.log('Search query is invalid.');
         return {
             results: [],
@@ -58,18 +58,28 @@ export const search = async (
 
     try {
         const resultsArray: SearchResult[] = [];
+        let ethAddress: types.EthAddress | null = null;
+        const isInternalAddress = query.startsWith('0xai_') && query.length === 49;
 
-        if (/^0x(?!_ai)/.test(query) && query.length === 42) {
+        if (isInternalAddress) {
+            ethAddress = internalNodeAddressToEthAddress(query) as types.EthAddress;
+            console.log('Converted Internal Address to ETH Address', ethAddress);
+        } else if (/^0x(?!ai_)/.test(query) && query.length === 42) {
+            ethAddress = query as types.EthAddress;
+        }
+
+        if (ethAddress) {
             console.log('Searching for ETH address...');
 
-            const ethAddress = query as types.EthAddress;
-            const ensName = await cachedGetENSName(ethAddress);
+            if (!isInternalAddress) {
+                const ensName = await cachedGetENSName(ethAddress);
 
-            resultsArray.push({
-                type: 'owner',
-                address: ethAddress,
-                ensName,
-            });
+                resultsArray.push({
+                    type: 'owner',
+                    address: ethAddress,
+                    ensName,
+                });
+            }
 
             try {
                 const nodeResponse = await getNodeLastEpoch(ethAddress);
@@ -90,7 +100,7 @@ export const search = async (
             } finally {
                 return {
                     results: resultsArray,
-                    error: false,
+                    error: isInternalAddress ? resultsArray.length === 0 : false,
                 };
             }
         } else if (isNonZeroInteger(query)) {

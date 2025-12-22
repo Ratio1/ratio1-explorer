@@ -6,7 +6,7 @@ import ErrorComponent from '@/app/server-components/shared/ErrorComponent';
 import config from '@/config';
 import { getNodeAvailability } from '@/lib/actions';
 import { getNodeLicenseDetails } from '@/lib/api/blockchain';
-import { isZeroAddress } from '@/lib/utils';
+import { internalNodeAddressToEthAddress, isZeroAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { RiCloseLine } from 'react-icons/ri';
 import { isAddress } from 'viem';
@@ -18,18 +18,40 @@ const errorMetadata = {
     },
 };
 
-export async function generateMetadata({ params }) {
-    const { nodeEthAddr } = await params;
+const resolveNodeEthAddress = (nodeAddress?: string): types.EthAddress | null => {
+    if (!nodeAddress) {
+        return null;
+    }
 
-    if (!nodeEthAddr || !isAddress(nodeEthAddr) || isZeroAddress(nodeEthAddr)) {
-        console.log(`[Node Page] Invalid node address: ${nodeEthAddr}`);
+    if (nodeAddress.startsWith('0xai_')) {
+        try {
+            const ethAddress = internalNodeAddressToEthAddress(nodeAddress);
+            return isZeroAddress(ethAddress) ? null : ethAddress;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    if (!isAddress(nodeAddress) || isZeroAddress(nodeAddress)) {
+        return null;
+    }
+
+    return nodeAddress;
+};
+
+export async function generateMetadata({ params }) {
+    const { nodeAddr } = await params;
+    const resolvedNodeEthAddr = resolveNodeEthAddress(nodeAddr);
+
+    if (!resolvedNodeEthAddr) {
+        console.log(`[Node Page] Invalid node address: ${nodeAddr}`);
         return errorMetadata;
     }
 
     let nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
 
     try {
-        ({ nodeResponse } = await fetchLicenseDetailsAndNodeAvailability(nodeEthAddr, config.environment));
+        ({ nodeResponse } = await fetchLicenseDetailsAndNodeAvailability(resolvedNodeEthAddr, config.environment));
     } catch (error) {
         console.error(error);
         return errorMetadata;
@@ -113,9 +135,10 @@ const fetchLicenseDetailsAndNodeAvailability = async (
 };
 
 export default async function NodePage({ params }) {
-    const { nodeEthAddr } = await params;
+    const { nodeAddr } = await params;
+    const resolvedNodeEthAddr = resolveNodeEthAddress(nodeAddr);
 
-    if (!nodeEthAddr || !isAddress(nodeEthAddr) || isZeroAddress(nodeEthAddr)) {
+    if (!resolvedNodeEthAddr) {
         return <NotFound />;
     }
 
@@ -127,7 +150,7 @@ export default async function NodePage({ params }) {
 
     try {
         ({ license, licenseId, licenseType, owner, nodeResponse } = await fetchLicenseDetailsAndNodeAvailability(
-            nodeEthAddr,
+            resolvedNodeEthAddr,
             config.environment,
         ));
     } catch (error: any) {

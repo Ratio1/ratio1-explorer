@@ -6,6 +6,7 @@ type License = {
     totalAssignedAmount: bigint;
     totalClaimedAmount: bigint;
     lastClaimEpoch: bigint;
+    firstMiningEpoch?: bigint;
     assignTimestamp: bigint;
     lastClaimOracle: EthAddress;
     isBanned: boolean;

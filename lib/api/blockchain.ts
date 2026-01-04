@@ -1,6 +1,7 @@
 'use server';
 
 import { ERC20Abi } from '@/blockchain/ERC20';
+import { MNDContractAbi } from '@/blockchain/MNDContract';
 import { NDContractAbi } from '@/blockchain/NDContract';
 import { ReaderAbi } from '@/blockchain/Reader';
 import config, { getCurrentEpoch, getEpochStartTimestamp, getNextEpochTimestamp } from '@/config';
@@ -66,10 +67,26 @@ export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Prom
             functionName: 'getNodeLicenseDetails',
             args: [nodeAddress],
         })
-        .then((result) => ({
-            ...result,
-            licenseType: [undefined, 'ND', 'MND', 'GND'][result.licenseType] as 'ND' | 'MND' | 'GND' | undefined,
-        }));
+        .then(async (result) => {
+            const licenseType = [undefined, 'ND', 'MND', 'GND'][result.licenseType] as 'ND' | 'MND' | 'GND' | undefined;
+            let firstMiningEpoch: bigint | undefined;
+            if (licenseType === 'MND') {
+                firstMiningEpoch = (
+                    await publicClient.readContract({
+                        address: config.mndContractAddress,
+                        abi: MNDContractAbi,
+                        functionName: 'licenses',
+                        args: [result.licenseId],
+                    })
+                )[3];
+            }
+
+            return {
+                ...result,
+                licenseType,
+                firstMiningEpoch,
+            };
+        });
 }
 
 export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: number | string): Promise<types.License> {
@@ -109,7 +126,7 @@ export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: n
                 functionName: 'getMndLicenseDetails',
                 args: [BigInt(licenseId)],
             })
-            .then((license) => {
+            .then(async (license) => {
                 const isLinked = !isZeroAddress(license.nodeAddress);
                 const licenseType = [undefined, 'ND', 'MND', 'GND'][license.licenseType] as 'ND' | 'MND' | 'GND' | undefined;
                 if (licenseType === undefined) {
@@ -118,11 +135,20 @@ export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: n
                 if (licenseType !== 'MND' && licenseType !== 'GND') {
                     throw new Error('Invalid license type');
                 }
+                const firstMiningEpoch = (
+                    await publicClient.readContract({
+                        address: config.mndContractAddress,
+                        abi: MNDContractAbi,
+                        functionName: 'licenses',
+                        args: [BigInt(licenseId)],
+                    })
+                )[3];
 
                 return {
                     ...license,
                     licenseType,
                     isLinked,
+                    firstMiningEpoch,
                 };
             });
     }
@@ -333,7 +359,7 @@ const getNdLicenseRewards = async (license: types.License, epochs: number[], epo
 };
 
 const getMndLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {
-    return calculateLicenseRewards(license, epochs, epochs_vals, config.mndVestingEpochs, config.mndCliffEpochs);
+    return calculateMndLicenseRewards(license, epochs, epochs_vals);
 };
 
 const getGndLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {
@@ -386,4 +412,63 @@ const calculateLicenseRewards = async (
 
     const maxRemainingClaimAmount = license.totalAssignedAmount - license.totalClaimedAmount;
     return rewards_amount < maxRemainingClaimAmount ? rewards_amount : maxRemainingClaimAmount;
+};
+
+const calculateMndLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {
+    const currentEpoch = getCurrentEpoch();
+    const firstMiningEpoch = license.firstMiningEpoch;
+
+    if (firstMiningEpoch === undefined) {
+        throw new Error('First mining epoch is undefined for MND license');
+    }
+
+    const firstEpochToClaim =
+        Number(license.lastClaimEpoch) >= Number(firstMiningEpoch) ? Number(license.lastClaimEpoch) : Number(firstMiningEpoch);
+    const epochsToClaim = currentEpoch - firstEpochToClaim;
+
+    if (currentEpoch < Number(firstMiningEpoch) || !epochsToClaim) {
+        return 0n;
+    }
+
+    if (epochs.length && epochs[0] < firstEpochToClaim) {
+        const start = firstEpochToClaim - epochs[0];
+        epochs = epochs.slice(start);
+        epochs_vals = epochs_vals.slice(start);
+    }
+
+    if (epochsToClaim !== epochs.length || epochsToClaim !== epochs_vals.length) {
+        console.error(
+            `Invalid epochs array length. Received ${epochs.length} epochs, but there are ${epochsToClaim} epochs to claim.`,
+        );
+        return 0n;
+    }
+
+    let rewards_amount = 0n;
+    const logisticPlateau = 300_505239501691000000n; // 300.50
+    const licensePlateau = (license.totalAssignedAmount * BigInt(1e18)) / logisticPlateau;
+
+    for (let i = 0; i < epochsToClaim; i++) {
+        const maxRewardsPerEpoch = calculateMndMaxEpochRelease(epochs[i], firstMiningEpoch, licensePlateau);
+        rewards_amount += (maxRewardsPerEpoch * BigInt(epochs_vals[i])) / 255n;
+    }
+
+    const maxRemainingClaimAmount = license.totalAssignedAmount - license.totalClaimedAmount;
+    return rewards_amount > maxRemainingClaimAmount ? maxRemainingClaimAmount : rewards_amount;
+};
+
+const calculateMndMaxEpochRelease = (epoch: number, firstMiningEpoch: bigint, licensePlateau: bigint): bigint => {
+    let x = epoch - Number(firstMiningEpoch);
+    if (x > config.mndVestingEpochs) {
+        x = config.mndVestingEpochs;
+    }
+    const frac = logisticFraction(x);
+    return (licensePlateau * BigInt(frac * 1e18)) / BigInt(1e18);
+};
+
+const logisticFraction = (x: number): number => {
+    const length = config.mndVestingEpochs;
+    const k = 5.0;
+    const midPrc = 0.7;
+    const midpoint = length * midPrc;
+    return 1.0 / (1.0 + Math.exp((-k * (x - midpoint)) / length));
 };

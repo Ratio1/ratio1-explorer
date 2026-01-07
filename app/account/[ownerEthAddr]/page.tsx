@@ -32,20 +32,24 @@ const getCachedNodeOperatorProfile = unstable_cache(
 
 export async function generateMetadata({ params }) {
     const { ownerEthAddr } = await params;
-    const canonical = `/account/${encodeURIComponent(ownerEthAddr)}`;
     const errorMetadata = {
         title: 'Error',
         openGraph: {
             title: 'Error',
-        },
-        alternates: {
-            canonical,
         },
     };
 
     if (!ownerEthAddr || !isAddress(ownerEthAddr) || isZeroAddress(ownerEthAddr)) {
         return errorMetadata;
     }
+
+    const canonical = `/account/${encodeURIComponent(ownerEthAddr)}`;
+    const errorMetadataWithCanonical = {
+        ...errorMetadata,
+        alternates: {
+            canonical,
+        },
+    };
 
     try {
         const [ensName, publicProfile] = await Promise.all([
@@ -65,7 +69,7 @@ export async function generateMetadata({ params }) {
             },
         };
     } catch (error) {
-        return errorMetadata;
+        return errorMetadataWithCanonical;
     }
 }
 

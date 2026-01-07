@@ -34,14 +34,10 @@ const resolveNodeEthAddress = (nodeAddress?: string): types.EthAddress | null =>
 
 export async function generateMetadata({ params }) {
     const { nodeAddr } = await params;
-    const canonical = `/node/${encodeURIComponent(nodeAddr)}`;
     const errorMetadata = {
         title: 'Error',
         openGraph: {
             title: 'Error',
-        },
-        alternates: {
-            canonical,
         },
     };
     const resolvedNodeEthAddr = resolveNodeEthAddress(nodeAddr);
@@ -51,13 +47,21 @@ export async function generateMetadata({ params }) {
         return errorMetadata;
     }
 
+    const canonical = `/node/${encodeURIComponent(nodeAddr)}`;
+    const errorMetadataWithCanonical = {
+        ...errorMetadata,
+        alternates: {
+            canonical,
+        },
+    };
+
     let nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
 
     try {
         ({ nodeResponse } = await fetchLicenseDetailsAndNodeAvailability(resolvedNodeEthAddr, config.environment));
     } catch (error) {
         console.error(error);
-        return errorMetadata;
+        return errorMetadataWithCanonical;
     }
 
     return {

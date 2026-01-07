@@ -12,14 +12,10 @@ import { cache, Suspense } from 'react';
 
 export async function generateMetadata({ params }) {
     const { licenseType, licenseId } = await params;
-    const canonical = `/license/${encodeURIComponent(licenseType)}/${encodeURIComponent(licenseId)}`;
     const errorMetadata = {
         title: 'Error',
         openGraph: {
             title: 'Error',
-        },
-        alternates: {
-            canonical,
         },
     };
 
@@ -33,10 +29,18 @@ export async function generateMetadata({ params }) {
         return errorMetadata;
     }
 
+    const canonical = `/license/${encodeURIComponent(licenseType)}/${encodeURIComponent(licenseId)}`;
+    const errorMetadataWithCanonical = {
+        ...errorMetadata,
+        alternates: {
+            canonical,
+        },
+    };
+
     try {
         await fetchLicense(licenseType, licenseId, config.environment);
     } catch (error) {
-        return errorMetadata;
+        return errorMetadataWithCanonical;
     }
 
     return {

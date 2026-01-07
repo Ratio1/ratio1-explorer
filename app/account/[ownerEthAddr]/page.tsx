@@ -32,14 +32,19 @@ const getCachedNodeOperatorProfile = unstable_cache(
 
 export async function generateMetadata({ params }) {
     const { ownerEthAddr } = await params;
+    const canonical = `/account/${encodeURIComponent(ownerEthAddr)}`;
+    const errorMetadata = {
+        title: 'Error',
+        openGraph: {
+            title: 'Error',
+        },
+        alternates: {
+            canonical,
+        },
+    };
 
     if (!ownerEthAddr || !isAddress(ownerEthAddr) || isZeroAddress(ownerEthAddr)) {
-        return {
-            title: 'Error',
-            openGraph: {
-                title: 'Error',
-            },
-        };
+        return errorMetadata;
     }
 
     try {
@@ -55,14 +60,12 @@ export async function generateMetadata({ params }) {
             openGraph: {
                 title: `Node Operator • ${primaryName}`,
             },
-        };
-    } catch (error) {
-        return {
-            title: 'Error',
-            openGraph: {
-                title: 'Error',
+            alternates: {
+                canonical,
             },
         };
+    } catch (error) {
+        return errorMetadata;
     }
 }
 

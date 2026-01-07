@@ -11,13 +11,6 @@ import * as types from '@/typedefs/blockchain';
 import { RiCloseLine } from 'react-icons/ri';
 import { isAddress } from 'viem';
 
-const errorMetadata = {
-    title: 'Error',
-    openGraph: {
-        title: 'Error',
-    },
-};
-
 const resolveNodeEthAddress = (nodeAddress?: string): types.EthAddress | null => {
     if (!nodeAddress) {
         return null;
@@ -41,6 +34,16 @@ const resolveNodeEthAddress = (nodeAddress?: string): types.EthAddress | null =>
 
 export async function generateMetadata({ params }) {
     const { nodeAddr } = await params;
+    const canonical = `/node/${encodeURIComponent(nodeAddr)}`;
+    const errorMetadata = {
+        title: 'Error',
+        openGraph: {
+            title: 'Error',
+        },
+        alternates: {
+            canonical,
+        },
+    };
     const resolvedNodeEthAddr = resolveNodeEthAddress(nodeAddr);
 
     if (!resolvedNodeEthAddr) {
@@ -61,6 +64,9 @@ export async function generateMetadata({ params }) {
         title: `Node • ${nodeResponse.node_alias}`,
         openGraph: {
             title: `Node • ${nodeResponse.node_alias}`,
+        },
+        alternates: {
+            canonical,
         },
     };
 }

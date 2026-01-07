@@ -6,11 +6,20 @@ import CSPsList from '../server-components/CPSs/CSPsList';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
 
-export async function generateMetadata() {
+export async function generateMetadata({ searchParams }: { searchParams?: { page?: string } }) {
+    const pageParam = Number.parseInt(searchParams?.page ?? '', 10);
+    const canonical =
+        Number.isFinite(pageParam) && pageParam > 1
+            ? `/cloud-service-providers?page=${pageParam}`
+            : '/cloud-service-providers';
+
     return {
         title: 'Cloud Service Providers',
         openGraph: {
             title: 'Cloud Service Providers',
+        },
+        alternates: {
+            canonical,
         },
     };
 }

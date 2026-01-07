@@ -3,8 +3,9 @@ import { isNonZeroInteger } from '@/lib/utils';
 import SearchResultsList from '../server-components/SearchResultsList';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 
-export async function generateMetadata({ searchParams }: { searchParams?: { query?: string } }) {
-    const rawQuery = searchParams?.query?.trim();
+export async function generateMetadata({ searchParams }: { searchParams?: Promise<{ query?: string }> }) {
+    const resolvedSearchParams = await searchParams;
+    const rawQuery = resolvedSearchParams?.query?.trim();
     const canonical = rawQuery ? `/search?query=${encodeURIComponent(rawQuery)}` : '/search';
 
     return {

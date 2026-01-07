@@ -7,8 +7,9 @@ import List from './server-components/Nodes/List';
 import NodesListSkeleton from './server-components/Skeletons/NodesListSkeleton';
 import { DetailedAlert } from './server-components/shared/DetailedAlert';
 
-export async function generateMetadata({ searchParams }: { searchParams?: { page?: string } }) {
-    const pageParam = Number.parseInt(searchParams?.page ?? '', 10);
+export async function generateMetadata({ searchParams }: { searchParams?: Promise<{ page?: string }> }) {
+    const resolvedSearchParams = await searchParams;
+    const pageParam = Number.parseInt(resolvedSearchParams?.page ?? '', 10);
     const canonical = Number.isFinite(pageParam) && pageParam > 1 ? `/?page=${pageParam}` : '/';
 
     return {

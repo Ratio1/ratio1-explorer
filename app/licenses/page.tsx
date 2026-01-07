@@ -5,8 +5,9 @@ import List from '../server-components/Licenses/List';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
 
-export async function generateMetadata({ searchParams }: { searchParams?: { page?: string } }) {
-    const pageParam = Number.parseInt(searchParams?.page ?? '', 10);
+export async function generateMetadata({ searchParams }: { searchParams?: Promise<{ page?: string }> }) {
+    const resolvedSearchParams = await searchParams;
+    const pageParam = Number.parseInt(resolvedSearchParams?.page ?? '', 10);
     const canonical = Number.isFinite(pageParam) && pageParam > 1 ? `/licenses?page=${pageParam}` : '/licenses';
 
     return {

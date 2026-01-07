@@ -10,15 +10,14 @@ import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import { cache, Suspense } from 'react';
 
-const errorMetadata = {
-    title: 'Error',
-    openGraph: {
-        title: 'Error',
-    },
-};
-
 export async function generateMetadata({ params }) {
     const { licenseType, licenseId } = await params;
+    const errorMetadata = {
+        title: 'Error',
+        openGraph: {
+            title: 'Error',
+        },
+    };
 
     if (!licenseType || !['ND', 'MND', 'GND'].includes(licenseType)) {
         return errorMetadata;
@@ -30,16 +29,27 @@ export async function generateMetadata({ params }) {
         return errorMetadata;
     }
 
+    const canonical = `/license/${encodeURIComponent(licenseType)}/${encodeURIComponent(licenseId)}`;
+    const errorMetadataWithCanonical = {
+        ...errorMetadata,
+        alternates: {
+            canonical,
+        },
+    };
+
     try {
         await fetchLicense(licenseType, licenseId, config.environment);
     } catch (error) {
-        return errorMetadata;
+        return errorMetadataWithCanonical;
     }
 
     return {
         title: `License #${licenseId}`,
         openGraph: {
             title: `License #${licenseId}`,
+        },
+        alternates: {
+            canonical,
         },
     };
 }

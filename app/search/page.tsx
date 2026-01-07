@@ -3,6 +3,18 @@ import { isNonZeroInteger } from '@/lib/utils';
 import SearchResultsList from '../server-components/SearchResultsList';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 
+export async function generateMetadata({ searchParams }: { searchParams?: Promise<{ query?: string }> }) {
+    const resolvedSearchParams = await searchParams;
+    const rawQuery = resolvedSearchParams?.query?.trim();
+    const canonical = rawQuery ? `/search?query=${encodeURIComponent(rawQuery)}` : '/search';
+
+    return {
+        alternates: {
+            canonical,
+        },
+    };
+}
+
 export default async function SearchPage(props: {
     searchParams?: Promise<{
         query?: string;

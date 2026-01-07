@@ -34,6 +34,9 @@ export async function generateMetadata() {
         openGraph: {
             title: 'Stats',
         },
+        alternates: {
+            canonical: '/stats',
+        },
     };
 }
 

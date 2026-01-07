@@ -11,13 +11,6 @@ import * as types from '@/typedefs/blockchain';
 import { RiCloseLine } from 'react-icons/ri';
 import { isAddress } from 'viem';
 
-const errorMetadata = {
-    title: 'Error',
-    openGraph: {
-        title: 'Error',
-    },
-};
-
 const resolveNodeEthAddress = (nodeAddress?: string): types.EthAddress | null => {
     if (!nodeAddress) {
         return null;
@@ -41,6 +34,12 @@ const resolveNodeEthAddress = (nodeAddress?: string): types.EthAddress | null =>
 
 export async function generateMetadata({ params }) {
     const { nodeAddr } = await params;
+    const errorMetadata = {
+        title: 'Error',
+        openGraph: {
+            title: 'Error',
+        },
+    };
     const resolvedNodeEthAddr = resolveNodeEthAddress(nodeAddr);
 
     if (!resolvedNodeEthAddr) {
@@ -48,19 +47,30 @@ export async function generateMetadata({ params }) {
         return errorMetadata;
     }
 
+    const canonical = `/node/${encodeURIComponent(nodeAddr)}`;
+    const errorMetadataWithCanonical = {
+        ...errorMetadata,
+        alternates: {
+            canonical,
+        },
+    };
+
     let nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
 
     try {
         ({ nodeResponse } = await fetchLicenseDetailsAndNodeAvailability(resolvedNodeEthAddr, config.environment));
     } catch (error) {
         console.error(error);
-        return errorMetadata;
+        return errorMetadataWithCanonical;
     }
 
     return {
         title: `Node • ${nodeResponse.node_alias}`,
         openGraph: {
             title: `Node • ${nodeResponse.node_alias}`,
+        },
+        alternates: {
+            canonical,
         },
     };
 }

@@ -25,19 +25,9 @@ export default function ParamsPagination({ total }: { total: number }) {
             return;
         }
 
-        const element = document.getElementById('list');
-
-        if (element) {
-            element.scrollIntoView({
-                behavior: 'auto',
-                block: 'start',
-            });
-            return;
-        }
-
         window.scrollTo({
             top: 0,
-            behavior: 'auto',
+            behavior: 'smooth',
         });
     }, [currentPage]);
 
@@ -50,7 +40,6 @@ export default function ParamsPagination({ total }: { total: number }) {
             <Pagination
                 page={currentPage}
                 onChange={(value) => {
-                    console.log('[ParamsPagination] onChange', value);
                     onPageChange(value);
                 }}
                 classNames={{

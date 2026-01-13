@@ -3,14 +3,13 @@
 import config from '@/config';
 import * as types from '@/typedefs/blockchain';
 
+const oraclesApiURL = config.oraclesUrl;
+
 export const getNodeLastEpoch = async (nodeEthAddr: types.EthAddress) => {
-    const oraclesApiURL = config.oraclesUrl;
     return _doGet<types.OraclesAvailabilityResult>(`/node_last_epoch?eth_node_addr=${nodeEthAddr}`, oraclesApiURL);
 };
 
 export const getNodeEpochsRange = async (nodeEthAddr: types.EthAddress, startEpoch: number, endEpoch: number) => {
-    const oraclesApiURL = config.oraclesUrl;
-
     return _doGet<types.OraclesAvailabilityResult>(
         `/node_epochs_range?eth_node_addr=${nodeEthAddr}&start_epoch=${startEpoch}&end_epoch=${endEpoch}`,
         oraclesApiURL,
@@ -18,8 +17,6 @@ export const getNodeEpochsRange = async (nodeEthAddr: types.EthAddress, startEpo
 };
 
 export const getCurrentEpochServer = async () => {
-    const oraclesApiURL = config.oraclesUrl;
-
     return _doGet<types.OraclesAvailabilityResult>('/current_epoch', oraclesApiURL);
 };
 

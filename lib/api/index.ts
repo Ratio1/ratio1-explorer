@@ -15,7 +15,7 @@ export async function getActiveNodes(
     const response: Response = await fetch(
         `${oraclesApiURL}/active_nodes_list?items_per_page=${pageSize}&page=${page}${alias_pattern ? `&alias_pattern=${alias_pattern}` : ''}`,
         {
-            next: { revalidate: 60 }, // Revalidate every 1 minute
+            next: { revalidate: 60 },
         },
     );
 
@@ -24,19 +24,4 @@ export async function getActiveNodes(
     }
 
     return response.json();
-}
-
-export async function pingBackend(): Promise<boolean> {
-    const backendApiURL = config.backendUrl;
-
-    let response: Response | undefined;
-
-    try {
-        response = await fetch(`${backendApiURL}/auth/nodeData`);
-    } catch (error) {
-        console.error(error);
-        return false;
-    }
-
-    return !!response && response.status === 200;
 }

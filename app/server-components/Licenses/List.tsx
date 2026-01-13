@@ -11,8 +11,6 @@ export default async function List({ licenses, currentPage }: { licenses: Licens
     const getPage = () => {
         const startIndex = (currentPage - 1) * PAGE_SIZE;
         const endIndex = startIndex + PAGE_SIZE;
-
-        console.log('[List] Page', { startIndex, endIndex, licenses: licenses.slice(startIndex, endIndex) });
         return licenses.slice(startIndex, endIndex);
     };
 
@@ -27,8 +25,11 @@ export default async function List({ licenses, currentPage }: { licenses: Licens
                     <div className="min-w-[256px]">Node</div>
                 </ListHeader>
 
-                {getPage().map((license, index) => (
-                    <Suspense key={index} fallback={<Skeleton className="min-h-[92px] w-full rounded-2xl" />}>
+                {getPage().map((license) => (
+                    <Suspense
+                        key={`${currentPage}-${license.licenseType}-${license.licenseId}`}
+                        fallback={<Skeleton className="min-h-[92px] w-full rounded-2xl" />}
+                    >
                         <License licenseType={license.licenseType} licenseId={license.licenseId.toString()} />
                     </Suspense>
                 ))}

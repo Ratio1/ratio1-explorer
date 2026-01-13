@@ -1,6 +1,6 @@
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
-import { getLicense } from '@/lib/api/blockchain';
+import { cachedGetLicense } from '@/lib/api/cache';
 import { routePath } from '@/lib/routes';
 import { isZeroAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
@@ -21,13 +21,13 @@ interface Props {
 export default async function License({ licenseType, licenseId }: Props) {
     let owner: types.EthAddress;
     let nodeAddress: types.EthAddress;
-    let totalAssignedAmount: bigint;
-    let totalClaimedAmount: bigint;
-    let assignTimestamp: bigint;
+    let totalAssignedAmount: string;
+    let totalClaimedAmount: string;
+    let assignTimestamp: string;
     let isBanned: boolean;
 
     try {
-        ({ owner, nodeAddress, totalAssignedAmount, totalClaimedAmount, assignTimestamp, isBanned } = await getLicense(
+        ({ owner, nodeAddress, totalAssignedAmount, totalClaimedAmount, assignTimestamp, isBanned } = await cachedGetLicense(
             licenseType,
             licenseId,
         ));
@@ -45,8 +45,8 @@ export default async function License({ licenseType, licenseId }: Props) {
                 <LicenseSmallCard
                     licenseId={Number(licenseId)}
                     licenseType={licenseType}
-                    totalAssignedAmount={totalAssignedAmount}
-                    totalClaimedAmount={totalClaimedAmount}
+                    totalAssignedAmount={BigInt(totalAssignedAmount)}
+                    totalClaimedAmount={BigInt(totalClaimedAmount)}
                     isBanned={isBanned}
                     isLink
                     hideType

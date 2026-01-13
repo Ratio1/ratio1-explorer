@@ -8,10 +8,11 @@ export default function Loading() {
             <div className="col w-full gap-2">
                 <Skeleton className="only-lg min-h-[56px] w-full rounded-2xl" />
 
-                <Skeleton className="min-h-[92px] w-full rounded-2xl" />
-                <Skeleton className="min-h-[92px] w-full rounded-2xl" />
-                <Skeleton className="min-h-[92px] w-full rounded-2xl" />
-                <Skeleton className="min-h-[92px] w-full rounded-2xl" />
+                {Array(6)
+                    .fill(null)
+                    .map((_, index) => (
+                        <Skeleton key={index} className="min-h-[92px] w-full rounded-2xl" />
+                    ))}
             </div>
         </div>
     );

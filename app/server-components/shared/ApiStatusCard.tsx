@@ -1,4 +1,4 @@
-import { pingBackend } from '@/lib/api';
+import { pingBackend } from '@/lib/api/backend';
 import clsx from 'clsx';
 
 export default async function ApiStatusCard() {

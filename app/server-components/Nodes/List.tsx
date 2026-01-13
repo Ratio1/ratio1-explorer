@@ -1,5 +1,5 @@
 import Node from '@/app/server-components/Nodes/Node';
-import ParamsPagination from '@/components/Nodes/ParamsPagination';
+import ParamsPagination from '@/components/shared/ParamsPagination';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import { Fragment, Suspense } from 'react';

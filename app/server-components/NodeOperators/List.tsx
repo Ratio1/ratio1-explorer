@@ -1,4 +1,4 @@
-import ParamsPagination from '@/components/Nodes/ParamsPagination';
+import ParamsPagination from '@/components/shared/ParamsPagination';
 import { getPublicProfiles } from '@/lib/api/backend';
 import * as types from '@/typedefs/blockchain';
 import { LicenseItem } from '@/typedefs/general';

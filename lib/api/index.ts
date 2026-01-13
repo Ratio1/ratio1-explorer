@@ -3,7 +3,7 @@
 import config from '@/config';
 import * as types from '@/typedefs/blockchain';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 8;
 
 export async function getActiveNodes(
     page: number = 1,

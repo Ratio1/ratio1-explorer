@@ -18,6 +18,9 @@ type NodeLicenseDetailsResponse = License & {
     licenseId: bigint;
     licenseType: 'ND' | 'MND' | 'GND' | undefined;
     owner: EthAddress;
+    totalAssignedAmount: bigint;
+    totalClaimedAmount: bigint;
+    isBanned: boolean;
 };
 
 type LicenseInfo = License & {

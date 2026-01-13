@@ -1,5 +1,5 @@
-import { getActiveNodesCached } from '@/app/page';
 import HeroEpochCard from '@/components/Hero/HeroEpochCard';
+import { getActiveNodesCached } from '@/lib/api/cache';
 import { fN } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';

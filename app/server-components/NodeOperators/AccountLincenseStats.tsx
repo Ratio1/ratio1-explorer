@@ -1,15 +1,16 @@
 import config from '@/config';
-import { fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
+import { fetchErc20Balance } from '@/lib/api/blockchain';
+import { cachedGetLicenses } from '@/lib/api/cache';
 import { fBI } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { CardItem } from '../shared/CardItem';
 
 export default async function AccountLincenseStats({ ethAddress }: { ethAddress: types.EthAddress }) {
-    let licenses: types.LicenseInfo[], r1Balance: bigint;
+    let licenses: types.CachedLicense[], r1Balance: bigint;
 
     try {
         [licenses, r1Balance] = await Promise.all([
-            getLicenses(ethAddress),
+            cachedGetLicenses(ethAddress),
             fetchErc20Balance(ethAddress, config.r1ContractAddress),
         ]);
     } catch (error: any) {
@@ -30,8 +31,9 @@ export default async function AccountLincenseStats({ ethAddress }: { ethAddress:
                         <div>
                             {licenses.length > 0
                                 ? licenses.reduce(
-                                      (max, license) => (license.lastClaimEpoch > max ? license.lastClaimEpoch : max),
-                                      licenses[0].lastClaimEpoch,
+                                      (max, license) =>
+                                          Number(license.lastClaimEpoch) > max ? Number(license.lastClaimEpoch) : max,
+                                      Number(licenses[0].lastClaimEpoch),
                                   ) || '-'
                                 : '-'}
                         </div>

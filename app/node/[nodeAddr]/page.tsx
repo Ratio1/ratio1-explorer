@@ -96,7 +96,8 @@ const fetchLicenseDetailsAndNodeAvailability = async (
         licenseId: bigint,
         licenseType: 'ND' | 'MND' | 'GND' | undefined,
         owner: types.EthAddress,
-        r1PoaiRewards: bigint;
+        r1PoaiRewards: bigint,
+        usdcPoaiRewards: bigint;
 
     try {
         ({
@@ -112,6 +113,7 @@ const fetchLicenseDetailsAndNodeAvailability = async (
             licenseType,
             owner,
             r1PoaiRewards,
+            usdcPoaiRewards,
         } = await getNodeLicenseDetails(nodeEthAddr));
     } catch (error) {
         console.error(error);
@@ -134,6 +136,7 @@ const fetchLicenseDetailsAndNodeAvailability = async (
         isBanned,
         owner,
         r1PoaiRewards,
+        usdcPoaiRewards,
     };
 
     const nodeResponse = await getNodeAvailability(nodeEthAddr, assignTimestamp);

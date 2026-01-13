@@ -5,7 +5,6 @@ import * as types from '@/typedefs/blockchain';
 
 export const getNodeLastEpoch = async (nodeEthAddr: types.EthAddress) => {
     const oraclesApiURL = config.oraclesUrl;
-
     return _doGet<types.OraclesAvailabilityResult>(`/node_last_epoch?eth_node_addr=${nodeEthAddr}`, oraclesApiURL);
 };
 

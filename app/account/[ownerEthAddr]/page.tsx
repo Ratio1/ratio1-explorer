@@ -8,7 +8,8 @@ import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import config from '@/config';
 import { getPublicProfiles } from '@/lib/api/backend';
-import { fetchCSPDetails, fetchErc20Balance, getLicenses } from '@/lib/api/blockchain';
+import { fetchCSPDetails, fetchErc20Balance } from '@/lib/api/blockchain';
+import { cachedGetLicenses } from '@/lib/api/cache';
 import { cachedGetENSName, fBI, getShortAddress, isZeroAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import type { PublicProfileInfo } from '@/typedefs/general';
@@ -81,7 +82,7 @@ export default async function NodeOperatorPage({ params }) {
         return <NotFound />;
     }
 
-    let licenses: types.LicenseInfo[],
+    let licenses: types.CachedLicense[],
         ensName: string | undefined,
         r1Balance: bigint,
         publicProfileInfo: PublicProfileInfo | undefined,
@@ -89,7 +90,7 @@ export default async function NodeOperatorPage({ params }) {
 
     try {
         [licenses, ensName, r1Balance, publicProfileInfo, cspDetails] = await Promise.all([
-            getLicenses(ownerEthAddr),
+            cachedGetLicenses(ownerEthAddr),
             cachedGetENSName(ownerEthAddr),
             fetchErc20Balance(ownerEthAddr, config.r1ContractAddress),
             getCachedNodeOperatorProfile(ownerEthAddr as types.EthAddress),
@@ -133,7 +134,7 @@ export default async function NodeOperatorPage({ params }) {
                         value={
                             <div className="text-primary">
                                 {fBI(
-                                    licenses.reduce((acc, license) => acc + license.totalClaimedAmount, 0n),
+                                    licenses.reduce((acc, license) => acc + BigInt(license.totalClaimedAmount), 0n),
                                     18,
                                 )}
                             </div>
@@ -148,9 +149,12 @@ export default async function NodeOperatorPage({ params }) {
                         value={
                             <div className="w-full min-w-52 xs:min-w-56 md:min-w-60">
                                 <UsageStats
-                                    totalClaimedAmount={licenses.reduce((acc, license) => acc + license.totalClaimedAmount, 0n)}
+                                    totalClaimedAmount={licenses.reduce(
+                                        (acc, license) => acc + BigInt(license.totalClaimedAmount),
+                                        0n,
+                                    )}
                                     totalAssignedAmount={licenses.reduce(
-                                        (acc, license) => acc + license.totalAssignedAmount,
+                                        (acc, license) => acc + BigInt(license.totalAssignedAmount),
                                         0n,
                                     )}
                                 />

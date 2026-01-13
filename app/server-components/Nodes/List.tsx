@@ -1,8 +1,8 @@
 import Node from '@/app/server-components/Nodes/Node';
-import ParamsPagination from '@/components/Nodes/ParamsPagination';
+import ParamsPagination from '@/components/shared/ParamsPagination';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
-import { Fragment, Suspense } from 'react';
+import { Suspense } from 'react';
 import ListHeader from '../shared/ListHeader';
 import NodeListGNDCard from './NodeListGNDCard';
 
@@ -36,11 +36,12 @@ export default async function List({
                 )}
 
                 {Object.entries(nodes).map(([ratio1Addr, node]) => (
-                    <Fragment key={ratio1Addr}>
-                        <Suspense fallback={<Skeleton className="min-h-[92px] w-full rounded-2xl" />}>
-                            <Node ratio1Addr={ratio1Addr as types.R1Address} node={node} />
-                        </Suspense>
-                    </Fragment>
+                    <Suspense
+                        key={`${currentPage}-${ratio1Addr}`}
+                        fallback={<Skeleton className="min-h-[92px] w-full rounded-2xl" />}
+                    >
+                        <Node ratio1Addr={ratio1Addr as types.R1Address} node={node} />
+                    </Suspense>
                 ))}
             </div>
 

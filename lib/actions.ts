@@ -1,10 +1,10 @@
 'use server';
 
 import { getCurrentEpoch, getLicenseFirstCheckEpoch } from '@/config';
+import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
 import { SearchResult } from '@/typedefs/general';
 import { headers } from 'next/headers';
-import { getActiveNodes } from './api';
 import { getLicense } from './api/blockchain';
 import { getNodeEpochsRange, getNodeLastEpoch } from './api/oracles';
 import { cachedGetENSName, internalNodeAddressToEthAddress, isNonZeroInteger, isZeroAddress } from './utils';

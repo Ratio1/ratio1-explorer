@@ -12,17 +12,37 @@ type License = {
     isBanned: boolean;
     owner: EthAddress;
     r1PoaiRewards: bigint;
+    usdcPoaiRewards: bigint;
 };
 
 type NodeLicenseDetailsResponse = License & {
     licenseId: bigint;
     licenseType: 'ND' | 'MND' | 'GND' | undefined;
     owner: EthAddress;
+    totalAssignedAmount: bigint;
+    totalClaimedAmount: bigint;
+    isBanned: boolean;
 };
 
 type LicenseInfo = License & {
     licenseType: 'ND' | 'MND' | 'GND';
     licenseId: bigint;
+    isLinked: boolean;
+};
+
+type CachedLicense = {
+    licenseType: 'ND' | 'MND' | 'GND';
+    licenseId: string;
+    owner: EthAddress;
+    nodeAddress: EthAddress;
+    totalAssignedAmount: string;
+    totalClaimedAmount: string;
+    lastClaimEpoch: string;
+    assignTimestamp: string;
+    lastClaimOracle: `0x${string}`;
+    isBanned: boolean;
+    usdcPoaiRewards: string;
+    r1PoaiRewards: string;
     isLinked: boolean;
 };
 
@@ -145,6 +165,7 @@ type CSP = {
 
 export type {
     BuyLicenseRequest,
+    CachedLicense,
     ComputeParam,
     CSP,
     EthAddress,

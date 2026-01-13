@@ -1,10 +1,10 @@
+import { getActiveNodes } from '@/lib/api';
 import * as types from '@/typedefs/blockchain';
 import { SearchResult } from '@/typedefs/general';
 import { secp256k1 } from '@noble/curves/secp256k1';
 import { Metadata } from 'next';
 import { cache, JSX } from 'react';
 import { bytesToHex, formatUnits, getAddress, hexToBytes, keccak256 } from 'viem';
-import { getActiveNodes } from './api';
 import { getLicense } from './api/blockchain';
 import { getNodeLastEpoch } from './api/oracles';
 

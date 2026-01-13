@@ -1,4 +1,4 @@
-import ParamsPagination from '@/components/Nodes/ParamsPagination';
+import ParamsPagination from '@/components/shared/ParamsPagination';
 import { getPublicProfiles } from '@/lib/api/backend';
 import * as types from '@/typedefs/blockchain';
 import { LicenseItem } from '@/typedefs/general';
@@ -62,7 +62,10 @@ export default async function List({
                 </ListHeader>
 
                 {nodeOperators.map((item) => (
-                    <Suspense key={item.ethAddress} fallback={<Skeleton className="min-h-[68px] w-full rounded-2xl" />}>
+                    <Suspense
+                        key={`${currentPage}-${item.ethAddress}`}
+                        fallback={<Skeleton className="min-h-[68px] w-full rounded-2xl" />}
+                    >
                         <NodeOperatorCard name={item.name} ethAddress={item.ethAddress} licenses={item.licenses} />
                     </Suspense>
                 ))}

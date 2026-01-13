@@ -2,36 +2,34 @@
 
 import { Pagination } from '@heroui/pagination';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 
 export default function ParamsPagination({ total }: { total: number }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const { replace } = useRouter();
 
+    const isMounted = useRef(false);
+
     const currentPage = Number(searchParams.get('page')) || 1;
 
     const onPageChange = (pageNumber: number) => {
         const params = new URLSearchParams(searchParams);
         params.set('page', pageNumber.toString());
-        replace(`${pathname}?${params.toString()}`);
-
-        const element = document.getElementById('list');
-
-        if (element) {
-            element.scrollIntoView({
-                behavior: 'auto',
-                block: 'start',
-            });
-        } else {
-            // Fallback to scrolling to top if element not found
-            setTimeout(() => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'auto',
-                });
-            }, 0);
-        }
+        replace(`${pathname}?${params.toString()}`, { scroll: false });
     };
+
+    useEffect(() => {
+        if (!isMounted.current) {
+            isMounted.current = true;
+            return;
+        }
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    }, [currentPage]);
 
     if (total === 1) {
         return null;

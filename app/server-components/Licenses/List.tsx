@@ -1,4 +1,4 @@
-import ParamsPagination from '@/components/Nodes/ParamsPagination';
+import ParamsPagination from '@/components/shared/ParamsPagination';
 import { LicenseItem } from '@/typedefs/general';
 import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
@@ -25,8 +25,11 @@ export default async function List({ licenses, currentPage }: { licenses: Licens
                     <div className="min-w-[256px]">Node</div>
                 </ListHeader>
 
-                {getPage().map((license, index) => (
-                    <Suspense key={index} fallback={<Skeleton className="min-h-[92px] w-full rounded-2xl" />}>
+                {getPage().map((license) => (
+                    <Suspense
+                        key={`${currentPage}-${license.licenseType}-${license.licenseId}`}
+                        fallback={<Skeleton className="min-h-[92px] w-full rounded-2xl" />}
+                    >
                         <License licenseType={license.licenseType} licenseId={license.licenseId.toString()} />
                     </Suspense>
                 ))}

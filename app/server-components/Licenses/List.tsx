@@ -1,4 +1,4 @@
-import ParamsPagination from '@/components/Nodes/ParamsPagination';
+import ParamsPagination from '@/components/shared/ParamsPagination';
 import { LicenseItem } from '@/typedefs/general';
 import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
@@ -11,6 +11,8 @@ export default async function List({ licenses, currentPage }: { licenses: Licens
     const getPage = () => {
         const startIndex = (currentPage - 1) * PAGE_SIZE;
         const endIndex = startIndex + PAGE_SIZE;
+
+        console.log('[List] Page', { startIndex, endIndex, licenses: licenses.slice(startIndex, endIndex) });
         return licenses.slice(startIndex, endIndex);
     };
 

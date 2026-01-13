@@ -1,19 +1,18 @@
-import { getNodeLicenseDetails } from '@/lib/api/blockchain';
+import { cachedGetNodeLicenseDetails } from '@/lib/api/cache';
 import { NodeState, R1Address } from '@/typedefs/blockchain';
 import NodeListNodeCard from './NodeListNodeCard';
 
 export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address; node: NodeState }) {
-    let licenseId: bigint,
+    let licenseId: string,
         licenseType: 'ND' | 'MND' | 'GND' | undefined,
         owner: string,
-        totalAssignedAmount: bigint,
-        totalClaimedAmount: bigint,
+        totalAssignedAmount: string,
+        totalClaimedAmount: string,
         isBanned: boolean;
 
     try {
-        ({ licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount, isBanned } = await getNodeLicenseDetails(
-            node.eth_addr,
-        ));
+        ({ licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount, isBanned } =
+            await cachedGetNodeLicenseDetails(node.eth_addr));
 
         // Omit the GND as it's pinned to be displayed on top of the list (1st page)
         if (licenseType === 'GND') {
@@ -33,11 +32,11 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
         <NodeListNodeCard
             ratio1Addr={ratio1Addr}
             node={node}
-            licenseId={licenseId}
+            licenseId={BigInt(licenseId)}
             licenseType={licenseType}
             owner={owner}
-            totalAssignedAmount={totalAssignedAmount}
-            totalClaimedAmount={totalClaimedAmount}
+            totalAssignedAmount={BigInt(totalAssignedAmount)}
+            totalClaimedAmount={BigInt(totalClaimedAmount)}
             isBanned={isBanned}
         />
     );

@@ -1,4 +1,4 @@
-import { getActiveNodesCached } from '@/app/page';
+import { getActiveNodesCached } from '@/lib/api/cache';
 import * as types from '@/typedefs/blockchain';
 import { RiErrorWarningLine } from 'react-icons/ri';
 import { DetailedAlert } from '../shared/DetailedAlert';

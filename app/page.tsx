@@ -1,7 +1,5 @@
-import { getActiveNodes } from '@/lib/api';
-import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
-import { cache, Suspense } from 'react';
+import { Suspense } from 'react';
 import ActiveNodes from './server-components/Nodes/ActiveNodes';
 import Hero from './server-components/Nodes/Hero';
 import NodesListSkeleton from './server-components/Skeletons/NodesListSkeleton';
@@ -17,16 +15,6 @@ export async function generateMetadata({ searchParams }: { searchParams?: Promis
         },
     };
 }
-
-export const getActiveNodesCached = cache(async (currentPage: number) => {
-    try {
-        const response: types.OraclesDefaultResult = await getActiveNodes(currentPage);
-        return { response };
-    } catch (error) {
-        console.log('Failed to fetch active nodes:', error);
-        return { error };
-    }
-});
 
 export default async function HomePage(props: {
     searchParams?: Promise<{

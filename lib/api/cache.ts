@@ -1,6 +1,8 @@
 import * as types from '@/typedefs/blockchain';
 import { unstable_cache } from 'next/cache';
-import { getLicense, getNodeLicenseDetails } from './blockchain';
+import { cache } from 'react';
+import { getActiveNodes } from '.';
+import { getLicense, getLicenses, getNodeLicenseDetails } from './blockchain';
 
 export const cachedGetLicense = unstable_cache(
     async (
@@ -32,6 +34,25 @@ export const cachedGetLicense = unstable_cache(
     { revalidate: 60 },
 );
 
+export const cachedGetLicenses = unstable_cache(
+    async (address: types.EthAddress): Promise<types.CachedLicense[]> => {
+        const licenses = await getLicenses(address);
+
+        return licenses.map((license) => ({
+            ...license,
+            licenseId: license.licenseId.toString(),
+            totalAssignedAmount: license.totalAssignedAmount.toString(),
+            totalClaimedAmount: license.totalClaimedAmount.toString(),
+            lastClaimEpoch: license.lastClaimEpoch.toString(),
+            assignTimestamp: license.assignTimestamp.toString(),
+            usdcPoaiRewards: license.usdcPoaiRewards.toString(),
+            r1PoaiRewards: license.r1PoaiRewards.toString(),
+        }));
+    },
+    ['licenses'],
+    { revalidate: 60 },
+);
+
 export const cachedGetNodeLicenseDetails = unstable_cache(
     async (
         nodeAddress: types.EthAddress,
@@ -58,3 +79,13 @@ export const cachedGetNodeLicenseDetails = unstable_cache(
     ['nodeLicenseDetails'],
     { revalidate: 60 },
 );
+
+export const getActiveNodesCached = cache(async (currentPage: number) => {
+    try {
+        const response: types.OraclesDefaultResult = await getActiveNodes(currentPage);
+        return { response };
+    } catch (error) {
+        console.log('Failed to fetch active nodes:', error);
+        return { error };
+    }
+});

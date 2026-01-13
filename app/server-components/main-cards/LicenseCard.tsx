@@ -112,7 +112,7 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                     isFlexible
                 />
 
-                <PoA license={license} />
+                <PoA totalAssignedAmount={license.totalAssignedAmount} totalClaimedAmount={license.totalClaimedAmount} />
 
                 <Suspense fallback={<Skeleton className="min-h-[76px] w-full rounded-xl md:max-w-[258px]" />}>
                     <LicenseRewardsPoA

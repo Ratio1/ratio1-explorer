@@ -1,24 +1,27 @@
-import * as types from '@/typedefs/blockchain';
 import { RiCpuLine } from 'react-icons/ri';
 import { formatUnits } from 'viem';
 import { CardFlexible } from '../shared/cards/CardFlexible';
 
-export default async function PoA({ license }: { license: types.License }) {
+export default async function PoA({
+    totalAssignedAmount,
+    totalClaimedAmount,
+}: {
+    totalAssignedAmount: bigint;
+    totalClaimedAmount: bigint;
+}) {
     const getStats = () => (
         <>
             <div className="col gap-[5px]">
                 <div className="text-[15px] font-medium leading-none text-slate-500">Remaining</div>
                 <div className="font-semibold leading-none">
-                    {parseFloat(
-                        Number(formatUnits(license.totalAssignedAmount - license.totalClaimedAmount, 18)).toFixed(2),
-                    ).toLocaleString()}
+                    {parseFloat(Number(formatUnits(totalAssignedAmount - totalClaimedAmount, 18)).toFixed(2)).toLocaleString()}
                 </div>
             </div>
 
             <div className="col gap-[5px]">
                 <div className="text-[15px] font-medium leading-none text-slate-500">Initial amount</div>
                 <div className="font-semibold leading-none">
-                    {parseFloat(Number(formatUnits(license.totalAssignedAmount ?? 0n, 18)).toFixed(2)).toLocaleString()}
+                    {parseFloat(Number(formatUnits(totalAssignedAmount ?? 0n, 18)).toFixed(2)).toLocaleString()}
                 </div>
             </div>
         </>

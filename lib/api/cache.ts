@@ -47,6 +47,7 @@ export const cachedGetLicenses = unstable_cache(
             assignTimestamp: license.assignTimestamp.toString(),
             usdcPoaiRewards: license.usdcPoaiRewards.toString(),
             r1PoaiRewards: license.r1PoaiRewards.toString(),
+            firstMiningEpoch: license.firstMiningEpoch?.toString(),
         }));
     },
     ['licenses'],

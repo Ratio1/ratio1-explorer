@@ -1,4 +1,5 @@
 import ParamsPagination from '@/components/shared/ParamsPagination';
+import { PAGE_SIZE } from '@/lib/api';
 import { getPublicProfiles } from '@/lib/api/backend';
 import * as types from '@/typedefs/blockchain';
 import { LicenseItem } from '@/typedefs/general';
@@ -6,8 +7,6 @@ import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
 import ListHeader from '../shared/ListHeader';
 import NodeOperatorCard from './NodeOperatorCard';
-
-const PAGE_SIZE = 10;
 
 export default async function List({
     owners,

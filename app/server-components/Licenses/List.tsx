@@ -1,11 +1,10 @@
 import ParamsPagination from '@/components/shared/ParamsPagination';
+import { PAGE_SIZE } from '@/lib/api';
 import { LicenseItem } from '@/typedefs/general';
 import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
 import ListHeader from '../shared/ListHeader';
 import License from './License';
-
-const PAGE_SIZE = 10;
 
 export default async function List({ licenses, currentPage }: { licenses: LicenseItem[]; currentPage: number }) {
     const getPage = () => {

@@ -6,7 +6,7 @@ import NodesListSkeleton from './server-components/Skeletons/NodesListSkeleton';
 
 export async function generateMetadata({ searchParams }: { searchParams?: Promise<{ page?: string }> }) {
     const resolvedSearchParams = await searchParams;
-    const pageParam = Number.parseInt(resolvedSearchParams?.page ?? '', 1);
+    const pageParam = Number.parseInt(resolvedSearchParams?.page ?? '', 10);
     const canonical = Number.isFinite(pageParam) && pageParam > 1 ? `/?page=${pageParam}` : '/';
 
     return {

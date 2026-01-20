@@ -44,6 +44,7 @@ type CachedLicense = {
     usdcPoaiRewards: string;
     r1PoaiRewards: string;
     isLinked: boolean;
+    firstMiningEpoch?: string;
 };
 
 type ComputeParam = {
@@ -177,5 +178,6 @@ export type {
     OraclesDefaultResult,
     R1Address,
     Resources,
-    ServerInfo,
+    ServerInfo
 };
+

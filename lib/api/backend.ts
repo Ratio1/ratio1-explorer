@@ -18,8 +18,12 @@ const getCachedBrandingPlatforms = unstable_cache(
 export const getBrandingPlatforms = async () => getCachedBrandingPlatforms();
 
 export const pingBackend = async () => {
-    const response = await fetch(`${backendUrl}/auth/nodeData`);
-    return response.ok;
+    try {
+        const response = await fetch(`${backendUrl}/auth/nodeData`);
+        return response.ok;
+    } catch {
+        return false;
+    }
 };
 
 // POST

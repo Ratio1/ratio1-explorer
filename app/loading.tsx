@@ -1,3 +1,4 @@
+import { PAGE_SIZE } from '@/lib/api';
 import { Skeleton } from '@heroui/skeleton';
 
 export default function Loading() {
@@ -8,12 +9,11 @@ export default function Loading() {
             <div className="col w-full gap-2">
                 <Skeleton className="only-lg min-h-[56px] w-full rounded-xl" />
 
-                <Skeleton className="min-h-[84px] w-full rounded-2xl" />
-                <Skeleton className="min-h-[84px] w-full rounded-2xl" />
-                <Skeleton className="min-h-[84px] w-full rounded-2xl" />
-                <Skeleton className="min-h-[84px] w-full rounded-2xl" />
-                <Skeleton className="min-h-[84px] w-full rounded-2xl" />
-                <Skeleton className="min-h-[84px] w-full rounded-2xl" />
+                {Array(PAGE_SIZE)
+                    .fill(null)
+                    .map((_, index) => (
+                        <Skeleton key={index} className="min-h-[84px] w-full rounded-2xl" />
+                    ))}
             </div>
         </div>
     );

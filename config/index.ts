@@ -24,6 +24,7 @@ export type Config = {
 };
 
 export const projectId = 'b0be1322e97542cc32eb568b37173a1c'; // Ratio1 Explorer
+export const PAGE_SIZE = 10;
 
 export const getCurrentEpoch = () =>
     Math.floor((Date.now() / 1000 - config.genesisDate.getTime() / 1000) / config.epochDurationInSeconds);

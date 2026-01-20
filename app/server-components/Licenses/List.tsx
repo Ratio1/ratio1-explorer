@@ -1,5 +1,5 @@
 import ParamsPagination from '@/components/shared/ParamsPagination';
-import { PAGE_SIZE } from '@/lib/api';
+import { PAGE_SIZE } from '@/config';
 import { LicenseItem } from '@/typedefs/general';
 import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';

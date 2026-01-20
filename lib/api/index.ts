@@ -1,9 +1,7 @@
 'use server';
 
-import config from '@/config';
+import config, { PAGE_SIZE } from '@/config';
 import * as types from '@/typedefs/blockchain';
-
-export const PAGE_SIZE = 10;
 
 export async function getActiveNodes(
     page: number = 1,

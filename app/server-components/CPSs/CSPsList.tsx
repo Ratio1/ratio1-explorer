@@ -1,5 +1,5 @@
 import ParamsPagination from '@/components/shared/ParamsPagination';
-import { PAGE_SIZE } from '@/lib/api';
+import { PAGE_SIZE } from '@/config';
 import { getPublicProfiles } from '@/lib/api/backend';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';

@@ -11,13 +11,16 @@ import { LargeTag } from '../shared/LargeTag';
 import UsageStats from '../shared/Licenses/UsageStats';
 
 interface Props {
-    license: types.License;
+    license: types.CachedLicense;
     licenseType: 'ND' | 'MND' | 'GND';
     licenseId: string;
     nodeEthAddress: types.EthAddress;
 }
 
 export default async function CompactLicenseCard({ license, licenseType, licenseId, nodeEthAddress }: Props) {
+    const totalAssignedAmount = BigInt(license.totalAssignedAmount);
+    const totalClaimedAmount = BigInt(license.totalClaimedAmount);
+
     return (
         <BorderedCard>
             <Link href={`${routePath.license}/${licenseType}/${licenseId}`} className="hover:text-primary">
@@ -54,16 +57,13 @@ export default async function CompactLicenseCard({ license, licenseType, license
                     label="Usage"
                     value={
                         <div className="w-full min-w-52 xs:min-w-56 md:min-w-60">
-                            <UsageStats
-                                totalClaimedAmount={license.totalClaimedAmount}
-                                totalAssignedAmount={license.totalAssignedAmount}
-                            />
+                            <UsageStats totalClaimedAmount={totalClaimedAmount} totalAssignedAmount={totalAssignedAmount} />
                         </div>
                     }
                     isSmall
                 />
 
-                <PoA license={license} />
+                <PoA totalAssignedAmount={totalAssignedAmount} totalClaimedAmount={totalClaimedAmount} />
 
                 {!isZeroAddress(nodeEthAddress) && (
                     <CardHorizontal

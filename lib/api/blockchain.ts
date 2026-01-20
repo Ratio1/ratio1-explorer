@@ -101,8 +101,6 @@ export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: n
                 args: [BigInt(licenseId)],
             })
             .then((license) => {
-                // console.log('[getLicense (Reader)]', license);
-
                 const isLinked = !isZeroAddress(license.nodeAddress);
                 const licenseType = [undefined, 'ND', 'MND', 'GND'][license.licenseType] as 'ND' | 'MND' | 'GND' | undefined;
                 if (licenseType === undefined) {
@@ -261,8 +259,8 @@ export const getLicenseRewards = async (
 };
 
 export async function getLicensesTotalSupply(): Promise<{
-    mndTotalSupply: bigint;
-    ndTotalSupply: bigint;
+    mndTotalSupply: string;
+    ndTotalSupply: string;
 }> {
     const publicClient = await getPublicClient();
 
@@ -271,9 +269,10 @@ export async function getLicensesTotalSupply(): Promise<{
         abi: ReaderAbi,
         functionName: 'getLicensesTotalSupply',
     });
+
     return {
-        mndTotalSupply,
-        ndTotalSupply,
+        mndTotalSupply: mndTotalSupply.toString(),
+        ndTotalSupply: ndTotalSupply.toString(),
     };
 }
 

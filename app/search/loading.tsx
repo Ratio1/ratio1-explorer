@@ -1,4 +1,4 @@
-import { PAGE_SIZE } from '@/lib/api';
+import { PAGE_SIZE } from '@/config';
 import { Skeleton } from '@heroui/skeleton';
 
 export default function Loading() {

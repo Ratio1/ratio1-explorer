@@ -17,6 +17,15 @@ const getCachedBrandingPlatforms = unstable_cache(
 // GET
 export const getBrandingPlatforms = async () => getCachedBrandingPlatforms();
 
+export const pingBackend = async () => {
+    try {
+        const response = await fetch(`${backendUrl}/auth/nodeData`);
+        return response.ok;
+    } catch {
+        return false;
+    }
+};
+
 // POST
 export const getPublicProfiles = async (addresses: EthAddress[]) =>
     _doPost<{

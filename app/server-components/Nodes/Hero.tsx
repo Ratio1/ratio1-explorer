@@ -1,4 +1,5 @@
 import HeroEpochCard from '@/components/Hero/HeroEpochCard';
+import { getActiveNodesCached } from '@/lib/api/cache';
 import { fN } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
@@ -79,30 +80,27 @@ const CachedHeroContent = async () => (
     </>
 );
 
-export default async function Hero({
-    nodesTotalItems,
-    resourcesTotal,
-    serverInfo,
-}: {
-    nodesTotalItems: number;
-    resourcesTotal: types.Resources;
-    serverInfo: {
-        alias: string;
-        version: string;
-    };
-}) {
+export default async function Hero({ currentPage }: { currentPage: number }) {
+    const { response } = await getActiveNodesCached(currentPage);
+
+    if (!response) {
+        return null;
+    }
+
+    const { nodes_total_items, resources_total, server_alias, server_version } = response.result;
+
     return (
         <div id="hero" className="w-full">
             <BorderedCard>
                 <div className="card-title-big font-bold">Nodes</div>
 
                 <div className="flexible-row">
-                    <HeroStats nodesTotalItems={nodesTotalItems} resourcesTotal={resourcesTotal} />
+                    <HeroStats nodesTotalItems={nodes_total_items} resourcesTotal={resources_total} />
                     <CachedHeroContent />
                 </div>
 
                 <div className="w-full text-right text-sm font-medium text-slate-400 lg:-mt-1">
-                    {serverInfo.alias} • v{serverInfo.version}
+                    {server_alias} • v{server_version}
                 </div>
             </BorderedCard>
         </div>

@@ -1,4 +1,5 @@
-import ParamsPagination from '@/components/Nodes/ParamsPagination';
+import ParamsPagination from '@/components/shared/ParamsPagination';
+import { PAGE_SIZE } from '@/config';
 import { getPublicProfiles } from '@/lib/api/backend';
 import * as types from '@/typedefs/blockchain';
 import { LicenseItem } from '@/typedefs/general';
@@ -6,8 +7,6 @@ import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
 import ListHeader from '../shared/ListHeader';
 import NodeOperatorCard from './NodeOperatorCard';
-
-const PAGE_SIZE = 10;
 
 export default async function List({
     owners,
@@ -62,7 +61,10 @@ export default async function List({
                 </ListHeader>
 
                 {nodeOperators.map((item) => (
-                    <Suspense key={item.ethAddress} fallback={<Skeleton className="min-h-[68px] w-full rounded-2xl" />}>
+                    <Suspense
+                        key={`${currentPage}-${item.ethAddress}`}
+                        fallback={<Skeleton className="min-h-[68px] w-full rounded-2xl" />}
+                    >
                         <NodeOperatorCard name={item.name} ethAddress={item.ethAddress} licenses={item.licenses} />
                     </Suspense>
                 ))}

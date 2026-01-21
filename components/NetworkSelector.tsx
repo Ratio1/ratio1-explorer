@@ -1,7 +1,7 @@
 'use client';
 
 import config, { domains } from '@/config';
-import { pingBackend } from '@/lib/api';
+import { pingBackend } from '@/lib/api/backend';
 import { Select, SelectItem } from '@heroui/select';
 import { SharedSelection } from '@heroui/system';
 import clsx from 'clsx';

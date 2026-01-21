@@ -1,12 +1,11 @@
-import ParamsPagination from '@/components/Nodes/ParamsPagination';
+import ParamsPagination from '@/components/shared/ParamsPagination';
+import { PAGE_SIZE } from '@/config';
 import { getPublicProfiles } from '@/lib/api/backend';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import { Suspense } from 'react';
 import ListHeader from '../shared/ListHeader';
 import CSPCard from './CSPCard';
-
-const PAGE_SIZE = 10;
 
 export default async function CSPsList({ csps, currentPage }: { csps: readonly types.CSP[]; currentPage: number }) {
     const getPageEntries = () => {

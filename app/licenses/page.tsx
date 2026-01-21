@@ -1,6 +1,7 @@
 import ErrorComponent from '@/app/server-components/shared/ErrorComponent';
 import { getLicensesTotalSupply } from '@/lib/api/blockchain';
 import { LicenseItem } from '@/typedefs/general';
+import { unstable_cache } from 'next/cache';
 import List from '../server-components/Licenses/List';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
@@ -21,6 +22,8 @@ export async function generateMetadata({ searchParams }: { searchParams?: Promis
     };
 }
 
+const getCachedSupply = unstable_cache(getLicensesTotalSupply, ['licenses-total-supply'], { revalidate: 300 });
+
 export default async function LicensesPage(props: {
     searchParams?: Promise<{
         page?: string;
@@ -29,11 +32,15 @@ export default async function LicensesPage(props: {
     const searchParams = await props.searchParams;
     const currentPage = Number(searchParams?.page) || 1;
 
-    let ndTotalSupply: bigint, mndTotalSupply: bigint;
+    let ndTotalSupply: number, mndTotalSupply: number;
     let licenses: LicenseItem[];
 
     try {
-        ({ ndTotalSupply, mndTotalSupply } = await getLicensesTotalSupply());
+        const { ndTotalSupply: ndTotalSupplyStr, mndTotalSupply: mndTotalSupplyStr } = await getCachedSupply();
+
+        ndTotalSupply = Number(ndTotalSupplyStr);
+        mndTotalSupply = Number(mndTotalSupplyStr);
+
         licenses = [
             ...Array.from({ length: Number(mndTotalSupply) }, (_, i) => ({
                 licenseId: i + 1,
@@ -59,12 +66,12 @@ export default async function LicensesPage(props: {
                     <div className="flexible-row">
                         <CardHorizontal
                             label="Total"
-                            value={Number(ndTotalSupply + mndTotalSupply)}
+                            value={ndTotalSupply + mndTotalSupply}
                             isFlexible
                             widthClasses="min-w-[192px]"
                         />
-                        <CardHorizontal label="ND" value={Number(ndTotalSupply)} isFlexible widthClasses="min-w-[192px]" />
-                        <CardHorizontal label="MND" value={Number(mndTotalSupply)} isFlexible widthClasses="min-w-[192px]" />
+                        <CardHorizontal label="ND" value={ndTotalSupply} isFlexible widthClasses="min-w-[192px]" />
+                        <CardHorizontal label="MND" value={mndTotalSupply} isFlexible widthClasses="min-w-[192px]" />
                     </div>
                 </BorderedCard>
             </div>

@@ -10,8 +10,7 @@ import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal
 export async function generateMetadata({ searchParams }: { searchParams?: Promise<{ page?: string }> }) {
     const resolvedSearchParams = await searchParams;
     const pageParam = Number.parseInt(resolvedSearchParams?.page ?? '', 10);
-    const canonical =
-        Number.isFinite(pageParam) && pageParam > 1 ? `/node-operators?page=${pageParam}` : '/node-operators';
+    const canonical = Number.isFinite(pageParam) && pageParam > 1 ? `/node-operators?page=${pageParam}` : '/node-operators';
 
     return {
         title: 'Node Operators',

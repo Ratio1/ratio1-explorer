@@ -70,7 +70,7 @@ export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Prom
         .then(async (result) => {
             const licenseType = [undefined, 'ND', 'MND', 'GND'][result.licenseType] as 'ND' | 'MND' | 'GND' | undefined;
             let firstMiningEpoch: bigint | undefined;
-            if (licenseType === 'MND') {
+            if (licenseType === 'MND' || licenseType === 'GND') {
                 firstMiningEpoch = (
                     await publicClient.readContract({
                         address: config.mndContractAddress,

@@ -87,7 +87,7 @@ export default async function License({ licenseType, licenseId }: Props) {
                     <CardItem
                         label="Assign Timestamp"
                         value={
-                            !assignTimestamp ? (
+                            !assignTimestamp || assignTimestamp === '0' ? (
                                 <>
                                     <div className="block lg:hidden">
                                         <div className="text-slate-400">Not assigned</div>

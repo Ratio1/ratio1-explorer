@@ -21,9 +21,7 @@ export default async function LicenseRewardsPoA({
             await getNodeAvailability();
 
         if (!nodeResponse) {
-            return (
-                <CardHorizontal label="Rewards" value={<SmallTag variant="banned">Error loading rewards</SmallTag>} isSmall />
-            );
+            return null;
         }
 
         const firstCheckEpoch: number = getLicenseFirstCheckEpoch(license.assignTimestamp);

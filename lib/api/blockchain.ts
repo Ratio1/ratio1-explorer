@@ -10,6 +10,7 @@ import console from 'console';
 import { differenceInSeconds } from 'date-fns';
 import Moralis from 'moralis';
 import { EvmAddress, EvmChain } from 'moralis/common-evm-utils';
+import type { ReadContractReturnType } from 'viem';
 import { isZeroAddress } from '../utils';
 import { getPublicClient } from './client';
 
@@ -413,23 +414,30 @@ const getMndOrGndLicenseRewards = async (
     }
 
     const publicClient = await getPublicClient();
-    const result = await publicClient.readContract({
-        address: config.mndContractAddress,
-        abi: MNDContractAbi,
-        functionName: 'calculateRewards',
-        args: [
-            [
-                {
-                    licenseId,
-                    nodeAddress: license.nodeAddress,
-                    epochs: epochs.map((epoch) => BigInt(epoch)),
-                    availabilies: epochs_vals,
-                },
-            ],
-        ],
-    });
 
-    if (result.length !== 1) {
+    let result: ReadContractReturnType<typeof MNDContractAbi, 'calculateRewards'> | undefined;
+
+    try {
+        result = await publicClient.readContract({
+            address: config.mndContractAddress,
+            abi: MNDContractAbi,
+            functionName: 'calculateRewards',
+            args: [
+                [
+                    {
+                        licenseId,
+                        nodeAddress: license.nodeAddress,
+                        epochs: epochs.map((epoch) => BigInt(epoch)),
+                        availabilies: epochs_vals,
+                    },
+                ],
+            ],
+        });
+    } catch {
+        return undefined;
+    }
+
+    if (!result || result.length !== 1) {
         throw new Error('Invalid rewards calculation result');
     }
 

@@ -278,6 +278,69 @@ export async function getLicensesTotalSupply(): Promise<{
     };
 }
 
+const LICENSE_ENUMERATION_CHUNK_SIZE = 200;
+
+const getEnumerableLicenseIds = async (
+    publicClient: Awaited<ReturnType<typeof getPublicClient>>,
+    address: types.EthAddress,
+    abi: typeof NDContractAbi | typeof MNDContractAbi,
+    totalSupply: bigint,
+): Promise<number[]> => {
+    if (totalSupply === 0n) {
+        return [];
+    }
+
+    const total = Number(totalSupply);
+    const licenseIds: number[] = [];
+
+    for (let start = 0; start < total; start += LICENSE_ENUMERATION_CHUNK_SIZE) {
+        const end = Math.min(start + LICENSE_ENUMERATION_CHUNK_SIZE, total);
+        const tokenIds = await publicClient.multicall({
+            contracts: Array.from({ length: end - start }, (_, index) => ({
+                address,
+                abi,
+                functionName: 'tokenByIndex' as const,
+                args: [BigInt(start + index)],
+            })),
+            allowFailure: false,
+        });
+
+        licenseIds.push(...tokenIds.map((tokenId) => Number(tokenId)));
+    }
+
+    return licenseIds.sort((a, b) => a - b);
+};
+
+export async function getAllLicenseTokenIds(): Promise<{
+    mndLicenseIds: number[];
+    ndLicenseIds: number[];
+}> {
+    const publicClient = await getPublicClient();
+
+    const [mndTotalSupply, ndTotalSupply] = await Promise.all([
+        publicClient.readContract({
+            address: config.mndContractAddress,
+            abi: MNDContractAbi,
+            functionName: 'totalSupply',
+        }),
+        publicClient.readContract({
+            address: config.ndContractAddress,
+            abi: NDContractAbi,
+            functionName: 'totalSupply',
+        }),
+    ]);
+
+    const [mndLicenseIds, ndLicenseIds] = await Promise.all([
+        getEnumerableLicenseIds(publicClient, config.mndContractAddress, MNDContractAbi, mndTotalSupply),
+        getEnumerableLicenseIds(publicClient, config.ndContractAddress, NDContractAbi, ndTotalSupply),
+    ]);
+
+    return {
+        mndLicenseIds,
+        ndLicenseIds,
+    };
+}
+
 export async function getLicenseHolders(licenseType: 'ND' | 'MND' | 'GND'): Promise<
     {
         ownerOf: EvmAddress | undefined;

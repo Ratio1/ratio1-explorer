@@ -1,5 +1,5 @@
 import ErrorComponent from '@/app/server-components/shared/ErrorComponent';
-import { getLicensesTotalSupply } from '@/lib/api/blockchain';
+import { getAllLicenseTokenIds } from '@/lib/api/blockchain';
 import { LicenseItem } from '@/typedefs/general';
 import { unstable_cache } from 'next/cache';
 import List from '../server-components/Licenses/List';
@@ -22,7 +22,7 @@ export async function generateMetadata({ searchParams }: { searchParams?: Promis
     };
 }
 
-const getCachedSupply = unstable_cache(getLicensesTotalSupply, ['licenses-total-supply'], { revalidate: 300 });
+const getCachedLicenseTokenIds = unstable_cache(getAllLicenseTokenIds, ['licenses-token-ids'], { revalidate: 300 });
 
 export default async function LicensesPage(props: {
     searchParams?: Promise<{
@@ -36,18 +36,17 @@ export default async function LicensesPage(props: {
     let licenses: LicenseItem[];
 
     try {
-        const { ndTotalSupply: ndTotalSupplyStr, mndTotalSupply: mndTotalSupplyStr } = await getCachedSupply();
-
-        ndTotalSupply = Number(ndTotalSupplyStr);
-        mndTotalSupply = Number(mndTotalSupplyStr);
+        const { ndLicenseIds, mndLicenseIds } = await getCachedLicenseTokenIds();
+        ndTotalSupply = ndLicenseIds.length;
+        mndTotalSupply = mndLicenseIds.length;
 
         licenses = [
-            ...Array.from({ length: Number(mndTotalSupply) }, (_, i) => ({
-                licenseId: i + 1,
-                licenseType: i === 0 ? ('GND' as const) : ('MND' as const),
+            ...mndLicenseIds.map((licenseId) => ({
+                licenseId,
+                licenseType: licenseId === 1 ? ('GND' as const) : ('MND' as const),
             })),
-            ...Array.from({ length: Number(ndTotalSupply) }, (_, i) => ({
-                licenseId: i + 1,
+            ...ndLicenseIds.map((licenseId) => ({
+                licenseId,
                 licenseType: 'ND' as const,
             })),
         ];

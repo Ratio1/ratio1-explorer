@@ -10,6 +10,7 @@ import console from 'console';
 import { differenceInSeconds } from 'date-fns';
 import Moralis from 'moralis';
 import { EvmAddress, EvmChain } from 'moralis/common-evm-utils';
+import type { ReadContractReturnType } from 'viem';
 import { isZeroAddress } from '../utils';
 import { getPublicClient } from './client';
 
@@ -70,7 +71,7 @@ export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Prom
         .then(async (result) => {
             const licenseType = [undefined, 'ND', 'MND', 'GND'][result.licenseType] as 'ND' | 'MND' | 'GND' | undefined;
             let firstMiningEpoch: bigint | undefined;
-            if (licenseType === 'MND') {
+            if (licenseType === 'MND' || licenseType === 'GND') {
                 firstMiningEpoch = (
                     await publicClient.readContract({
                         address: config.mndContractAddress,
@@ -245,16 +246,17 @@ export const getBlockByTimestamp = async (targetTimestamp: number) => {
 export const getLicenseRewards = async (
     license: types.License,
     licenseType: 'ND' | 'MND' | 'GND',
+    licenseId: bigint,
     epochs: number[],
     epochs_vals: number[],
-): Promise<bigint> => {
+): Promise<bigint | undefined> => {
     switch (licenseType) {
         case 'ND':
             return getNdLicenseRewards(license, epochs, epochs_vals);
+
         case 'MND':
-            return getMndLicenseRewards(license, epochs, epochs_vals);
         case 'GND':
-            return getGndLicenseRewards(license, epochs, epochs_vals);
+            return getMndOrGndLicenseRewards(license, licenseId, epochs, epochs_vals);
     }
 };
 
@@ -353,72 +355,44 @@ export async function fetchR1MintedLastEpoch() {
     return value;
 }
 
-const getNdLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {
-    return calculateLicenseRewards(license, epochs, epochs_vals, config.ndVestingEpochs);
-};
-
-const getMndLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {
-    return calculateMndLicenseRewards(license, epochs, epochs_vals);
-};
-
-const getGndLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {
-    return calculateLicenseRewards(license, epochs, epochs_vals, config.gndVestingEpochs);
-};
-
-const calculateLicenseRewards = async (
+const getNdLicenseRewards = async (
     license: types.License,
     epochs: number[],
     epochs_vals: number[],
-    vestingEpochs: number,
-    cliffEpochs: number = 0,
-): Promise<bigint> => {
+): Promise<bigint | undefined> => {
     const currentEpoch = getCurrentEpoch();
+    const epochsToClaim = currentEpoch - Number(license.lastClaimEpoch);
 
-    const firstEpochToClaim =
-        cliffEpochs > 0
-            ? license.lastClaimEpoch >= cliffEpochs
-                ? Number(license.lastClaimEpoch)
-                : cliffEpochs
-            : Number(license.lastClaimEpoch);
-
-    const epochsToClaim = currentEpoch - firstEpochToClaim;
-
-    if ((cliffEpochs > 0 && currentEpoch < cliffEpochs) || epochsToClaim <= 0) {
+    if (!epochsToClaim) {
         return 0n;
-    }
-
-    // Disregard epochs before the cliff epoch for MNDs
-    if (cliffEpochs > 0 && epochs[0] < cliffEpochs) {
-        const start = cliffEpochs - epochs[0];
-        epochs = epochs.slice(start);
-        epochs_vals = epochs_vals.slice(start);
     }
 
     if (epochsToClaim !== epochs.length || epochsToClaim !== epochs_vals.length) {
-        console.error(
-            `Invalid epochs array length. Received ${epochs.length} epochs, but there are ${epochsToClaim} epochs to claim.`,
-        );
-
-        return 0n;
+        return undefined;
     }
 
-    const maxRewardsPerEpoch = license.totalAssignedAmount / BigInt(vestingEpochs);
     let rewards_amount = 0n;
+    const maxRewardsPerEpoch = license.totalAssignedAmount / BigInt(config.ndVestingEpochs);
 
     for (let i = 0; i < epochsToClaim; i++) {
         rewards_amount += (maxRewardsPerEpoch * BigInt(epochs_vals[i])) / 255n;
     }
 
     const maxRemainingClaimAmount = license.totalAssignedAmount - license.totalClaimedAmount;
-    return rewards_amount < maxRemainingClaimAmount ? rewards_amount : maxRemainingClaimAmount;
+    return rewards_amount > maxRemainingClaimAmount ? maxRemainingClaimAmount : rewards_amount;
 };
 
-const calculateMndLicenseRewards = async (license: types.License, epochs: number[], epochs_vals: number[]): Promise<bigint> => {
+const getMndOrGndLicenseRewards = async (
+    license: types.License,
+    licenseId: bigint,
+    epochs: number[],
+    epochs_vals: number[],
+): Promise<bigint | undefined> => {
     const currentEpoch = getCurrentEpoch();
     const firstMiningEpoch = license.firstMiningEpoch;
 
     if (firstMiningEpoch === undefined) {
-        throw new Error('First mining epoch is undefined for MND license');
+        throw new Error('First mining epoch is undefined for MND/GND license');
     }
 
     const firstEpochToClaim =
@@ -436,38 +410,36 @@ const calculateMndLicenseRewards = async (license: types.License, epochs: number
     }
 
     if (epochsToClaim !== epochs.length || epochsToClaim !== epochs_vals.length) {
-        console.error(
-            `Invalid epochs array length. Received ${epochs.length} epochs, but there are ${epochsToClaim} epochs to claim.`,
-        );
-        return 0n;
+        return undefined;
     }
 
-    let rewards_amount = 0n;
-    const logisticPlateau = 300_505239501691000000n; // 300.50
-    const licensePlateau = (license.totalAssignedAmount * BigInt(1e18)) / logisticPlateau;
+    const publicClient = await getPublicClient();
 
-    for (let i = 0; i < epochsToClaim; i++) {
-        const maxRewardsPerEpoch = calculateMndMaxEpochRelease(epochs[i], firstMiningEpoch, licensePlateau);
-        rewards_amount += (maxRewardsPerEpoch * BigInt(epochs_vals[i])) / 255n;
+    let result: ReadContractReturnType<typeof MNDContractAbi, 'calculateRewards'> | undefined;
+
+    try {
+        result = await publicClient.readContract({
+            address: config.mndContractAddress,
+            abi: MNDContractAbi,
+            functionName: 'calculateRewards',
+            args: [
+                [
+                    {
+                        licenseId,
+                        nodeAddress: license.nodeAddress,
+                        epochs: epochs.map((epoch) => BigInt(epoch)),
+                        availabilies: epochs_vals,
+                    },
+                ],
+            ],
+        });
+    } catch {
+        return undefined;
     }
 
-    const maxRemainingClaimAmount = license.totalAssignedAmount - license.totalClaimedAmount;
-    return rewards_amount > maxRemainingClaimAmount ? maxRemainingClaimAmount : rewards_amount;
-};
-
-const calculateMndMaxEpochRelease = (epoch: number, firstMiningEpoch: bigint, licensePlateau: bigint): bigint => {
-    let x = epoch - Number(firstMiningEpoch);
-    if (x > config.mndVestingEpochs) {
-        x = config.mndVestingEpochs;
+    if (!result || result.length !== 1) {
+        throw new Error('Invalid rewards calculation result');
     }
-    const frac = logisticFraction(x);
-    return (licensePlateau * BigInt(frac * 1e18)) / BigInt(1e18);
-};
 
-const logisticFraction = (x: number): number => {
-    const length = config.mndVestingEpochs;
-    const k = 5.0;
-    const midPrc = 0.7;
-    const midpoint = length * midPrc;
-    return 1.0 / (1.0 + Math.exp((-k * (x - midpoint)) / length));
+    return result[0].rewardsAmount + result[0].carryoverAmount;
 };

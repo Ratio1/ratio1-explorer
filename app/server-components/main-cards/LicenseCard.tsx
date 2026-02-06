@@ -118,6 +118,7 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                     <LicenseRewardsPoA
                         license={license}
                         licenseType={licenseType as 'ND' | 'MND' | 'GND'}
+                        licenseId={licenseId}
                         getNodeAvailability={getNodeAvailability}
                     />
                 </Suspense>

@@ -8,10 +8,12 @@ import { SmallTag } from '../shared/SmallTag';
 export default async function LicenseRewardsPoA({
     license,
     licenseType,
+    licenseId,
     getNodeAvailability,
 }: {
     license: types.License;
     licenseType: 'ND' | 'MND' | 'GND';
+    licenseId: string;
     getNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;
 }) {
     try {
@@ -21,9 +23,7 @@ export default async function LicenseRewardsPoA({
             await getNodeAvailability();
 
         if (!nodeResponse) {
-            return (
-                <CardHorizontal label="Rewards" value={<SmallTag variant="banned">Error loading rewards</SmallTag>} isSmall />
-            );
+            return null;
         }
 
         const firstCheckEpoch: number = getLicenseFirstCheckEpoch(license.assignTimestamp);
@@ -32,6 +32,7 @@ export default async function LicenseRewardsPoA({
         rewards = await getLicenseRewards(
             license,
             licenseType,
+            BigInt(licenseId),
             nodeResponse.epochs.slice(lastClaimEpoch - firstCheckEpoch),
             nodeResponse.epochs_vals.slice(lastClaimEpoch - firstCheckEpoch),
         );

@@ -13,7 +13,7 @@ export default async function LicensePageNodeCardWrapper({
             await cachedGetNodeAvailability();
 
         if (!nodeResponse) {
-            return <ErrorAlert />;
+            return null;
         }
 
         return <NodeCard nodeResponse={nodeResponse} hasLink />;

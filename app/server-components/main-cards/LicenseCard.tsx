@@ -128,12 +128,12 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                         label="Rewards (PoAI)"
                         value={
                             <div className="text-primary">
-                                {!!license.r1PoaiRewards ? '$R1 ' : ''}
                                 {license.r1PoaiRewards === undefined
                                     ? '...'
                                     : parseFloat(
-                                          Number(formatUnits(license.r1PoaiRewards ?? 0n, 18)).toFixed(3),
+                                          Number(formatUnits(license.r1PoaiRewards ?? 0n, 18)).toFixed(2),
                                       ).toLocaleString()}
+                                {!!license.r1PoaiRewards ? '$R1 ' : ''}
                             </div>
                         }
                         isSmall

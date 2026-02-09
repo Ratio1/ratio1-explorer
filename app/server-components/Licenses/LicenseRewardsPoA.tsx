@@ -39,7 +39,7 @@ export default async function LicenseRewardsPoA({
 
         return (
             <CardHorizontal
-                label="Rewards (PoA)"
+                label="Claimable PoA rewards:"
                 value={
                     <div className="text-primary">
                         {rewards === undefined

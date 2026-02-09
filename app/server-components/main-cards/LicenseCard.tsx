@@ -125,7 +125,7 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
 
                 {licenseType === 'ND' && (
                     <CardHorizontal
-                        label="Rewards (PoAI)"
+                        label="Claimable PoAI rewards:"
                         value={
                             <div className="text-primary">
                                 {license.r1PoaiRewards === undefined

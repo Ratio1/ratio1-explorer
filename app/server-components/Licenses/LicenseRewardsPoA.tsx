@@ -42,10 +42,10 @@ export default async function LicenseRewardsPoA({
                 label="Rewards (PoA)"
                 value={
                     <div className="text-primary">
-                        {!!rewards ? '$R1 ' : ''}
                         {rewards === undefined
                             ? '...'
-                            : parseFloat(Number(formatUnits(rewards ?? 0n, 18)).toFixed(3)).toLocaleString()}
+                            : parseFloat(Number(formatUnits(rewards ?? 0n, 18)).toFixed(2)).toLocaleString()}
+                        {!!rewards ? '$R1 ' : ''}
                     </div>
                 }
                 widthClasses="min-w-[280px]"

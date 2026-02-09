@@ -133,7 +133,7 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                                     : parseFloat(
                                           Number(formatUnits(license.r1PoaiRewards ?? 0n, 18)).toFixed(2),
                                       ).toLocaleString()}
-                                {!!license.r1PoaiRewards ? '$R1 ' : ''}
+                                {!!license.r1PoaiRewards ? ' $R1' : ''}
                             </div>
                         }
                         isSmall

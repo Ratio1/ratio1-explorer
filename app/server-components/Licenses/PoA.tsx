@@ -12,14 +12,14 @@ export default async function PoA({
     const getStats = () => (
         <>
             <div className="col gap-[5px]">
-                <div className="text-[15px] font-medium leading-none text-slate-500">Max Remaining</div>
+                <div className="text-[15px] font-medium leading-none text-slate-500">Max. Remaining</div>
                 <div className="font-semibold leading-none">
                     {parseFloat(Number(formatUnits(totalAssignedAmount - totalClaimedAmount, 18)).toFixed(2)).toLocaleString()}
                 </div>
             </div>
 
             <div className="col gap-[5px]">
-                <div className="text-[15px] font-medium leading-none text-slate-500">Max Allocation</div>
+                <div className="text-[15px] font-medium leading-none text-slate-500">Max. Allocation</div>
                 <div className="font-semibold leading-none">
                     {parseFloat(Number(formatUnits(totalAssignedAmount ?? 0n, 18)).toFixed(2)).toLocaleString()}
                 </div>

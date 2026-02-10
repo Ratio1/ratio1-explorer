@@ -213,6 +213,173 @@ export const ReaderAbi = [
         type: 'function',
     },
     {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'epochDelta',
+                type: 'uint256',
+            },
+        ],
+        name: 'getJobsByLastExecutionEpochDelta',
+        outputs: [
+            {
+                components: [
+                    {
+                        internalType: 'uint256',
+                        name: 'id',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'bytes32',
+                        name: 'projectHash',
+                        type: 'bytes32',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'requestTimestamp',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'startTimestamp',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'lastNodesChangeTimestamp',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'jobType',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'pricePerEpoch',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'lastExecutionEpoch',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'numberOfNodesRequested',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'int256',
+                        name: 'balance',
+                        type: 'int256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'lastAllocatedEpoch',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'address[]',
+                        name: 'activeNodes',
+                        type: 'address[]',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'escrowAddress',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'escrowOwner',
+                        type: 'address',
+                    },
+                ],
+                internalType: 'struct JobWithAllDetails[]',
+                name: '',
+                type: 'tuple[]',
+            },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'offset',
+                type: 'uint256',
+            },
+            {
+                internalType: 'uint256',
+                name: 'limit',
+                type: 'uint256',
+            },
+        ],
+        name: 'getLicensesPage',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: 'mndSupply',
+                type: 'uint256',
+            },
+            {
+                internalType: 'uint256',
+                name: 'ndSupply',
+                type: 'uint256',
+            },
+            {
+                components: [
+                    {
+                        internalType: 'enum LicenseType',
+                        name: 'licenseType',
+                        type: 'uint8',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'licenseId',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'owner',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'nodeAddress',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'totalAssignedAmount',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'totalClaimedAmount',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'assignTimestamp',
+                        type: 'uint256',
+                    },
+                    {
+                        internalType: 'bool',
+                        name: 'isBanned',
+                        type: 'bool',
+                    },
+                ],
+                internalType: 'struct LicenseListItem[]',
+                name: 'licenses',
+                type: 'tuple[]',
+            },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+    },
+    {
         inputs: [],
         name: 'getLicensesTotalSupply',
         outputs: [
@@ -395,6 +562,37 @@ export const ReaderAbi = [
     {
         inputs: [
             {
+                internalType: 'address[]',
+                name: 'nodeAddresses',
+                type: 'address[]',
+            },
+        ],
+        name: 'getNdNodesOwners',
+        outputs: [
+            {
+                components: [
+                    {
+                        internalType: 'address',
+                        name: 'nodeAddress',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'owner',
+                        type: 'address',
+                    },
+                ],
+                internalType: 'struct NdNodeOwner[]',
+                name: 'nodesOwners',
+                type: 'tuple[]',
+            },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+    },
+    {
+        inputs: [
+            {
                 internalType: 'address',
                 name: 'node',
                 type: 'address',
@@ -527,6 +725,47 @@ export const ReaderAbi = [
                 internalType: 'struct OracleDetails[]',
                 name: '',
                 type: 'tuple[]',
+            },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'user',
+                type: 'address',
+            },
+        ],
+        name: 'getUserEscrowDetails',
+        outputs: [
+            {
+                components: [
+                    {
+                        internalType: 'bool',
+                        name: 'isActive',
+                        type: 'bool',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'escrowAddress',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'escrowOwner',
+                        type: 'address',
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'permissions',
+                        type: 'uint256',
+                    },
+                ],
+                internalType: 'struct UserEscrowDetails',
+                name: '',
+                type: 'tuple',
             },
         ],
         stateMutability: 'view',
@@ -682,6 +921,25 @@ export const ReaderAbi = [
         name: 'initialize',
         outputs: [],
         stateMutability: 'nonpayable',
+        type: 'function',
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address[]',
+                name: 'nodeAddresses',
+                type: 'address[]',
+            },
+        ],
+        name: 'isMultiNodeAlreadyLinked',
+        outputs: [
+            {
+                internalType: 'bool[]',
+                name: 'linked',
+                type: 'bool[]',
+            },
+        ],
+        stateMutability: 'view',
         type: 'function',
     },
     {

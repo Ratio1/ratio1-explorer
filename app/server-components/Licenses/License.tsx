@@ -29,6 +29,7 @@ export default function License({ license }: Props) {
                     licenseType={licenseType}
                     totalAssignedAmount={BigInt(totalAssignedAmount)}
                     totalClaimedAmount={BigInt(totalClaimedAmount)}
+                    awbBalance={BigInt(awbBalance || '0')}
                     isBanned={isBanned}
                     isLink
                     hideType

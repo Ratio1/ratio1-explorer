@@ -27,8 +27,13 @@ const getCachedLicensesPage = unstable_cache(
     async (currentPage: number) => {
         const page = currentPage > 0 ? currentPage : 1;
         const offset = (page - 1) * PAGE_SIZE;
+        const data = await getLicensesPage(offset, PAGE_SIZE);
 
-        return getLicensesPage(offset, PAGE_SIZE);
+        return {
+            ...data,
+            ndTotalSupply: data.ndTotalSupply.toString(),
+            mndTotalSupply: data.mndTotalSupply.toString(),
+        };
     },
     ['licenses-page'],
     { revalidate: 300 },
@@ -53,8 +58,8 @@ export default async function LicensesPage(props: {
             licenses: pageLicenses,
         } = await getCachedLicensesPage(currentPage);
 
-        ndTotalSupply = ndSupply;
-        mndTotalSupply = mndSupply;
+        ndTotalSupply = BigInt(ndSupply);
+        mndTotalSupply = BigInt(mndSupply);
         licenses = pageLicenses;
         licensesCount = Number(ndTotalSupply + mndTotalSupply);
     } catch (error) {

@@ -7,6 +7,7 @@ import { ReaderAbi } from '@/blockchain/Reader';
 import { AdoptionOracleAbi } from '@/blockchain/AdoptionOracle';
 import config, { getCurrentEpoch, getEpochStartTimestamp, getNextEpochTimestamp } from '@/config';
 import * as types from '@/typedefs/blockchain';
+import { LicenseListItem } from '@/typedefs/general';
 import console from 'console';
 import { differenceInSeconds } from 'date-fns';
 import Moralis from 'moralis';
@@ -371,66 +372,45 @@ export async function getLicensesTotalSupply(): Promise<{
     };
 }
 
-const LICENSE_ENUMERATION_CHUNK_SIZE = 200;
-
-const getEnumerableLicenseIds = async (
-    publicClient: Awaited<ReturnType<typeof getPublicClient>>,
-    address: types.EthAddress,
-    abi: typeof NDContractAbi | typeof MNDContractAbi,
-    totalSupply: bigint,
-): Promise<number[]> => {
-    if (totalSupply === 0n) {
-        return [];
-    }
-
-    const total = Number(totalSupply);
-    const licenseIds: number[] = [];
-
-    for (let start = 0; start < total; start += LICENSE_ENUMERATION_CHUNK_SIZE) {
-        const end = Math.min(start + LICENSE_ENUMERATION_CHUNK_SIZE, total);
-        const tokenIds = await publicClient.multicall({
-            contracts: Array.from({ length: end - start }, (_, index) => ({
-                address,
-                abi,
-                functionName: 'tokenByIndex' as const,
-                args: [BigInt(start + index)],
-            })),
-            allowFailure: false,
-        });
-
-        licenseIds.push(...tokenIds.map((tokenId) => Number(tokenId)));
-    }
-
-    return licenseIds.sort((a, b) => a - b);
-};
-
-export async function getAllLicenseTokenIds(): Promise<{
-    mndLicenseIds: number[];
-    ndLicenseIds: number[];
+export async function getLicensesPage(offset: number, limit: number): Promise<{
+    mndTotalSupply: bigint;
+    ndTotalSupply: bigint;
+    licenses: LicenseListItem[];
 }> {
     const publicClient = await getPublicClient();
 
-    const [mndTotalSupply, ndTotalSupply] = await Promise.all([
-        publicClient.readContract({
-            address: config.mndContractAddress,
-            abi: MNDContractAbi,
-            functionName: 'totalSupply',
-        }),
-        publicClient.readContract({
-            address: config.ndContractAddress,
-            abi: NDContractAbi,
-            functionName: 'totalSupply',
-        }),
-    ]);
-
-    const [mndLicenseIds, ndLicenseIds] = await Promise.all([
-        getEnumerableLicenseIds(publicClient, config.mndContractAddress, MNDContractAbi, mndTotalSupply),
-        getEnumerableLicenseIds(publicClient, config.ndContractAddress, NDContractAbi, ndTotalSupply),
-    ]);
+    const [mndTotalSupply, ndTotalSupply, licenseRows] = await publicClient.readContract({
+        address: config.readerContractAddress,
+        abi: ReaderAbi,
+        functionName: 'getLicensesPage',
+        args: [BigInt(offset), BigInt(limit)],
+    });
 
     return {
-        mndLicenseIds,
-        ndLicenseIds,
+        mndTotalSupply,
+        ndTotalSupply,
+        licenses: licenseRows.map((license) => {
+            const licenseType = [undefined, 'ND', 'MND', 'GND'][Number(license.licenseType)] as
+                | 'ND'
+                | 'MND'
+                | 'GND'
+                | undefined;
+
+            if (!licenseType) {
+                throw new Error(`Invalid license type returned by reader for license #${license.licenseId}`);
+            }
+
+            return {
+                licenseType,
+                licenseId: Number(license.licenseId),
+                owner: license.owner,
+                nodeAddress: license.nodeAddress,
+                totalAssignedAmount: license.totalAssignedAmount.toString(),
+                totalClaimedAmount: license.totalClaimedAmount.toString(),
+                assignTimestamp: license.assignTimestamp.toString(),
+                isBanned: license.isBanned,
+            };
+        }),
     };
 }
 

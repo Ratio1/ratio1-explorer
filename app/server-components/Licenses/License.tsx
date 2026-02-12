@@ -1,9 +1,8 @@
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
-import { cachedGetLicense } from '@/lib/api/cache';
 import { routePath } from '@/lib/routes';
 import { isZeroAddress } from '@/lib/utils';
-import * as types from '@/typedefs/blockchain';
+import { LicenseListItem } from '@/typedefs/general';
 import { Skeleton } from '@heroui/skeleton';
 import clsx from 'clsx';
 import { Suspense } from 'react';
@@ -14,36 +13,19 @@ import { SmallTag } from '../shared/SmallTag';
 import NodeSmallCard from './NodeSmallCard';
 
 interface Props {
-    licenseType: 'ND' | 'MND' | 'GND';
-    licenseId: string;
+    license: LicenseListItem;
 }
 
-export default async function License({ licenseType, licenseId }: Props) {
-    let owner: types.EthAddress;
-    let nodeAddress: types.EthAddress;
-    let totalAssignedAmount: string;
-    let totalClaimedAmount: string;
-    let assignTimestamp: string;
-    let isBanned: boolean;
-
-    try {
-        ({ owner, nodeAddress, totalAssignedAmount, totalClaimedAmount, assignTimestamp, isBanned } = await cachedGetLicense(
-            licenseType,
-            licenseId,
-        ));
-    } catch (error: any) {
-        if (!error.message.includes('ERC721: invalid token ID')) {
-            console.error({ licenseType, licenseId }, error);
-        }
-        return null;
-    }
+export default function License({ license }: Props) {
+    const { licenseType, licenseId, owner, nodeAddress, totalAssignedAmount, totalClaimedAmount, assignTimestamp, isBanned } =
+        license;
 
     return (
         <BorderedCard useCustomWrapper useFixedWidthLarge>
             <div className="row justify-between gap-3 py-2 md:py-3 lg:gap-6">
                 {/* License */}
                 <LicenseSmallCard
-                    licenseId={Number(licenseId)}
+                    licenseId={licenseId}
                     licenseType={licenseType}
                     totalAssignedAmount={BigInt(totalAssignedAmount)}
                     totalClaimedAmount={BigInt(totalClaimedAmount)}

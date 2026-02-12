@@ -4,12 +4,14 @@ import { ERC20Abi } from '@/blockchain/ERC20';
 import { MNDContractAbi } from '@/blockchain/MNDContract';
 import { NDContractAbi } from '@/blockchain/NDContract';
 import { ReaderAbi } from '@/blockchain/Reader';
+import { AdoptionOracleAbi } from '@/blockchain/AdoptionOracle';
 import config, { getCurrentEpoch, getEpochStartTimestamp, getNextEpochTimestamp } from '@/config';
 import * as types from '@/typedefs/blockchain';
 import console from 'console';
 import { differenceInSeconds } from 'date-fns';
 import Moralis from 'moralis';
 import { EvmAddress, EvmChain } from 'moralis/common-evm-utils';
+import { unstable_cache } from 'next/cache';
 import type { ReadContractReturnType } from 'viem';
 import { isZeroAddress } from '../utils';
 import { getPublicClient } from './client';
@@ -216,6 +218,97 @@ export const fetchR1TotalSupply = async () => {
         abi: ERC20Abi,
         functionName: 'totalSupply',
     });
+};
+
+const MAX_ADOPTION_PERCENTAGE = 65_535; // 100% using uint16
+
+const toThresholdPercentage = (value: bigint, threshold: bigint): number => {
+    if (threshold === 0n) {
+        return 0;
+    }
+
+    const percentage = Number((value * 10_000n) / threshold) / 100;
+    return Math.min(percentage, 100);
+};
+
+const toOverallPercentage = (value: number): number => {
+    const percentage = (value * 10_000) / MAX_ADOPTION_PERCENTAGE / 100;
+    return Math.min(percentage, 100);
+};
+
+export type AdoptionMetricsEntry = {
+    epoch: number;
+    dateLabel: string;
+    ndSalesPercentage: number;
+    poaiVolumePercentage: number;
+    overallPercentage: number;
+    licensesSold: number;
+    poaiVolumeUsdc: number;
+};
+
+const getAdoptionMetricsRangeCached = unstable_cache(
+    async (resolvedFromEpoch: number, resolvedToEpoch: number): Promise<AdoptionMetricsEntry[]> => {
+        const publicClient = await getPublicClient();
+
+        const [licensesSoldRange, poaiVolumeRange, adoptionPercentagesRange, ndThreshold, poaiThreshold] = await Promise.all([
+            publicClient.readContract({
+                address: config.adoptionOracleContractAddress,
+                abi: AdoptionOracleAbi,
+                functionName: 'getLicensesSoldRange',
+                args: [BigInt(resolvedFromEpoch), BigInt(resolvedToEpoch)],
+            }),
+            publicClient.readContract({
+                address: config.adoptionOracleContractAddress,
+                abi: AdoptionOracleAbi,
+                functionName: 'getPoaiVolumeRange',
+                args: [BigInt(resolvedFromEpoch), BigInt(resolvedToEpoch)],
+            }),
+            publicClient.readContract({
+                address: config.adoptionOracleContractAddress,
+                abi: AdoptionOracleAbi,
+                functionName: 'getAdoptionPercentagesRange',
+                args: [BigInt(resolvedFromEpoch), BigInt(resolvedToEpoch)],
+            }),
+            publicClient.readContract({
+                address: config.adoptionOracleContractAddress,
+                abi: AdoptionOracleAbi,
+                functionName: 'ndFullReleaseThreshold',
+            }),
+            publicClient.readContract({
+                address: config.adoptionOracleContractAddress,
+                abi: AdoptionOracleAbi,
+                functionName: 'poaiVolumeFullReleaseThreshold',
+            }),
+        ]);
+
+        return adoptionPercentagesRange.map((overallAdoption, index) => {
+            const epoch = resolvedFromEpoch + index;
+
+            return {
+                epoch,
+                dateLabel: getEpochStartTimestamp(epoch).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    timeZone: 'UTC',
+                }),
+                ndSalesPercentage: toThresholdPercentage(licensesSoldRange[index], ndThreshold),
+                poaiVolumePercentage: toThresholdPercentage(poaiVolumeRange[index], poaiThreshold),
+                overallPercentage: toOverallPercentage(overallAdoption),
+                licensesSold: Number(licensesSoldRange[index]),
+                poaiVolumeUsdc: Number(poaiVolumeRange[index]) / 1_000_000,
+            };
+        });
+    },
+    ['adoption-metrics-range'],
+    { revalidate: 3600 },
+);
+
+export const getAdoptionMetricsRange = async (fromEpoch?: number, toEpoch?: number): Promise<AdoptionMetricsEntry[]> => {
+    const currentEpoch = Math.max(getCurrentEpoch(), 0);
+    const resolvedToEpoch = Math.max(toEpoch ?? currentEpoch - 1, 0);
+    const resolvedFromEpoch = Math.max(fromEpoch ?? config.mndCliffEpochs, 0);
+
+    return getAdoptionMetricsRangeCached(resolvedFromEpoch, resolvedToEpoch);
 };
 
 // Binary search for the block with the closest timestamp to the target timestamp

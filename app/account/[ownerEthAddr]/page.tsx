@@ -102,6 +102,11 @@ export default async function NodeOperatorPage({ params }) {
         return <NotFound />;
     }
 
+    const totalCurveReleased = licenses.reduce((acc, license) => acc + BigInt(license.totalClaimedAmount), 0n);
+    const totalAwbBalance = licenses.reduce((acc, license) => acc + BigInt(license.awbBalance ?? '0'), 0n);
+    const totalWalletClaimed = totalCurveReleased > totalAwbBalance ? totalCurveReleased - totalAwbBalance : 0n;
+    const totalAssigned = licenses.reduce((acc, license) => acc + BigInt(license.totalAssignedAmount), 0n);
+
     return (
         <div className="responsive-col">
             <BorderedCard>
@@ -131,32 +136,30 @@ export default async function NodeOperatorPage({ params }) {
 
                     <CardHorizontal
                         label="Total $R1 Claimed"
-                        value={
-                            <div className="text-primary">
-                                {fBI(
-                                    licenses.reduce((acc, license) => acc + BigInt(license.totalClaimedAmount), 0n),
-                                    18,
-                                )}
-                            </div>
-                        }
+                        value={<div className="text-primary">{fBI(totalWalletClaimed, 18)}</div>}
                         isSmall
                         isFlexible
                         widthClasses="min-w-[268px]"
                     />
+
+                    {totalAwbBalance > 0n && (
+                        <CardHorizontal
+                            label="Total in AWB"
+                            value={<div className="text-orange-500">{fBI(totalAwbBalance, 18)}</div>}
+                            isSmall
+                            isFlexible
+                            widthClasses="min-w-[268px]"
+                        />
+                    )}
 
                     <CardHorizontal
                         label="Licenses Usage (Total)"
                         value={
                             <div className="w-full min-w-52 xs:min-w-56 md:min-w-60">
                                 <UsageStats
-                                    totalClaimedAmount={licenses.reduce(
-                                        (acc, license) => acc + BigInt(license.totalClaimedAmount),
-                                        0n,
-                                    )}
-                                    totalAssignedAmount={licenses.reduce(
-                                        (acc, license) => acc + BigInt(license.totalAssignedAmount),
-                                        0n,
-                                    )}
+                                    totalClaimedAmount={totalCurveReleased}
+                                    totalAssignedAmount={totalAssigned}
+                                    awbBalance={totalAwbBalance}
                                 />
                             </div>
                         }

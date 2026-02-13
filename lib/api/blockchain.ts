@@ -17,6 +17,13 @@ import type { ReadContractReturnType } from 'viem';
 import { isZeroAddress } from '../utils';
 import { getPublicClient } from './client';
 
+export type LicenseRewardsBreakdown = {
+    claimableAmount: bigint | undefined;
+    rewardsAmount?: bigint;
+    carryoverAmount?: bigint;
+    withheldAmount?: bigint;
+};
+
 async function startMoralis() {
     await Moralis.start({
         apiKey: process.env.MORALIS_API_KEY,
@@ -26,6 +33,34 @@ async function startMoralis() {
 }
 
 startMoralis();
+
+const getMndLicenseExtraData = async (
+    publicClient: Awaited<ReturnType<typeof getPublicClient>>,
+    licenseId: bigint,
+): Promise<{
+    firstMiningEpoch: bigint;
+    awbBalance: bigint;
+}> => {
+    const [mndLicenseData, awbBalance] = await Promise.all([
+        publicClient.readContract({
+            address: config.mndContractAddress,
+            abi: MNDContractAbi,
+            functionName: 'licenses',
+            args: [licenseId],
+        }),
+        publicClient.readContract({
+            address: config.mndContractAddress,
+            abi: MNDContractAbi,
+            functionName: 'awbBalances',
+            args: [licenseId],
+        }),
+    ]);
+
+    return {
+        firstMiningEpoch: mndLicenseData[3],
+        awbBalance,
+    };
+};
 
 export async function fetchCSPDetails(address: types.EthAddress): Promise<types.CSP | undefined> {
     const publicClient = await getPublicClient();
@@ -74,21 +109,16 @@ export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Prom
         .then(async (result) => {
             const licenseType = [undefined, 'ND', 'MND', 'GND'][result.licenseType] as 'ND' | 'MND' | 'GND' | undefined;
             let firstMiningEpoch: bigint | undefined;
+            let awbBalance = 0n;
             if (licenseType === 'MND' || licenseType === 'GND') {
-                firstMiningEpoch = (
-                    await publicClient.readContract({
-                        address: config.mndContractAddress,
-                        abi: MNDContractAbi,
-                        functionName: 'licenses',
-                        args: [result.licenseId],
-                    })
-                )[3];
+                ({ firstMiningEpoch, awbBalance } = await getMndLicenseExtraData(publicClient, result.licenseId));
             }
 
             return {
                 ...result,
                 licenseType,
                 firstMiningEpoch,
+                awbBalance,
             };
         });
 }
@@ -118,6 +148,7 @@ export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: n
                     ...license,
                     licenseType,
                     isLinked,
+                    awbBalance: 0n,
                 };
             });
     } else {
@@ -137,20 +168,14 @@ export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: n
                 if (licenseType !== 'MND' && licenseType !== 'GND') {
                     throw new Error('Invalid license type');
                 }
-                const firstMiningEpoch = (
-                    await publicClient.readContract({
-                        address: config.mndContractAddress,
-                        abi: MNDContractAbi,
-                        functionName: 'licenses',
-                        args: [BigInt(licenseId)],
-                    })
-                )[3];
+                const { firstMiningEpoch, awbBalance } = await getMndLicenseExtraData(publicClient, BigInt(licenseId));
 
                 return {
                     ...license,
                     licenseType,
                     isLinked,
                     firstMiningEpoch,
+                    awbBalance,
                 };
             });
     }
@@ -167,16 +192,27 @@ export const getLicenses = async (address: types.EthAddress): Promise<types.Lice
             args: [address],
         })
         .then((licenses) => {
-            return licenses.map((license) => {
-                const isLinked = !isZeroAddress(license.nodeAddress);
-                const licenseType = [undefined, 'ND', 'MND', 'GND'][license.licenseType] as 'ND' | 'MND' | 'GND';
+            return Promise.all(
+                licenses.map(async (license) => {
+                    let firstMiningEpoch: bigint | undefined;
+                    let awbBalance = 0n;
+                    const isLinked = !isZeroAddress(license.nodeAddress);
+                    const licenseType = [undefined, 'ND', 'MND', 'GND'][license.licenseType] as 'ND' | 'MND' | 'GND';
 
-                return {
-                    ...license,
-                    licenseType,
-                    isLinked,
-                };
-            });
+                    if (licenseType === 'MND' || licenseType === 'GND') {
+                        //TODO optimize by fetching extra data in batch for all licenses
+                        ({ firstMiningEpoch, awbBalance } = await getMndLicenseExtraData(publicClient, license.licenseId));
+                    }
+
+                    return {
+                        ...license,
+                        licenseType,
+                        isLinked,
+                        firstMiningEpoch,
+                        awbBalance,
+                    };
+                }),
+            );
         });
 
     return [...licenses];
@@ -344,13 +380,28 @@ export const getLicenseRewards = async (
     epochs: number[],
     epochs_vals: number[],
 ): Promise<bigint | undefined> => {
+    const breakdown = await getLicenseRewardsBreakdown(license, licenseType, licenseId, epochs, epochs_vals);
+    return breakdown.claimableAmount;
+};
+
+export const getLicenseRewardsBreakdown = async (
+    license: types.License,
+    licenseType: 'ND' | 'MND' | 'GND',
+    licenseId: bigint,
+    epochs: number[],
+    epochs_vals: number[],
+): Promise<LicenseRewardsBreakdown> => {
     switch (licenseType) {
-        case 'ND':
-            return getNdLicenseRewards(license, epochs, epochs_vals);
+        case 'ND': {
+            const claimableAmount = await getNdLicenseRewards(license, epochs, epochs_vals);
+            return {
+                claimableAmount,
+            };
+        }
 
         case 'MND':
         case 'GND':
-            return getMndOrGndLicenseRewards(license, licenseId, epochs, epochs_vals);
+            return getMndOrGndLicenseRewardsBreakdown(license, licenseId, epochs, epochs_vals);
     }
 };
 
@@ -372,7 +423,10 @@ export async function getLicensesTotalSupply(): Promise<{
     };
 }
 
-export async function getLicensesPage(offset: number, limit: number): Promise<{
+export async function getLicensesPage(
+    offset: number,
+    limit: number,
+): Promise<{
     mndTotalSupply: bigint;
     ndTotalSupply: bigint;
     licenses: LicenseListItem[];
@@ -408,6 +462,7 @@ export async function getLicensesPage(offset: number, limit: number): Promise<{
                 totalAssignedAmount: license.totalAssignedAmount.toString(),
                 totalClaimedAmount: license.totalClaimedAmount.toString(),
                 assignTimestamp: license.assignTimestamp.toString(),
+                awbBalance: license.awbBalance.toString(),
                 isBanned: license.isBanned,
             };
         }),
@@ -518,12 +573,12 @@ const getNdLicenseRewards = async (
     return rewards_amount > maxRemainingClaimAmount ? maxRemainingClaimAmount : rewards_amount;
 };
 
-const getMndOrGndLicenseRewards = async (
+const getMndOrGndLicenseRewardsBreakdown = async (
     license: types.License,
     licenseId: bigint,
     epochs: number[],
     epochs_vals: number[],
-): Promise<bigint | undefined> => {
+): Promise<LicenseRewardsBreakdown> => {
     const currentEpoch = getCurrentEpoch();
     const firstMiningEpoch = license.firstMiningEpoch;
 
@@ -536,7 +591,12 @@ const getMndOrGndLicenseRewards = async (
     const epochsToClaim = currentEpoch - firstEpochToClaim;
 
     if (currentEpoch < Number(firstMiningEpoch) || !epochsToClaim) {
-        return 0n;
+        return {
+            claimableAmount: 0n,
+            rewardsAmount: 0n,
+            carryoverAmount: 0n,
+            withheldAmount: 0n,
+        };
     }
 
     if (epochs.length && epochs[0] < firstEpochToClaim) {
@@ -546,7 +606,9 @@ const getMndOrGndLicenseRewards = async (
     }
 
     if (epochsToClaim !== epochs.length || epochsToClaim !== epochs_vals.length) {
-        return undefined;
+        return {
+            claimableAmount: undefined,
+        };
     }
 
     const publicClient = await getPublicClient();
@@ -570,12 +632,19 @@ const getMndOrGndLicenseRewards = async (
             ],
         });
     } catch {
-        return undefined;
+        return {
+            claimableAmount: undefined,
+        };
     }
 
     if (!result || result.length !== 1) {
         throw new Error('Invalid rewards calculation result');
     }
 
-    return result[0].rewardsAmount + result[0].carryoverAmount;
+    return {
+        claimableAmount: result[0].rewardsAmount + result[0].carryoverAmount,
+        rewardsAmount: result[0].rewardsAmount,
+        carryoverAmount: result[0].carryoverAmount,
+        withheldAmount: result[0].withheldAmount,
+    };
 };

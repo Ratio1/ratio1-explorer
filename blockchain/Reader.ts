@@ -366,6 +366,11 @@ export const ReaderAbi = [
                         type: 'uint256',
                     },
                     {
+                        internalType: 'uint256',
+                        name: 'awbBalance',
+                        type: 'uint256',
+                    },
+                    {
                         internalType: 'bool',
                         name: 'isBanned',
                         type: 'bool',

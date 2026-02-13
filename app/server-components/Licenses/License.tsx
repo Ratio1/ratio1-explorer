@@ -17,8 +17,17 @@ interface Props {
 }
 
 export default function License({ license }: Props) {
-    const { licenseType, licenseId, owner, nodeAddress, totalAssignedAmount, totalClaimedAmount, assignTimestamp, isBanned } =
-        license;
+    const {
+        licenseType,
+        licenseId,
+        owner,
+        nodeAddress,
+        totalAssignedAmount,
+        totalClaimedAmount,
+        assignTimestamp,
+        awbBalance,
+        isBanned,
+    } = license;
 
     return (
         <BorderedCard useCustomWrapper useFixedWidthLarge>
@@ -29,6 +38,7 @@ export default function License({ license }: Props) {
                     licenseType={licenseType}
                     totalAssignedAmount={BigInt(totalAssignedAmount)}
                     totalClaimedAmount={BigInt(totalClaimedAmount)}
+                    awbBalance={BigInt(awbBalance || '0')}
                     isBanned={isBanned}
                     isLink
                     hideType

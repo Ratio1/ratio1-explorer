@@ -422,7 +422,10 @@ export async function getLicensesTotalSupply(): Promise<{
     };
 }
 
-export async function getLicensesPage(offset: number, limit: number): Promise<{
+export async function getLicensesPage(
+    offset: number,
+    limit: number,
+): Promise<{
     mndTotalSupply: bigint;
     ndTotalSupply: bigint;
     licenses: LicenseListItem[];
@@ -458,6 +461,7 @@ export async function getLicensesPage(offset: number, limit: number): Promise<{
                 totalAssignedAmount: license.totalAssignedAmount.toString(),
                 totalClaimedAmount: license.totalClaimedAmount.toString(),
                 assignTimestamp: license.assignTimestamp.toString(),
+                awbBalance: license.awbBalance.toString(),
                 isBanned: license.isBanned,
             };
         }),

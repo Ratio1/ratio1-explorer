@@ -11,6 +11,7 @@ type LicenseListItem = LicenseItem & {
     totalAssignedAmount: string;
     totalClaimedAmount: string;
     assignTimestamp: string;
+    awbBalance: string;
     isBanned: boolean;
 };
 

@@ -200,6 +200,7 @@ export const getLicenses = async (address: types.EthAddress): Promise<types.Lice
                     const licenseType = [undefined, 'ND', 'MND', 'GND'][license.licenseType] as 'ND' | 'MND' | 'GND';
 
                     if (licenseType === 'MND' || licenseType === 'GND') {
+                        //TODO optimize by fetching extra data in batch for all licenses
                         ({ firstMiningEpoch, awbBalance } = await getMndLicenseExtraData(publicClient, license.licenseId));
                     }
 

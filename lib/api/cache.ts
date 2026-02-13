@@ -18,10 +18,7 @@ export const cachedGetLicense = unstable_cache(
         isBanned: boolean;
     }> => {
         const { owner, nodeAddress, totalAssignedAmount, totalClaimedAmount, awbBalance, assignTimestamp, isBanned } =
-            await getLicense(
-            licenseType,
-            licenseId,
-        );
+            await getLicense(licenseType, licenseId);
 
         return {
             owner,

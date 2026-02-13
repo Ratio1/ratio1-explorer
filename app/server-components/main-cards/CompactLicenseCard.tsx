@@ -3,7 +3,7 @@ import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizon
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { routePath } from '@/lib/routes';
-import { isZeroAddress } from '@/lib/utils';
+import { fBI, isZeroAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import Link from 'next/link';
 import PoA from '../Licenses/PoA';
@@ -20,6 +20,7 @@ interface Props {
 export default async function CompactLicenseCard({ license, licenseType, licenseId, nodeEthAddress }: Props) {
     const totalAssignedAmount = BigInt(license.totalAssignedAmount);
     const totalClaimedAmount = BigInt(license.totalClaimedAmount);
+    const awbBalance = BigInt(license.awbBalance ?? '0');
 
     return (
         <BorderedCard>
@@ -45,7 +46,7 @@ export default async function CompactLicenseCard({ license, licenseType, license
 
                 {!!license.lastClaimEpoch && (
                     <CardHorizontal
-                        label="Last claimed epoch"
+                        label="Last claim epoch"
                         value={license.lastClaimEpoch.toString()}
                         isSmall
                         isFlexible
@@ -57,11 +58,27 @@ export default async function CompactLicenseCard({ license, licenseType, license
                     label="Usage"
                     value={
                         <div className="w-full min-w-52 xs:min-w-56 md:min-w-60">
-                            <UsageStats totalClaimedAmount={totalClaimedAmount} totalAssignedAmount={totalAssignedAmount} />
+                            <UsageStats
+                                totalClaimedAmount={totalClaimedAmount}
+                                totalAssignedAmount={totalAssignedAmount}
+                                awbBalance={awbBalance}
+                            />
                         </div>
                     }
                     isSmall
                 />
+
+                {licenseType !== 'ND' && (
+                    <>
+                        <CardHorizontal
+                            label="Adoption Withheld Buffer"
+                            value={<div className="text-orange-500">{fBI(awbBalance, 18)} $R1</div>}
+                            isSmall
+                            isFlexible
+                            widthClasses="min-w-[360px]"
+                        />
+                    </>
+                )}
 
                 <PoA totalAssignedAmount={totalAssignedAmount} totalClaimedAmount={totalClaimedAmount} />
 

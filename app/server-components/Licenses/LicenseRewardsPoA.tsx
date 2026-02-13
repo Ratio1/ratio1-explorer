@@ -1,5 +1,5 @@
 import { getLicenseFirstCheckEpoch } from '@/config';
-import { getLicenseRewards } from '@/lib/api/blockchain';
+import { getLicenseRewardsBreakdown } from '@/lib/api/blockchain';
 import * as types from '@/typedefs/blockchain';
 import { formatUnits } from 'viem';
 import { CardHorizontal } from '../shared/cards/CardHorizontal';
@@ -17,8 +17,6 @@ export default async function LicenseRewardsPoA({
     getNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;
 }) {
     try {
-        let rewards: bigint | undefined = 0n;
-
         const nodeResponse: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined =
             await getNodeAvailability();
 
@@ -29,7 +27,7 @@ export default async function LicenseRewardsPoA({
         const firstCheckEpoch: number = getLicenseFirstCheckEpoch(license.assignTimestamp);
         const lastClaimEpoch: number = Number(license.lastClaimEpoch);
 
-        rewards = await getLicenseRewards(
+        const rewardsBreakdown = await getLicenseRewardsBreakdown(
             license,
             licenseType,
             BigInt(licenseId),
@@ -37,15 +35,33 @@ export default async function LicenseRewardsPoA({
             nodeResponse.epochs_vals.slice(lastClaimEpoch - firstCheckEpoch),
         );
 
+        const rewards = rewardsBreakdown.claimableAmount;
+        const showMndBreakdown =
+            licenseType !== 'ND' &&
+            rewardsBreakdown.claimableAmount !== undefined &&
+            (rewardsBreakdown.carryoverAmount ?? 0n) > 0n;
+
         return (
             <CardHorizontal
                 label="Rewards (PoA)"
                 value={
-                    <div className="text-primary">
-                        {rewards === undefined
-                            ? '...'
-                            : parseFloat(Number(formatUnits(rewards ?? 0n, 18)).toFixed(2)).toLocaleString()}
-                        {!!rewards ? ' $R1' : ''}
+                    <div className="col items-end gap-1.5">
+                        <div className="text-primary">
+                            {rewards === undefined
+                                ? '...'
+                                : parseFloat(Number(formatUnits(rewards ?? 0n, 18)).toFixed(2)).toLocaleString()}
+                            {!!rewards ? ' $R1' : ''}
+                        </div>
+
+                        {showMndBreakdown && (
+                            <div className="text-xs font-medium text-slate-500">
+                                includes{' '}
+                                {parseFloat(
+                                    Number(formatUnits(rewardsBreakdown.carryoverAmount ?? 0n, 18)).toFixed(2),
+                                ).toLocaleString()}{' '}
+                                carryover
+                            </div>
+                        )}
                     </div>
                 }
                 widthClasses="min-w-[280px]"

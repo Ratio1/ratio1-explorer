@@ -9,6 +9,7 @@ export type Config = {
     oraclesUrl: string;
     ndContractAddress: EthAddress;
     mndContractAddress: EthAddress;
+    adoptionOracleContractAddress: EthAddress;
     r1ContractAddress: EthAddress;
     readerContractAddress: EthAddress;
     usdcContractAddress: EthAddress;
@@ -55,6 +56,7 @@ const config: Config = {
     oraclesUrl: process.env.NEXT_PUBLIC_ORACLES_URL as string,
     ndContractAddress: process.env.NEXT_PUBLIC_ND_CA as EthAddress,
     mndContractAddress: process.env.NEXT_PUBLIC_MND_CA as EthAddress,
+    adoptionOracleContractAddress: process.env.NEXT_PUBLIC_ADOPTION_ORACLE_CA as EthAddress,
     r1ContractAddress: process.env.NEXT_PUBLIC_R1_CA as EthAddress,
     readerContractAddress: process.env.NEXT_PUBLIC_READER_CA as EthAddress,
     usdcContractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' as EthAddress,

@@ -21,7 +21,6 @@ export default async function CompactLicenseCard({ license, licenseType, license
     const totalAssignedAmount = BigInt(license.totalAssignedAmount);
     const totalClaimedAmount = BigInt(license.totalClaimedAmount);
     const awbBalance = BigInt(license.awbBalance ?? '0');
-    const walletClaimedAmount = totalClaimedAmount > awbBalance ? totalClaimedAmount - awbBalance : 0n;
 
     return (
         <BorderedCard>
@@ -47,7 +46,7 @@ export default async function CompactLicenseCard({ license, licenseType, license
 
                 {!!license.lastClaimEpoch && (
                     <CardHorizontal
-                        label="Last claimed epoch"
+                        label="Last claim epoch"
                         value={license.lastClaimEpoch.toString()}
                         isSmall
                         isFlexible
@@ -72,18 +71,11 @@ export default async function CompactLicenseCard({ license, licenseType, license
                 {licenseType !== 'ND' && (
                     <>
                         <CardHorizontal
-                            label="Actually Claimed (Wallet)"
-                            value={<div className="text-primary">{fBI(walletClaimedAmount, 18)}</div>}
-                            isSmall
-                            isFlexible
-                            widthClasses="min-w-[280px]"
-                        />
-                        <CardHorizontal
                             label="Adoption Withheld Buffer"
-                            value={<div className="text-orange-500">{fBI(awbBalance, 18)}</div>}
+                            value={<div className="text-orange-500">{fBI(awbBalance, 18)} $R1</div>}
                             isSmall
                             isFlexible
-                            widthClasses="min-w-[280px]"
+                            widthClasses="min-w-[360px]"
                         />
                     </>
                 )}

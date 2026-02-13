@@ -135,26 +135,32 @@ export default async function NodeOperatorPage({ params }) {
                     />
 
                     <CardHorizontal
-                        label="Total $R1 Claimed (Wallet)"
+                        label="Total $R1 Claimed"
                         value={<div className="text-primary">{fBI(totalWalletClaimed, 18)}</div>}
                         isSmall
                         isFlexible
                         widthClasses="min-w-[268px]"
                     />
 
-                    <CardHorizontal
-                        label="Total In AWB (MND/GND)"
-                        value={<div className="text-orange-500">{fBI(totalAwbBalance, 18)}</div>}
-                        isSmall
-                        isFlexible
-                        widthClasses="min-w-[268px]"
-                    />
+                    {totalAwbBalance > 0n && (
+                        <CardHorizontal
+                            label="Total in AWB"
+                            value={<div className="text-orange-500">{fBI(totalAwbBalance, 18)}</div>}
+                            isSmall
+                            isFlexible
+                            widthClasses="min-w-[268px]"
+                        />
+                    )}
 
                     <CardHorizontal
                         label="Licenses Usage (Total)"
                         value={
                             <div className="w-full min-w-52 xs:min-w-56 md:min-w-60">
-                                <UsageStats totalClaimedAmount={totalCurveReleased} totalAssignedAmount={totalAssigned} awbBalance={totalAwbBalance} />
+                                <UsageStats
+                                    totalClaimedAmount={totalCurveReleased}
+                                    totalAssignedAmount={totalAssigned}
+                                    awbBalance={totalAwbBalance}
+                                />
                             </div>
                         }
                         isSmall

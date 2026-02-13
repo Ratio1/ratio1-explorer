@@ -39,11 +39,11 @@ export default async function LicenseRewardsPoA({
         const showMndBreakdown =
             licenseType !== 'ND' &&
             rewardsBreakdown.claimableAmount !== undefined &&
-            ((rewardsBreakdown.carryoverAmount ?? 0n) > 0n || (rewardsBreakdown.withheldAmount ?? 0n) > 0n);
+            (rewardsBreakdown.carryoverAmount ?? 0n) > 0n;
 
         return (
             <CardHorizontal
-                label="Claimable PoA rewards:"
+                label="Rewards (PoA)"
                 value={
                     <div className="col items-end gap-1.5">
                         <div className="text-primary">
@@ -55,14 +55,11 @@ export default async function LicenseRewardsPoA({
 
                         {showMndBreakdown && (
                             <div className="text-xs font-medium text-slate-500">
-                                +{parseFloat(
+                                includes{' '}
+                                {parseFloat(
                                     Number(formatUnits(rewardsBreakdown.carryoverAmount ?? 0n, 18)).toFixed(2),
                                 ).toLocaleString()}{' '}
-                                carryover,{' '}
-                                {parseFloat(
-                                    Number(formatUnits(rewardsBreakdown.withheldAmount ?? 0n, 18)).toFixed(2),
-                                ).toLocaleString()}{' '}
-                                withheld
+                                carryover
                             </div>
                         )}
                     </div>

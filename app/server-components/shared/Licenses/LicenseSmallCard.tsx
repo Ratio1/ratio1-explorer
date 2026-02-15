@@ -10,6 +10,7 @@ interface Props {
     licenseType: 'ND' | 'MND' | 'GND' | undefined;
     totalAssignedAmount: bigint | undefined;
     totalClaimedAmount: bigint;
+    awbBalance?: bigint;
     isBanned: boolean;
     isLink?: boolean;
     hideType?: boolean;
@@ -20,6 +21,7 @@ export default async function LicenseSmallCard({
     licenseType,
     totalClaimedAmount,
     totalAssignedAmount,
+    awbBalance,
     isBanned,
     isLink,
     hideType,
@@ -43,7 +45,11 @@ export default async function LicenseSmallCard({
                 </div>
 
                 <div className="w-52">
-                    <UsageStats totalClaimedAmount={totalClaimedAmount} totalAssignedAmount={totalAssignedAmount} />
+                    <UsageStats
+                        totalClaimedAmount={totalClaimedAmount}
+                        totalAssignedAmount={totalAssignedAmount}
+                        awbBalance={awbBalance}
+                    />
                 </div>
             </div>
         </SmallCard>

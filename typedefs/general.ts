@@ -5,6 +5,16 @@ type LicenseItem = {
     licenseType: 'ND' | 'MND' | 'GND';
 };
 
+type LicenseListItem = LicenseItem & {
+    owner: types.EthAddress;
+    nodeAddress: types.EthAddress;
+    totalAssignedAmount: string;
+    totalClaimedAmount: string;
+    assignTimestamp: string;
+    awbBalance: string;
+    isBanned: boolean;
+};
+
 type SearchResult =
     | { type: 'node'; nodeAddress: types.EthAddress; alias: string; isOnline: boolean }
     | { type: 'license'; licenseId: number; licenseType: 'ND' | 'MND' | 'GND'; nodeAddress: types.EthAddress }
@@ -51,4 +61,12 @@ type PublicProfileInfo = {
     links: Record<string, string>;
 };
 
-export type { LicenseItem, PublicProfileInfo, SearchResult, TokenStatsEntry, TokenStatsResponse, TokenSupplyResponse };
+export type {
+    LicenseItem,
+    LicenseListItem,
+    PublicProfileInfo,
+    SearchResult,
+    TokenStatsEntry,
+    TokenStatsResponse,
+    TokenSupplyResponse,
+};

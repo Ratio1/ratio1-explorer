@@ -5,6 +5,7 @@ import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import config from '@/config';
 import { routePath } from '@/lib/routes';
+import { fBI } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import clsx from 'clsx';
@@ -28,6 +29,7 @@ interface Props {
 
 export default async function LicenseCard({ license, licenseType, licenseId, owner, getNodeAvailability, hasLink }: Props) {
     const environment = config.environment;
+    const awbBalance = license.awbBalance;
 
     const getTitle = () => <CardTitle hasLink={hasLink}>License #{licenseId}</CardTitle>;
 
@@ -90,7 +92,7 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
 
                 {!!license.lastClaimEpoch && (
                     <CardHorizontal
-                        label="Last claimed epoch"
+                        label="Last claim epoch"
                         value={license.lastClaimEpoch.toString()}
                         isSmall
                         isFlexible
@@ -105,6 +107,7 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                             <UsageStats
                                 totalClaimedAmount={license.totalClaimedAmount}
                                 totalAssignedAmount={license.totalAssignedAmount}
+                                awbBalance={license.awbBalance}
                             />
                         </div>
                     }
@@ -113,6 +116,16 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                 />
 
                 <PoA totalAssignedAmount={license.totalAssignedAmount} totalClaimedAmount={license.totalClaimedAmount} />
+
+                {licenseType !== 'ND' && (
+                    <CardHorizontal
+                        label="Adoption Withheld Buffer"
+                        value={<div className="text-orange-500">{fBI(awbBalance, 18)} $R1</div>}
+                        isSmall
+                        isFlexible
+                        widthClasses="min-w-[360px]"
+                    />
+                )}
 
                 <Suspense fallback={<Skeleton className="min-h-[76px] w-full rounded-xl md:max-w-[258px]" />}>
                     <LicenseRewardsPoA

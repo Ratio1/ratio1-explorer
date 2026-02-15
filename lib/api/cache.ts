@@ -13,19 +13,19 @@ export const cachedGetLicense = unstable_cache(
         nodeAddress: types.EthAddress;
         totalAssignedAmount: string;
         totalClaimedAmount: string;
+        awbBalance: string;
         assignTimestamp: string;
         isBanned: boolean;
     }> => {
-        const { owner, nodeAddress, totalAssignedAmount, totalClaimedAmount, assignTimestamp, isBanned } = await getLicense(
-            licenseType,
-            licenseId,
-        );
+        const { owner, nodeAddress, totalAssignedAmount, totalClaimedAmount, awbBalance, assignTimestamp, isBanned } =
+            await getLicense(licenseType, licenseId);
 
         return {
             owner,
             nodeAddress,
             totalAssignedAmount: totalAssignedAmount.toString(),
             totalClaimedAmount: totalClaimedAmount.toString(),
+            awbBalance: awbBalance.toString(),
             assignTimestamp: assignTimestamp.toString(),
             isBanned,
         };
@@ -43,6 +43,7 @@ export const cachedGetLicenses = unstable_cache(
             licenseId: license.licenseId.toString(),
             totalAssignedAmount: license.totalAssignedAmount.toString(),
             totalClaimedAmount: license.totalClaimedAmount.toString(),
+            awbBalance: license.awbBalance.toString(),
             lastClaimEpoch: license.lastClaimEpoch.toString(),
             assignTimestamp: license.assignTimestamp.toString(),
             usdcPoaiRewards: license.usdcPoaiRewards.toString(),
@@ -63,9 +64,10 @@ export const cachedGetNodeLicenseDetails = unstable_cache(
         owner: types.EthAddress;
         totalAssignedAmount: string;
         totalClaimedAmount: string;
+        awbBalance: string;
         isBanned: boolean;
     }> => {
-        const { licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount, isBanned } =
+        const { licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount, awbBalance, isBanned } =
             await getNodeLicenseDetails(nodeAddress);
 
         return {
@@ -74,6 +76,7 @@ export const cachedGetNodeLicenseDetails = unstable_cache(
             owner,
             totalAssignedAmount: totalAssignedAmount.toString(),
             totalClaimedAmount: totalClaimedAmount.toString(),
+            awbBalance: awbBalance.toString(),
             isBanned,
         };
     },

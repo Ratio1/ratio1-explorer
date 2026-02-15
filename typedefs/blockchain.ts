@@ -5,6 +5,7 @@ type License = {
     nodeAddress: EthAddress;
     totalAssignedAmount: bigint;
     totalClaimedAmount: bigint;
+    awbBalance: bigint;
     lastClaimEpoch: bigint;
     firstMiningEpoch?: bigint;
     assignTimestamp: bigint;
@@ -37,6 +38,7 @@ type CachedLicense = {
     nodeAddress: EthAddress;
     totalAssignedAmount: string;
     totalClaimedAmount: string;
+    awbBalance: string;
     lastClaimEpoch: string;
     assignTimestamp: string;
     lastClaimOracle: `0x${string}`;
@@ -180,4 +182,3 @@ export type {
     Resources,
     ServerInfo
 };
-

@@ -4,15 +4,25 @@ import { ERC20Abi } from '@/blockchain/ERC20';
 import { MNDContractAbi } from '@/blockchain/MNDContract';
 import { NDContractAbi } from '@/blockchain/NDContract';
 import { ReaderAbi } from '@/blockchain/Reader';
+import { AdoptionOracleAbi } from '@/blockchain/AdoptionOracle';
 import config, { getCurrentEpoch, getEpochStartTimestamp, getNextEpochTimestamp } from '@/config';
 import * as types from '@/typedefs/blockchain';
+import { LicenseListItem } from '@/typedefs/general';
 import console from 'console';
 import { differenceInSeconds } from 'date-fns';
 import Moralis from 'moralis';
 import { EvmAddress, EvmChain } from 'moralis/common-evm-utils';
+import { unstable_cache } from 'next/cache';
 import type { ReadContractReturnType } from 'viem';
 import { isZeroAddress } from '../utils';
 import { getPublicClient } from './client';
+
+export type LicenseRewardsBreakdown = {
+    claimableAmount: bigint | undefined;
+    rewardsAmount?: bigint;
+    carryoverAmount?: bigint;
+    withheldAmount?: bigint;
+};
 
 async function startMoralis() {
     await Moralis.start({
@@ -23,6 +33,34 @@ async function startMoralis() {
 }
 
 startMoralis();
+
+const getMndLicenseExtraData = async (
+    publicClient: Awaited<ReturnType<typeof getPublicClient>>,
+    licenseId: bigint,
+): Promise<{
+    firstMiningEpoch: bigint;
+    awbBalance: bigint;
+}> => {
+    const [mndLicenseData, awbBalance] = await Promise.all([
+        publicClient.readContract({
+            address: config.mndContractAddress,
+            abi: MNDContractAbi,
+            functionName: 'licenses',
+            args: [licenseId],
+        }),
+        publicClient.readContract({
+            address: config.mndContractAddress,
+            abi: MNDContractAbi,
+            functionName: 'awbBalances',
+            args: [licenseId],
+        }),
+    ]);
+
+    return {
+        firstMiningEpoch: mndLicenseData[3],
+        awbBalance,
+    };
+};
 
 export async function fetchCSPDetails(address: types.EthAddress): Promise<types.CSP | undefined> {
     const publicClient = await getPublicClient();
@@ -71,21 +109,16 @@ export async function getNodeLicenseDetails(nodeAddress: types.EthAddress): Prom
         .then(async (result) => {
             const licenseType = [undefined, 'ND', 'MND', 'GND'][result.licenseType] as 'ND' | 'MND' | 'GND' | undefined;
             let firstMiningEpoch: bigint | undefined;
+            let awbBalance = 0n;
             if (licenseType === 'MND' || licenseType === 'GND') {
-                firstMiningEpoch = (
-                    await publicClient.readContract({
-                        address: config.mndContractAddress,
-                        abi: MNDContractAbi,
-                        functionName: 'licenses',
-                        args: [result.licenseId],
-                    })
-                )[3];
+                ({ firstMiningEpoch, awbBalance } = await getMndLicenseExtraData(publicClient, result.licenseId));
             }
 
             return {
                 ...result,
                 licenseType,
                 firstMiningEpoch,
+                awbBalance,
             };
         });
 }
@@ -115,6 +148,7 @@ export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: n
                     ...license,
                     licenseType,
                     isLinked,
+                    awbBalance: 0n,
                 };
             });
     } else {
@@ -134,20 +168,14 @@ export async function getLicense(licenseType: 'ND' | 'MND' | 'GND', licenseId: n
                 if (licenseType !== 'MND' && licenseType !== 'GND') {
                     throw new Error('Invalid license type');
                 }
-                const firstMiningEpoch = (
-                    await publicClient.readContract({
-                        address: config.mndContractAddress,
-                        abi: MNDContractAbi,
-                        functionName: 'licenses',
-                        args: [BigInt(licenseId)],
-                    })
-                )[3];
+                const { firstMiningEpoch, awbBalance } = await getMndLicenseExtraData(publicClient, BigInt(licenseId));
 
                 return {
                     ...license,
                     licenseType,
                     isLinked,
                     firstMiningEpoch,
+                    awbBalance,
                 };
             });
     }
@@ -164,16 +192,27 @@ export const getLicenses = async (address: types.EthAddress): Promise<types.Lice
             args: [address],
         })
         .then((licenses) => {
-            return licenses.map((license) => {
-                const isLinked = !isZeroAddress(license.nodeAddress);
-                const licenseType = [undefined, 'ND', 'MND', 'GND'][license.licenseType] as 'ND' | 'MND' | 'GND';
+            return Promise.all(
+                licenses.map(async (license) => {
+                    let firstMiningEpoch: bigint | undefined;
+                    let awbBalance = 0n;
+                    const isLinked = !isZeroAddress(license.nodeAddress);
+                    const licenseType = [undefined, 'ND', 'MND', 'GND'][license.licenseType] as 'ND' | 'MND' | 'GND';
 
-                return {
-                    ...license,
-                    licenseType,
-                    isLinked,
-                };
-            });
+                    if (licenseType === 'MND' || licenseType === 'GND') {
+                        //TODO optimize by fetching extra data in batch for all licenses
+                        ({ firstMiningEpoch, awbBalance } = await getMndLicenseExtraData(publicClient, license.licenseId));
+                    }
+
+                    return {
+                        ...license,
+                        licenseType,
+                        isLinked,
+                        firstMiningEpoch,
+                        awbBalance,
+                    };
+                }),
+            );
         });
 
     return [...licenses];
@@ -218,6 +257,97 @@ export const fetchR1TotalSupply = async () => {
     });
 };
 
+const MAX_ADOPTION_PERCENTAGE = 65_535; // 100% using uint16
+
+const toThresholdPercentage = (value: bigint, threshold: bigint): number => {
+    if (threshold === 0n) {
+        return 0;
+    }
+
+    const percentage = Number((value * 10_000n) / threshold) / 100;
+    return Math.min(percentage, 100);
+};
+
+const toOverallPercentage = (value: number): number => {
+    const percentage = (value * 10_000) / MAX_ADOPTION_PERCENTAGE / 100;
+    return Math.min(percentage, 100);
+};
+
+export type AdoptionMetricsEntry = {
+    epoch: number;
+    dateLabel: string;
+    ndSalesPercentage: number;
+    poaiVolumePercentage: number;
+    overallPercentage: number;
+    licensesSold: number;
+    poaiVolumeUsdc: number;
+};
+
+const getAdoptionMetricsRangeCached = unstable_cache(
+    async (resolvedFromEpoch: number, resolvedToEpoch: number): Promise<AdoptionMetricsEntry[]> => {
+        const publicClient = await getPublicClient();
+
+        const [licensesSoldRange, poaiVolumeRange, adoptionPercentagesRange, ndThreshold, poaiThreshold] = await Promise.all([
+            publicClient.readContract({
+                address: config.adoptionOracleContractAddress,
+                abi: AdoptionOracleAbi,
+                functionName: 'getLicensesSoldRange',
+                args: [BigInt(resolvedFromEpoch), BigInt(resolvedToEpoch)],
+            }),
+            publicClient.readContract({
+                address: config.adoptionOracleContractAddress,
+                abi: AdoptionOracleAbi,
+                functionName: 'getPoaiVolumeRange',
+                args: [BigInt(resolvedFromEpoch), BigInt(resolvedToEpoch)],
+            }),
+            publicClient.readContract({
+                address: config.adoptionOracleContractAddress,
+                abi: AdoptionOracleAbi,
+                functionName: 'getAdoptionPercentagesRange',
+                args: [BigInt(resolvedFromEpoch), BigInt(resolvedToEpoch)],
+            }),
+            publicClient.readContract({
+                address: config.adoptionOracleContractAddress,
+                abi: AdoptionOracleAbi,
+                functionName: 'ndFullReleaseThreshold',
+            }),
+            publicClient.readContract({
+                address: config.adoptionOracleContractAddress,
+                abi: AdoptionOracleAbi,
+                functionName: 'poaiVolumeFullReleaseThreshold',
+            }),
+        ]);
+
+        return adoptionPercentagesRange.map((overallAdoption, index) => {
+            const epoch = resolvedFromEpoch + index;
+
+            return {
+                epoch,
+                dateLabel: getEpochStartTimestamp(epoch).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    timeZone: 'UTC',
+                }),
+                ndSalesPercentage: toThresholdPercentage(licensesSoldRange[index], ndThreshold),
+                poaiVolumePercentage: toThresholdPercentage(poaiVolumeRange[index], poaiThreshold),
+                overallPercentage: toOverallPercentage(overallAdoption),
+                licensesSold: Number(licensesSoldRange[index]),
+                poaiVolumeUsdc: Number(poaiVolumeRange[index]) / 1_000_000,
+            };
+        });
+    },
+    ['adoption-metrics-range'],
+    { revalidate: 3600 },
+);
+
+export const getAdoptionMetricsRange = async (fromEpoch?: number, toEpoch?: number): Promise<AdoptionMetricsEntry[]> => {
+    const currentEpoch = Math.max(getCurrentEpoch(), 0);
+    const resolvedToEpoch = Math.max(toEpoch ?? currentEpoch - 1, 0);
+    const resolvedFromEpoch = Math.max(fromEpoch ?? config.mndCliffEpochs, 0);
+
+    return getAdoptionMetricsRangeCached(resolvedFromEpoch, resolvedToEpoch);
+};
+
 // Binary search for the block with the closest timestamp to the target timestamp
 export const getBlockByTimestamp = async (targetTimestamp: number) => {
     const publicClient = await getPublicClient();
@@ -250,13 +380,28 @@ export const getLicenseRewards = async (
     epochs: number[],
     epochs_vals: number[],
 ): Promise<bigint | undefined> => {
+    const breakdown = await getLicenseRewardsBreakdown(license, licenseType, licenseId, epochs, epochs_vals);
+    return breakdown.claimableAmount;
+};
+
+export const getLicenseRewardsBreakdown = async (
+    license: types.License,
+    licenseType: 'ND' | 'MND' | 'GND',
+    licenseId: bigint,
+    epochs: number[],
+    epochs_vals: number[],
+): Promise<LicenseRewardsBreakdown> => {
     switch (licenseType) {
-        case 'ND':
-            return getNdLicenseRewards(license, epochs, epochs_vals);
+        case 'ND': {
+            const claimableAmount = await getNdLicenseRewards(license, epochs, epochs_vals);
+            return {
+                claimableAmount,
+            };
+        }
 
         case 'MND':
         case 'GND':
-            return getMndOrGndLicenseRewards(license, licenseId, epochs, epochs_vals);
+            return getMndOrGndLicenseRewardsBreakdown(license, licenseId, epochs, epochs_vals);
     }
 };
 
@@ -278,66 +423,49 @@ export async function getLicensesTotalSupply(): Promise<{
     };
 }
 
-const LICENSE_ENUMERATION_CHUNK_SIZE = 200;
-
-const getEnumerableLicenseIds = async (
-    publicClient: Awaited<ReturnType<typeof getPublicClient>>,
-    address: types.EthAddress,
-    abi: typeof NDContractAbi | typeof MNDContractAbi,
-    totalSupply: bigint,
-): Promise<number[]> => {
-    if (totalSupply === 0n) {
-        return [];
-    }
-
-    const total = Number(totalSupply);
-    const licenseIds: number[] = [];
-
-    for (let start = 0; start < total; start += LICENSE_ENUMERATION_CHUNK_SIZE) {
-        const end = Math.min(start + LICENSE_ENUMERATION_CHUNK_SIZE, total);
-        const tokenIds = await publicClient.multicall({
-            contracts: Array.from({ length: end - start }, (_, index) => ({
-                address,
-                abi,
-                functionName: 'tokenByIndex' as const,
-                args: [BigInt(start + index)],
-            })),
-            allowFailure: false,
-        });
-
-        licenseIds.push(...tokenIds.map((tokenId) => Number(tokenId)));
-    }
-
-    return licenseIds.sort((a, b) => a - b);
-};
-
-export async function getAllLicenseTokenIds(): Promise<{
-    mndLicenseIds: number[];
-    ndLicenseIds: number[];
+export async function getLicensesPage(
+    offset: number,
+    limit: number,
+): Promise<{
+    mndTotalSupply: bigint;
+    ndTotalSupply: bigint;
+    licenses: LicenseListItem[];
 }> {
     const publicClient = await getPublicClient();
 
-    const [mndTotalSupply, ndTotalSupply] = await Promise.all([
-        publicClient.readContract({
-            address: config.mndContractAddress,
-            abi: MNDContractAbi,
-            functionName: 'totalSupply',
-        }),
-        publicClient.readContract({
-            address: config.ndContractAddress,
-            abi: NDContractAbi,
-            functionName: 'totalSupply',
-        }),
-    ]);
-
-    const [mndLicenseIds, ndLicenseIds] = await Promise.all([
-        getEnumerableLicenseIds(publicClient, config.mndContractAddress, MNDContractAbi, mndTotalSupply),
-        getEnumerableLicenseIds(publicClient, config.ndContractAddress, NDContractAbi, ndTotalSupply),
-    ]);
+    const [mndTotalSupply, ndTotalSupply, licenseRows] = await publicClient.readContract({
+        address: config.readerContractAddress,
+        abi: ReaderAbi,
+        functionName: 'getLicensesPage',
+        args: [BigInt(offset), BigInt(limit)],
+    });
 
     return {
-        mndLicenseIds,
-        ndLicenseIds,
+        mndTotalSupply,
+        ndTotalSupply,
+        licenses: licenseRows.map((license) => {
+            const licenseType = [undefined, 'ND', 'MND', 'GND'][Number(license.licenseType)] as
+                | 'ND'
+                | 'MND'
+                | 'GND'
+                | undefined;
+
+            if (!licenseType) {
+                throw new Error(`Invalid license type returned by reader for license #${license.licenseId}`);
+            }
+
+            return {
+                licenseType,
+                licenseId: Number(license.licenseId),
+                owner: license.owner,
+                nodeAddress: license.nodeAddress,
+                totalAssignedAmount: license.totalAssignedAmount.toString(),
+                totalClaimedAmount: license.totalClaimedAmount.toString(),
+                assignTimestamp: license.assignTimestamp.toString(),
+                awbBalance: license.awbBalance.toString(),
+                isBanned: license.isBanned,
+            };
+        }),
     };
 }
 
@@ -445,12 +573,12 @@ const getNdLicenseRewards = async (
     return rewards_amount > maxRemainingClaimAmount ? maxRemainingClaimAmount : rewards_amount;
 };
 
-const getMndOrGndLicenseRewards = async (
+const getMndOrGndLicenseRewardsBreakdown = async (
     license: types.License,
     licenseId: bigint,
     epochs: number[],
     epochs_vals: number[],
-): Promise<bigint | undefined> => {
+): Promise<LicenseRewardsBreakdown> => {
     const currentEpoch = getCurrentEpoch();
     const firstMiningEpoch = license.firstMiningEpoch;
 
@@ -463,7 +591,12 @@ const getMndOrGndLicenseRewards = async (
     const epochsToClaim = currentEpoch - firstEpochToClaim;
 
     if (currentEpoch < Number(firstMiningEpoch) || !epochsToClaim) {
-        return 0n;
+        return {
+            claimableAmount: 0n,
+            rewardsAmount: 0n,
+            carryoverAmount: 0n,
+            withheldAmount: 0n,
+        };
     }
 
     if (epochs.length && epochs[0] < firstEpochToClaim) {
@@ -473,7 +606,9 @@ const getMndOrGndLicenseRewards = async (
     }
 
     if (epochsToClaim !== epochs.length || epochsToClaim !== epochs_vals.length) {
-        return undefined;
+        return {
+            claimableAmount: undefined,
+        };
     }
 
     const publicClient = await getPublicClient();
@@ -497,12 +632,19 @@ const getMndOrGndLicenseRewards = async (
             ],
         });
     } catch {
-        return undefined;
+        return {
+            claimableAmount: undefined,
+        };
     }
 
     if (!result || result.length !== 1) {
         throw new Error('Invalid rewards calculation result');
     }
 
-    return result[0].rewardsAmount + result[0].carryoverAmount;
+    return {
+        claimableAmount: result[0].rewardsAmount + result[0].carryoverAmount,
+        rewardsAmount: result[0].rewardsAmount,
+        carryoverAmount: result[0].carryoverAmount,
+        withheldAmount: result[0].withheldAmount,
+    };
 };

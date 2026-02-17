@@ -122,7 +122,7 @@ export default async function StatsPage() {
 
             <BorderedCard>
                 <div className="flex flex-col justify-between gap-2 md:gap-3 lg:flex-row">
-                    <div className="card-title-big font-bold">Daily PoAI</div>
+                    <div className="card-title-big font-bold">PoAI</div>
 
                     <div className="flex flex-col flex-wrap gap-1 sm:flex-row sm:gap-3 md:items-center larger:gap-5">
                         {getLegendEntries(chartConfig)}

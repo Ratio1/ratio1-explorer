@@ -5,7 +5,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
         name: 'Ratio1 Explorer',
         short_name: 'Ratio1 Explorer',
         description:
-            'Experience the power of Ratio1 AI OS, built on Ratio1 Protocol and powered by blockchain, democratizing AI to empower limitless innovation.',
+            'Explore the Ratio1 network with Ratio1 Explorer - a real-time explorer providing transparent insights, analytics, and live network metrics.',
         icons: [
             { src: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
             { src: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },

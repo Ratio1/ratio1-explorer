@@ -3,7 +3,6 @@ import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard'
 import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
-import config from '@/config';
 import { routePath } from '@/lib/routes';
 import { fBI } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
@@ -13,7 +12,6 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { formatUnits } from 'viem';
 import PoA from '../Licenses/PoA';
-import TreasuryWallets from '../Licenses/TreasuryWallets';
 import { CardTitle } from '../shared/CardTitle';
 import { LargeTag } from '../shared/LargeTag';
 import UsageStats from '../shared/Licenses/UsageStats';
@@ -28,7 +26,6 @@ interface Props {
 }
 
 export default async function LicenseCard({ license, licenseType, licenseId, owner, getNodeAvailability, hasLink }: Props) {
-    const environment = config.environment;
     const awbBalance = license.awbBalance;
 
     const getTitle = () => <CardTitle hasLink={hasLink}>License #{licenseId}</CardTitle>;
@@ -153,8 +150,6 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                     />
                 )}
             </div>
-
-            {environment === 'mainnet' && licenseId === '1' && licenseType === 'GND' && <TreasuryWallets license={license} />}
         </BorderedCard>
     );
 }

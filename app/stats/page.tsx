@@ -4,10 +4,14 @@ import DailyStatsAreaChart from '@/components/charts/DailyStatsAreaChart';
 import NodesMap from '@/components/charts/NodesMap';
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { ChartConfig } from '@/components/ui/chart';
+import config from '@/config';
+import { getLicense } from '@/lib/api/blockchain';
 import { getTokenSupply } from '@/lib/api/general';
 import { fN } from '@/lib/utils';
+import { License } from '@/typedefs/blockchain';
 import { TokenSupplyResponse } from '@/typedefs/general';
 import Link from 'next/link';
+import TreasuryWallets from '../server-components/Licenses/TreasuryWallets';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
 
@@ -59,12 +63,21 @@ export async function generateMetadata() {
 
 export default async function StatsPage() {
     let tokenSupply: TokenSupplyResponse;
+    let gndLicense: License | undefined;
 
     try {
         tokenSupply = await getTokenSupply();
     } catch (error) {
         console.error(error);
         return <NotFound />;
+    }
+
+    if (config.environment === 'mainnet') {
+        try {
+            gndLicense = await getLicense('GND', 1);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     const getLegendEntries = (config: ChartConfig) =>
@@ -147,6 +160,12 @@ export default async function StatsPage() {
                     <AdoptionMetricsLineChart chartConfig={adoptionChartConfig} />
                 </ClientWrapper>
             </BorderedCard>
+
+            {gndLicense && (
+                <BorderedCard>
+                    <TreasuryWallets license={gndLicense} />
+                </BorderedCard>
+            )}
 
             <BorderedCard>
                 <div className="card-title-big font-bold">Nodes</div>

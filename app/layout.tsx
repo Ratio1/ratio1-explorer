@@ -19,7 +19,7 @@ export const viewport: Viewport = {
 export async function generateMetadata(): Promise<Metadata> {
     return buildMetadata(
         'Ratio1 Explorer',
-        'Experience the power of Ratio1 AI OS, built on Ratio1 Protocol and powered by blockchain, democratizing AI to empower limitless innovation.',
+        'Explore the Ratio1 network with Ratio1 Explorer - a real-time explorer providing transparent insights, analytics, and live network metrics.',
         config.publicUrl,
     );
 }
@@ -45,7 +45,7 @@ export default async function RootLayout({
                 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
                 <meta
                     name="description"
-                    content="Experience the power of Ratio1 AI OS, built on Ratio1 Protocol and powered by blockchain, democratizing AI to empower limitless innovation."
+                    content="Explore the Ratio1 network with Ratio1 Explorer - a real-time explorer providing transparent insights, analytics, and live network metrics."
                 />
                 <meta name="mobile-web-app-capable" content="yes" />
                 <meta name="apple-mobile-web-app-status-bar-style" content="default" />

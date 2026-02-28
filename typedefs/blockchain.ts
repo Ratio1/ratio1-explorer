@@ -63,6 +63,8 @@ type OraclesAvailabilityResult = {
     node_eth_address: EthAddress;
     epochs: number[];
     epochs_vals: number[];
+    error?: string;
+    availability_status?: OraclesAvailabilityStatus;
     eth_signed_data: EthSignedData;
     eth_signatures: EthAddress[];
     eth_addresses: EthAddress[];
@@ -72,7 +74,24 @@ type OraclesAvailabilityResult = {
     node_last_seen_sec: number;
     resources: Resources;
     tags?: string[];
+    server_current_epoch?: number;
+    server_last_synced_epoch?: number;
 };
+
+type OraclesNoEpochsResult = {
+    error: string;
+    epochs?: number[];
+    epochs_vals?: number[];
+    node?: string;
+    node_alias?: string;
+    node_eth_address?: EthAddress;
+    node_is_online?: boolean;
+    node_is_oracle?: boolean;
+    server_current_epoch?: number;
+    server_last_synced_epoch?: number;
+};
+
+type OraclesAvailabilityStatus = 'ok' | 'syncing' | 'no-data';
 
 type EthSignedData = {
     input: string[];
@@ -118,6 +137,7 @@ type ServerInfo = {
     server_version: string;
     server_time: string;
     server_current_epoch: number;
+    server_last_synced_epoch?: number;
     server_uptime: string;
 };
 
@@ -207,8 +227,10 @@ export type {
     NodeLicenseDetailsResponse,
     NodeState,
     OraclesAvailabilityResult,
+    OraclesAvailabilityStatus,
     OraclesCountryStatsResult,
     OraclesDefaultResult,
+    OraclesNoEpochsResult,
     R1Address,
     Resources,
     ServerInfo,

@@ -21,7 +21,7 @@ interface Props {
     licenseType: 'ND' | 'MND' | 'GND';
     licenseId: string;
     owner: types.EthAddress;
-    getNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;
+    getNodeAvailability: () => Promise<types.OraclesAvailabilityResult | undefined>;
     hasLink?: boolean; // If it has a link to it, it means it's not the main card (displayed on top of the page)
 }
 

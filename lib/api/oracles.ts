@@ -1,6 +1,7 @@
 'use server';
 
 import config from '@/config';
+import { hasNoEpochsFoundError } from '@/lib/oracles';
 import * as types from '@/typedefs/blockchain';
 
 const oraclesApiURL = config.oraclesUrl;
@@ -45,6 +46,15 @@ async function _doGet<T>(endpoint: string, baseUrl: string) {
     }
 
     if ('error' in data.result) {
+        if (hasNoEpochsFoundError(data.result.error)) {
+            return {
+                ...data.result,
+                epochs: 'epochs' in data.result && Array.isArray(data.result.epochs) ? data.result.epochs : [],
+                epochs_vals: 'epochs_vals' in data.result && Array.isArray(data.result.epochs_vals) ? data.result.epochs_vals : [],
+            } as T;
+        }
+
+        console.log(endpoint, data.result);
         throw new Error(data.result.error);
     }
 

@@ -8,7 +8,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 
 export default async function NodeSmallCard({ nodeEthAddr }: { nodeEthAddr: types.EthAddress }) {
-    let nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
+    let nodeResponse: types.OraclesAvailabilityResult;
 
     try {
         nodeResponse = await getNodeLastEpoch(nodeEthAddr);

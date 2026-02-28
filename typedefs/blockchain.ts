@@ -62,6 +62,7 @@ type OraclesAvailabilityResult = {
     node_eth_address: EthAddress;
     epochs: number[];
     epochs_vals: number[];
+    error?: string;
     eth_signed_data: EthSignedData;
     eth_signatures: EthAddress[];
     eth_addresses: EthAddress[];
@@ -71,6 +72,8 @@ type OraclesAvailabilityResult = {
     node_last_seen_sec: number;
     resources: Resources;
     tags?: string[];
+    server_current_epoch?: number;
+    server_last_synced_epoch?: number;
 };
 
 type EthSignedData = {
@@ -117,6 +120,7 @@ type ServerInfo = {
     server_version: string;
     server_time: string;
     server_current_epoch: number;
+    server_last_synced_epoch?: number;
     server_uptime: string;
 };
 

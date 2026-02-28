@@ -55,7 +55,7 @@ export async function generateMetadata({ params }) {
         },
     };
 
-    let nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
+    let nodeResponse: types.OraclesAvailabilityResult;
 
     try {
         ({ nodeResponse } = await fetchLicenseDetailsAndNodeAvailability(resolvedNodeEthAddr, config.environment));
@@ -83,7 +83,7 @@ const fetchLicenseDetailsAndNodeAvailability = async (
     licenseId: bigint;
     licenseType: 'ND' | 'MND' | 'GND';
     owner: types.EthAddress;
-    nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
+    nodeResponse: types.OraclesAvailabilityResult;
 }> => {
     let nodeAddress: types.EthAddress,
         totalAssignedAmount: bigint,
@@ -165,7 +165,7 @@ export default async function NodePage({ params }) {
     let licenseId: bigint;
     let licenseType: 'ND' | 'MND' | 'GND';
     let owner: types.EthAddress;
-    let nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
+    let nodeResponse: types.OraclesAvailabilityResult;
 
     try {
         ({ license, licenseId, licenseType, owner, nodeResponse } = await fetchLicenseDetailsAndNodeAvailability(

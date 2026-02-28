@@ -1,4 +1,5 @@
 import EpochsChart from '@/components/Nodes/EpochsChart';
+import { isOraclesSyncing } from '@/lib/oracles';
 import { arrayAverage } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Tooltip } from '@heroui/tooltip';
@@ -6,12 +7,34 @@ import clsx from 'clsx';
 import { BorderedCard } from '../shared/cards/BorderedCard';
 import { CardFlexible } from '../shared/cards/CardFlexible';
 import { CardHorizontal } from '../shared/cards/CardHorizontal';
+import SyncingOraclesTag from '../shared/SyncingOraclesTag';
 
 export default async function NodePerformanceCard({
     nodeResponse,
 }: {
-    nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
+    nodeResponse: types.OraclesAvailabilityResult;
 }) {
+    const epochs = nodeResponse.epochs ?? [];
+    const epochsVals = nodeResponse.epochs_vals ?? [];
+
+    const expectedLastEpoch =
+        typeof nodeResponse.server_current_epoch === 'number' ? nodeResponse.server_current_epoch - 1 : undefined;
+    const actualLastEpoch = epochs.length ? epochs[epochs.length - 1] : undefined;
+    const isEpochTransitioning =
+        expectedLastEpoch !== undefined && actualLastEpoch !== undefined && actualLastEpoch !== expectedLastEpoch;
+    const showSyncingTag = isOraclesSyncing(nodeResponse) || isEpochTransitioning || epochs.length === 0 || epochsVals.length === 0;
+
+    if (showSyncingTag) {
+        return (
+            <BorderedCard>
+                <div className="row flex-wrap items-center gap-2.5">
+                    <div className="card-title font-bold">Node Performance</div>
+                    <SyncingOraclesTag />
+                </div>
+            </BorderedCard>
+        );
+    }
+
     return (
         <BorderedCard>
             <div className="card-title font-bold">Node Performance</div>
@@ -19,7 +42,7 @@ export default async function NodePerformanceCard({
             <div className="flexible-row">
                 <CardHorizontal
                     label="Last Epoch Availability"
-                    value={`${parseFloat(((nodeResponse.epochs_vals[nodeResponse.epochs_vals.length - 1] * 100) / 255).toFixed(2))}%`}
+                    value={`${parseFloat(((epochsVals[epochsVals.length - 1] * 100) / 255).toFixed(2))}%`}
                     isSmall
                     isFlexible
                     widthClasses="xs:min-w-[316px]"
@@ -27,7 +50,7 @@ export default async function NodePerformanceCard({
 
                 <CardHorizontal
                     label="Last Week Avg. Availability"
-                    value={`${parseFloat(((arrayAverage(nodeResponse.epochs_vals.slice(-7)) / 255) * 100).toFixed(2))}%`}
+                    value={`${parseFloat(((arrayAverage(epochsVals.slice(-7)) / 255) * 100).toFixed(2))}%`}
                     isSmall
                     isFlexible
                     widthClasses="xs:min-w-[316px]"
@@ -35,7 +58,7 @@ export default async function NodePerformanceCard({
 
                 <CardHorizontal
                     label="All Time Avg. Availability"
-                    value={`${parseFloat(((arrayAverage(nodeResponse.epochs_vals) / 255) * 100).toFixed(2))}%`}
+                    value={`${parseFloat(((arrayAverage(epochsVals) / 255) * 100).toFixed(2))}%`}
                     isSmall
                     isFlexible
                     widthClasses="xs:min-w-[316px] min-w-[224px]"
@@ -43,7 +66,7 @@ export default async function NodePerformanceCard({
 
                 <CardHorizontal
                     label="Active Epochs"
-                    value={nodeResponse.epochs_vals.filter((value) => value > 0).length}
+                    value={epochsVals.filter((value) => value > 0).length}
                     isSmall
                     isFlexible
                     widthClasses="xs:min-w-[316px] min-w-[224px]"
@@ -55,8 +78,8 @@ export default async function NodePerformanceCard({
                         value={
                             <div className="row gap-6">
                                 <div className="row gap-1">
-                                    {nodeResponse.epochs.slice(-10).map((epoch, index) => {
-                                        const availability = nodeResponse.epochs_vals.slice(-10)[index];
+                                    {epochs.slice(-10).map((epoch, index) => {
+                                        const availability = epochsVals.slice(-10)[index];
 
                                         return (
                                             <div key={index}>
@@ -86,9 +109,9 @@ export default async function NodePerformanceCard({
 
                                 <div className="h-[40px] w-[200px]">
                                     <EpochsChart
-                                        data={nodeResponse.epochs_vals.slice(-10).map((value, index) => ({
+                                        data={epochsVals.slice(-10).map((value, index) => ({
                                             Availability: (100 * value) / 255,
-                                            Epoch: nodeResponse.epochs[index],
+                                            Epoch: epochs.slice(-10)[index],
                                         }))}
                                     />
                                 </div>
@@ -105,11 +128,11 @@ export default async function NodePerformanceCard({
                             <div className="text-[15px] font-medium text-slate-500">Last 10 Epochs Availability</div>
 
                             <div className="col gap-1.5">
-                                {nodeResponse.epochs
+                                {epochs
                                     .slice(-10)
                                     .reverse()
                                     .map((epoch, index) => {
-                                        const availability = nodeResponse.epochs_vals.slice(-10)[index];
+                                        const availability = epochsVals.slice(-10)[index];
 
                                         return (
                                             <div key={index}>

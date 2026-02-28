@@ -7,6 +7,7 @@ import { SearchResult } from '@/typedefs/general';
 import { headers } from 'next/headers';
 import { getLicense } from './api/blockchain';
 import { getNodeEpochsRange, getNodeLastEpoch } from './api/oracles';
+import { isOraclesSyncing } from './oracles';
 import { cachedGetENSName, internalNodeAddressToEthAddress, isNonZeroInteger, isZeroAddress } from './utils';
 
 const URL_SAFE_PATTERN = /^[a-zA-Z0-9x\s\-_\.]+$/;
@@ -22,14 +23,30 @@ export const getSSURL = async (value: string): Promise<string> => {
 export const getNodeAvailability = async (
     nodeEthAddr: types.EthAddress,
     assignTimestamp: bigint,
-): Promise<types.OraclesAvailabilityResult & types.OraclesDefaultResult> => {
+): Promise<types.OraclesAvailabilityResult> => {
     const currentEpoch: number = getCurrentEpoch();
     const firstCheckEpoch: number = getLicenseFirstCheckEpoch(assignTimestamp);
 
     // If the license was linked in the current or previous epoch
-    return currentEpoch - firstCheckEpoch <= 1
-        ? await getNodeLastEpoch(nodeEthAddr)
-        : await getNodeEpochsRange(nodeEthAddr, firstCheckEpoch, currentEpoch - 1);
+    if (currentEpoch - firstCheckEpoch <= 1) {
+        return await getNodeLastEpoch(nodeEthAddr);
+    }
+
+    const epochsRangeResponse = await getNodeEpochsRange(nodeEthAddr, firstCheckEpoch, currentEpoch - 1);
+
+    // Range endpoint can return only server sync metadata while still missing node details.
+    if (isOraclesSyncing(epochsRangeResponse) && epochsRangeResponse.epochs.length === 0) {
+        const lastEpochResponse = await getNodeLastEpoch(nodeEthAddr);
+
+        return {
+            ...lastEpochResponse,
+            ...epochsRangeResponse,
+            epochs: [],
+            epochs_vals: [],
+        };
+    }
+
+    return epochsRangeResponse;
 };
 
 export const search = async (

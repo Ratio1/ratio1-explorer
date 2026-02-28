@@ -1,9 +1,11 @@
 import { getLicenseFirstCheckEpoch } from '@/config';
+import { isOraclesSyncing } from '@/lib/oracles';
 import { getLicenseRewardsBreakdown } from '@/lib/api/blockchain';
 import * as types from '@/typedefs/blockchain';
 import { formatUnits } from 'viem';
 import { CardHorizontal } from '../shared/cards/CardHorizontal';
 import { SmallTag } from '../shared/SmallTag';
+import SyncingOraclesTag from '../shared/SyncingOraclesTag';
 
 export default async function LicenseRewardsPoA({
     license,
@@ -14,16 +16,16 @@ export default async function LicenseRewardsPoA({
     license: types.License;
     licenseType: 'ND' | 'MND' | 'GND';
     licenseId: string;
-    getNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;
+    getNodeAvailability: () => Promise<types.OraclesAvailabilityResult | undefined>;
 }) {
     try {
-        const nodeResponse: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined =
-            await getNodeAvailability();
+        const nodeResponse: types.OraclesAvailabilityResult | undefined = await getNodeAvailability();
 
         if (!nodeResponse) {
             return null;
         }
 
+        const syncingOracles = isOraclesSyncing(nodeResponse);
         const firstCheckEpoch: number = getLicenseFirstCheckEpoch(license.assignTimestamp);
         const lastClaimEpoch: number = Number(license.lastClaimEpoch);
 
@@ -47,9 +49,15 @@ export default async function LicenseRewardsPoA({
                 value={
                     <div className="col items-end gap-1.5">
                         <div className="text-primary">
-                            {rewards === undefined
-                                ? '...'
-                                : parseFloat(Number(formatUnits(rewards ?? 0n, 18)).toFixed(2)).toLocaleString()}
+                            {rewards === undefined ? (
+                                syncingOracles ? (
+                                    <SyncingOraclesTag />
+                                ) : (
+                                    '...'
+                                )
+                            ) : (
+                                parseFloat(Number(formatUnits(rewards ?? 0n, 18)).toFixed(2)).toLocaleString()
+                            )}
                             {!!rewards ? ' $R1' : ''}
                         </div>
 

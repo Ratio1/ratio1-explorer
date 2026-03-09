@@ -21,6 +21,8 @@ export default async function CompactLicenseCard({ license, licenseType, license
     const totalAssignedAmount = BigInt(license.totalAssignedAmount);
     const totalClaimedAmount = BigInt(license.totalClaimedAmount);
     const awbBalance = BigInt(license.awbBalance ?? '0');
+    const isLicenseLinked = !isZeroAddress(nodeEthAddress);
+    const hasAssignTimestamp = !!license.assignTimestamp && license.assignTimestamp !== '0';
 
     return (
         <BorderedCard>
@@ -34,7 +36,7 @@ export default async function CompactLicenseCard({ license, licenseType, license
             </Link>
 
             <div className="flexible-row">
-                {!!license.assignTimestamp && (
+                {isLicenseLinked && hasAssignTimestamp && (
                     <CardHorizontal
                         label="Assign timestamp"
                         value={new Date(Number(license.assignTimestamp) * 1000).toLocaleString()}

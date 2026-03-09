@@ -4,7 +4,7 @@ import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizon
 import ClientWrapper from '@/components/shared/ClientWrapper';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import { routePath } from '@/lib/routes';
-import { fBI } from '@/lib/utils';
+import { fBI, isZeroAddress } from '@/lib/utils';
 import * as types from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import clsx from 'clsx';
@@ -27,6 +27,7 @@ interface Props {
 
 export default async function LicenseCard({ license, licenseType, licenseId, owner, getNodeAvailability, hasLink }: Props) {
     const awbBalance = license.awbBalance;
+    const isLicenseLinked = !isZeroAddress(license.nodeAddress);
 
     const getTitle = () => <CardTitle hasLink={hasLink}>License #{licenseId}</CardTitle>;
 
@@ -77,7 +78,7 @@ export default async function LicenseCard({ license, licenseType, licenseId, own
                     />
                 )}
 
-                {!!license.assignTimestamp && (
+                {isLicenseLinked && !!license.assignTimestamp && (
                     <CardHorizontal
                         label="Assign timestamp"
                         value={new Date(Number(license.assignTimestamp) * 1000).toLocaleString()}

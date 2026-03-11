@@ -12,6 +12,14 @@ TypeScript is the baseline. ESLint (`eslint.config.mjs`) and Prettier (`prettier
 ## Testing Guidelines
 Automated tests are not yet checked in, so linting plus manual validation gate releases. When you add tests, colocate specs as `*.test.tsx` or `*.spec.ts` near the feature (or in a local `__tests__/` folder) and lean on React Testing Library for UI behaviour. Mock blockchain calls with helpers from `lib/api`. Document manual verification in PRs until an automated suite lands.
 
+### UI Screenshot Validation
+When a change affects UI, validate it with Playwright screenshots before concluding work:
+
+- Use the dev-only public route `app/playwright-preview/page.tsx` for UI checks without auth/login/blockchain setup.
+- Capture screenshot artifact(s) with Playwright after relevant UI changes.
+- Visually verify layout, spacing, interactive/empty/loading states (when applicable), and responsive behavior.
+- Store screenshot artifacts in `output/playwright/`.
+
 ## Commit & Pull Request Guidelines
 Commits follow a Conventional Commits style (`fix:`, `hotfix:`, `cleanup:`); keep subjects under 70 characters and add scopes when useful (`feat(accounts): add filters`). Before opening a PR, ensure `npm run lint` passes and builds succeed when relevant. PRs should explain intent, link issues with `Closes #id`, list affected routes/APIs, attach UI screenshots, and record manual checks or follow-ups.
 

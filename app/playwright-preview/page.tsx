@@ -19,26 +19,7 @@ export default function PlaywrightPreviewPage() {
 
     return (
         <main className="col mx-auto w-full max-w-5xl gap-6 p-4 md:p-8">
-            <section id="playwright-preview" className="col gap-4">
-                <div className="row w-full flex-wrap gap-3">
-                    <CardWithIcon icon={<RiCpuLine />} label="Licensed Nodes">
-                        1,024
-                    </CardWithIcon>
-                </div>
-
-                <div className="col gap-2 rounded-2xl bg-slate-100 p-4 sm:hidden">
-                    <RowWithIcon icon={<RiCpuLine />} label="Licensed Nodes">
-                        1,024
-                    </RowWithIcon>
-                </div>
-
-                <CardHorizontal
-                    label="Epoch Reward"
-                    value="$12,345.67"
-                    isFlexible
-                    widthClasses="max-w-[420px]"
-                />
-            </section>
+            <section id="playwright-preview"></section>
         </main>
     );
 }

@@ -3,9 +3,9 @@
 import { Alert } from '@/app/server-components/shared/Alert';
 import { CardItem } from '@/app/server-components/shared/CardItem';
 import { BorderedCard } from '@/app/server-components/shared/cards/BorderedCard';
-import { getActiveNodes } from '@/lib/api';
+import { getActiveNodesCountryStats } from '@/lib/api';
 import { countryCodeToName, countryCountsToGeoJSON } from '@/lib/gis';
-import { NodeState } from '@/typedefs/blockchain';
+import { CountryNodeStats } from '@/typedefs/blockchain';
 import { Skeleton } from '@heroui/skeleton';
 import { Layer, LayerProps, Map, MapRef, Source } from 'react-map-gl/maplibre';
 
@@ -16,10 +16,12 @@ import ListHeader from '../shared/ListHeader';
 // Cache for GeoJSON data with expiration
 const geoJSONCache: {
     data: GeoJSON.FeatureCollection | null;
+    stats: CountryNodeStats[] | null;
     timestamp: number;
-    promise: Promise<GeoJSON.FeatureCollection> | null;
+    promise: Promise<{ geoJSON: GeoJSON.FeatureCollection; stats: CountryNodeStats[] }> | null;
 } = {
     data: null,
+    stats: null,
     timestamp: 0,
     promise: null,
 };
@@ -61,14 +63,7 @@ const unclusteredPointTextLayer: LayerProps = {
 export default function NodesMap() {
     const mapRef = useRef<MapRef>(null);
 
-    const [stats, setStats] = useState<
-        {
-            code: string;
-            count: number;
-            datacenterCount: number;
-            kybCount: number;
-        }[]
-    >();
+    const [stats, setStats] = useState<CountryNodeStats[]>();
 
     const [geoJSONData, setGeoJSONData] = useState<GeoJSON.FeatureCollection | null>(null);
     const [error, setError] = useState<boolean>(false);
@@ -76,8 +71,9 @@ export default function NodesMap() {
     useEffect(() => {
         (async () => {
             try {
-                const data = await fetchGeoJSONData();
-                setGeoJSONData(data);
+                const data = await fetchMapData();
+                setStats(data.stats);
+                setGeoJSONData(data.geoJSON);
             } catch (error) {
                 console.error(error);
                 setError(true);
@@ -85,12 +81,12 @@ export default function NodesMap() {
         })();
     }, []);
 
-    const fetchGeoJSONData = async (): Promise<GeoJSON.FeatureCollection> => {
+    const fetchMapData = async (): Promise<{ geoJSON: GeoJSON.FeatureCollection; stats: CountryNodeStats[] }> => {
         const now = Date.now();
 
         // Check if cache is valid
-        if (geoJSONCache.data && now - geoJSONCache.timestamp < CACHE_DURATION) {
-            return geoJSONCache.data;
+        if (geoJSONCache.data && geoJSONCache.stats && now - geoJSONCache.timestamp < CACHE_DURATION) {
+            return { geoJSON: geoJSONCache.data, stats: geoJSONCache.stats };
         }
 
         // If there's already a request in progress, wait for it
@@ -101,49 +97,23 @@ export default function NodesMap() {
         // Create the promise and store it to prevent duplicate requests
         geoJSONCache.promise = (async () => {
             try {
-                const response = await getActiveNodes(1, 1_000_000);
-
-                const group: Record<string, NodeState[]> = Object.values(response.result.nodes).reduce(
-                    (groups, node) => {
-                        const countryTag = node.tags?.find((tag) => tag.includes('CT:'));
-
-                        if (countryTag) {
-                            const countryCode = countryTag.slice(3);
-
-                            if (!groups[countryCode]) {
-                                groups[countryCode] = [];
-                            }
-
-                            groups[countryCode].push(node);
-                        }
-
-                        return groups;
-                    },
-                    {} as Record<string, (typeof response.result.nodes)[string][]>,
-                );
-
-                const stats = Object.entries(group).map(([code, nodes]) => ({
-                    code,
-                    count: nodes.length,
-                    datacenterCount: nodes.filter((node) => node.tags?.some((tag) => tag.includes('DC:'))).length,
-                    kybCount: nodes.filter((node) => node.tags?.some((tag) => tag.includes('KYB'))).length,
-                }));
-
-                setStats(stats.sort((a, b) => b.count - a.count));
-
+                const response = await getActiveNodesCountryStats();
+                const stats = response.result.countries;
                 const geoJSON = countryCountsToGeoJSON(stats);
 
                 // Update cache with data and timestamp
                 geoJSONCache.data = geoJSON;
+                geoJSONCache.stats = stats;
                 geoJSONCache.timestamp = now;
 
-                return geoJSON;
+                return { geoJSON, stats };
             } catch (error) {
                 console.error('Failed to fetch GeoJSON data:', error);
-                // Clear the promise so future requests can retry
-                geoJSONCache.promise = null;
                 // Re-throw the error so callers can handle it appropriately
                 throw error;
+            } finally {
+                // Clear the promise so future requests can use the cache or retry
+                geoJSONCache.promise = null;
             }
         })();
 
@@ -210,7 +180,7 @@ export default function NodesMap() {
     );
 }
 
-function Entry({ country }: { country: { code: string; count: number; datacenterCount: number; kybCount: number } }) {
+function Entry({ country }: { country: CountryNodeStats }) {
     return (
         <BorderedCard useCustomWrapper useFixedWidthSmall roundedSmall>
             <div className="row items-start justify-between gap-3 py-2 lg:gap-6">

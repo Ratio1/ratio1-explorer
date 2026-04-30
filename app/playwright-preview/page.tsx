@@ -1,8 +1,4 @@
-import { CardHorizontal } from '@/app/server-components/shared/cards/CardHorizontal';
-import { CardWithIcon } from '@/app/server-components/shared/cards/CardWithIcon';
-import { RowWithIcon } from '@/app/server-components/shared/cards/RowWithIcon';
 import { notFound } from 'next/navigation';
-import { RiCpuLine } from 'react-icons/ri';
 
 /*
 Public preview route for Playwright-based UI screenshots.

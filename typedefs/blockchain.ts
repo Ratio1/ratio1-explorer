@@ -187,6 +187,7 @@ type OraclesCountryStatsResult = {
 
 type CSP = {
     activeJobsCount: number;
+    cspTier: number;
     escrowAddress: EthAddress;
     owner: EthAddress;
     tvl: bigint;

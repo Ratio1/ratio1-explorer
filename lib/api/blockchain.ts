@@ -77,6 +77,7 @@ export async function fetchCSPDetails(address: types.EthAddress): Promise<types.
         : {
               ...result,
               activeJobsCount: Number(result.activeJobsCount),
+              cspTier: Number(result.cspTier),
           };
 }
 
@@ -93,6 +94,7 @@ export async function fetchCSPs(): Promise<types.CSP[]> {
     return result.map((item) => ({
         ...item,
         activeJobsCount: Number(item.activeJobsCount),
+        cspTier: Number(item.cspTier),
     }));
 }
 

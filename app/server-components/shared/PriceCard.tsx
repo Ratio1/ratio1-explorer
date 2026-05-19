@@ -4,7 +4,10 @@ import { CardWithIcon } from './cards/CardWithIcon';
 import { RowWithIcon } from './cards/RowWithIcon';
 
 export default async function PriceCard() {
-    const r1Price = await fetchR1Price();
+    const r1Price = await fetchR1Price().catch(() => {
+        console.log('[PriceCard] Failed to fetch $R1 price');
+        return undefined;
+    });
 
     if (!r1Price) {
         return null;

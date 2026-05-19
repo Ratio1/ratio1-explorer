@@ -7,11 +7,11 @@ export default async function NodeListGNDCard() {
     const licenseId: bigint = 1n;
     const licenseType: 'ND' | 'MND' | 'GND' | undefined = 'GND';
 
-    let owner: string, totalAssignedAmount: bigint, totalClaimedAmount: bigint, isBanned: boolean;
+    let owner: string, totalAssignedAmount: bigint, totalClaimedAmount: bigint, awbBalance: bigint, isBanned: boolean;
     let nodeAddress: types.EthAddress, ratio1Addr: types.R1Address, node: types.NodeState;
 
     try {
-        ({ owner, nodeAddress, totalAssignedAmount, totalClaimedAmount, isBanned } = await getLicense(
+        ({ owner, nodeAddress, totalAssignedAmount, totalClaimedAmount, awbBalance, isBanned } = await getLicense(
             licenseType,
             Number(licenseId),
         ));
@@ -56,6 +56,7 @@ export default async function NodeListGNDCard() {
             owner={owner}
             totalAssignedAmount={totalAssignedAmount}
             totalClaimedAmount={totalClaimedAmount}
+            awbBalance={awbBalance}
             isBanned={isBanned}
         />
     );

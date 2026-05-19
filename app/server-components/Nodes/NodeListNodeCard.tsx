@@ -17,6 +17,7 @@ interface Props {
     owner: string;
     totalAssignedAmount: bigint;
     totalClaimedAmount: bigint;
+    awbBalance: bigint;
     isBanned: boolean;
 }
 
@@ -28,6 +29,7 @@ export default async function NodeListNodeCard({
     owner,
     totalAssignedAmount,
     totalClaimedAmount,
+    awbBalance,
     isBanned,
 }: Props) {
     return (
@@ -65,6 +67,7 @@ export default async function NodeListNodeCard({
                         licenseType={licenseType}
                         totalAssignedAmount={totalAssignedAmount}
                         totalClaimedAmount={totalClaimedAmount}
+                        awbBalance={awbBalance}
                         isBanned={isBanned}
                         isLink
                     />

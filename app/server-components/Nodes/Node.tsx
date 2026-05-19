@@ -8,10 +8,11 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
         owner: string,
         totalAssignedAmount: string,
         totalClaimedAmount: string,
+        awbBalance: string,
         isBanned: boolean;
 
     try {
-        ({ licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount, isBanned } =
+        ({ licenseId, licenseType, owner, totalAssignedAmount, totalClaimedAmount, awbBalance, isBanned } =
             await cachedGetNodeLicenseDetails(node.eth_addr));
 
         // Omit the GND as it's pinned to be displayed on top of the list (1st page)
@@ -37,6 +38,7 @@ export default async function Node({ ratio1Addr, node }: { ratio1Addr: R1Address
             owner={owner}
             totalAssignedAmount={BigInt(totalAssignedAmount)}
             totalClaimedAmount={BigInt(totalClaimedAmount)}
+            awbBalance={BigInt(awbBalance)}
             isBanned={isBanned}
         />
     );

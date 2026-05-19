@@ -145,7 +145,7 @@ export default async function NodeOperatorPage({ params }) {
                     {totalAwbBalance > 0n && (
                         <CardHorizontal
                             label="Total in AWB"
-                            value={<div className="text-orange-500">{fBI(totalAwbBalance, 18)}</div>}
+                            value={<div className="text-orange-500">{fBI(totalAwbBalance, 18)} $R1</div>}
                             isSmall
                             isFlexible
                             widthClasses="min-w-[268px]"
@@ -195,7 +195,11 @@ export default async function NodeOperatorPage({ params }) {
                         />
                         <CardHorizontal
                             label="Total Value Locked"
-                            value={fBI(cspDetails.tvl, 6)}
+                            value={
+                                <div>
+                                    <span>{fBI(cspDetails.tvl, 6)}</span> <span className="text-slate-500">$USDC</span>
+                                </div>
+                            }
                             isFlexible
                             widthClasses="min-w-[192px]"
                         />

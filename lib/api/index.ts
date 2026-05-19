@@ -23,3 +23,17 @@ export async function getActiveNodes(
 
     return response.json();
 }
+
+export async function getActiveNodesCountryStats(): Promise<types.OraclesCountryStatsResult> {
+    const oraclesApiURL = config.oraclesUrl;
+
+    const response: Response = await fetch(`${oraclesApiURL}/active_nodes_country_stats`, {
+        next: { revalidate: 60 },
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch country stats.');
+    }
+
+    return response.json();
+}

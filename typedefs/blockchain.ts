@@ -158,8 +158,36 @@ type OraclesDefaultResult = {
     server_node_addr: R1Address;
 };
 
+type CountryNodeStats = {
+    code: string;
+    count: number;
+    datacenterCount: number;
+    kybCount: number;
+};
+
+type OraclesCountryStatsResult = {
+    result: {
+        countries: CountryNodeStats[];
+        nodes_total_items: number;
+        countries_total_items: number;
+        query_time: number;
+        server_alias: string;
+        server_version: string;
+        server_time: string;
+        server_current_epoch: number;
+        server_uptime: string;
+        EE_SIGN: string;
+        EE_SENDER: R1Address;
+        EE_ETH_SENDER: EthAddress;
+        EE_ETH_SIGN: string;
+        EE_HASH: string;
+    };
+    server_node_addr: R1Address;
+};
+
 type CSP = {
     activeJobsCount: number;
+    cspTier: number;
     escrowAddress: EthAddress;
     owner: EthAddress;
     tvl: bigint;
@@ -169,6 +197,7 @@ type CSP = {
 export type {
     BuyLicenseRequest,
     CachedLicense,
+    CountryNodeStats,
     ComputeParam,
     CSP,
     EthAddress,
@@ -177,8 +206,9 @@ export type {
     NodeLicenseDetailsResponse,
     NodeState,
     OraclesAvailabilityResult,
+    OraclesCountryStatsResult,
     OraclesDefaultResult,
     R1Address,
     Resources,
-    ServerInfo
+    ServerInfo,
 };

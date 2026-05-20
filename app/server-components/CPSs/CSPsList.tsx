@@ -35,6 +35,7 @@ export default async function CSPsList({ csps, currentPage }: { csps: readonly t
                 <ListHeader useFixedWidthSmall>
                     <div className="min-w-[280px]">Owner</div>
                     <div className="min-w-[130px]">Escrow Address</div>
+                    <div className="min-w-[80px]">CSP Level</div>
                     <div className="min-w-[70px]">TVL ($USDC)</div>
                     <div className="min-w-[100px]">Active Jobs</div>
                 </ListHeader>

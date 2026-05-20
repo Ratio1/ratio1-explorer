@@ -16,7 +16,13 @@ type LicenseListItem = LicenseItem & {
 };
 
 type SearchResult =
-    | { type: 'node'; nodeAddress: types.EthAddress; alias: string; isOnline: boolean }
+    | {
+          type: 'node';
+          nodeAddress: types.EthAddress;
+          internalAddress?: types.R1Address;
+          alias: string;
+          isOnline: boolean;
+      }
     | { type: 'license'; licenseId: number; licenseType: 'ND' | 'MND' | 'GND'; nodeAddress: types.EthAddress }
     | { type: 'owner'; address: types.EthAddress; ensName?: string };
 

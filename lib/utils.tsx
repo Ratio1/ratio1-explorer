@@ -256,6 +256,7 @@ export const clientSearch = async (
                 resultsArray.push({
                     type: 'node',
                     nodeAddress: nodeResponse.node_eth_address,
+                    internalAddress: nodeResponse.node as types.R1Address,
                     alias: nodeResponse.node_alias,
                     isOnline: nodeResponse.node_is_online,
                 });
@@ -317,10 +318,11 @@ export const clientSearch = async (
                 if (isLoggingEnabled) console.log('[Search] getActiveNodes', response);
 
                 if (response.result.nodes) {
-                    Object.entries(response.result.nodes).forEach(([_ratio1Addr, node]) => {
+                    Object.entries(response.result.nodes).forEach(([ratio1Addr, node]) => {
                         resultsArray.push({
                             type: 'node',
                             nodeAddress: node.eth_addr,
+                            internalAddress: ratio1Addr as types.R1Address,
                             alias: node.alias,
                             isOnline: parseInt(node.last_seen_ago.split(':')[2]) < 60,
                         });

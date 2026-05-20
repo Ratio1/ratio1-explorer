@@ -50,6 +50,10 @@ export default async function CSPCard({ csp }: { csp: types.CSP }) {
                     <CardItem label="Escrow SC. Address" value={<CopyableAddress value={csp.escrowAddress} size={4} />} />
                 </div>
 
+                <div className="flex min-w-[80px]">
+                    <CardItem label="CSP Level" value={csp.cspTier} />
+                </div>
+
                 <div className="flex min-w-[70px]">
                     <CardItem label="TVL" value={fBI(csp.tvl, 6)} />
                 </div>

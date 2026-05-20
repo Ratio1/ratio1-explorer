@@ -17,6 +17,7 @@ export default function SearchResultsList({ results, variant, getSectionTitle, o
         'rounded-xl border-2 border-slate-100 hover:border-slate-200 py-3': variant === 'search-page',
         '-mx-4 py-2.5 hover:bg-slate-50': variant === 'modal',
     });
+    const nodeAddressLabelClassName = 'w-14 text-xs font-semibold uppercase tracking-normal text-slate-400';
 
     return (
         <div className="col gap-4">
@@ -55,7 +56,19 @@ export default function SearchResultsList({ results, variant, getSectionTitle, o
 
                                         <div className="col">
                                             <div className="text-sm font-medium">{node.alias}</div>
-                                            <CopyableAddress value={node.nodeAddress} size={8} />
+                                            <div className="col gap-0.5">
+                                                <div className="row gap-2">
+                                                    <div className={nodeAddressLabelClassName}>ETH</div>
+                                                    <CopyableAddress value={node.nodeAddress} size={8} />
+                                                </div>
+
+                                                {!!node.internalAddress && (
+                                                    <div className="row gap-2">
+                                                        <div className={nodeAddressLabelClassName}>Internal</div>
+                                                        <CopyableAddress value={node.internalAddress} size={8} />
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </Link>

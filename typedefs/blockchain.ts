@@ -52,8 +52,9 @@ type CachedLicense = {
 type ComputeParam = {
     licenseId: bigint;
     nodeAddress: `0x${string}`;
-    epochs: bigint[];
-    availabilies: number[];
+    fromEpoch: bigint;
+    toEpoch: bigint;
+    packedAvailabilities: `0x${string}`;
 };
 
 type OraclesAvailabilityResult = {

@@ -607,13 +607,24 @@ const getMndOrGndLicenseRewardsBreakdown = async (
         epochs_vals = epochs_vals.slice(start);
     }
 
-    if (epochsToClaim !== epochs.length || epochsToClaim !== epochs_vals.length) {
+    const epochsAreContiguous = epochs.every((epoch, index) => epoch === firstEpochToClaim + index);
+
+    if (
+        epochsToClaim !== epochs.length ||
+        epochsToClaim !== epochs_vals.length ||
+        !epochsAreContiguous ||
+        epochs[0] !== firstEpochToClaim ||
+        epochs[epochs.length - 1] !== currentEpoch - 1
+    ) {
         return {
             claimableAmount: undefined,
         };
     }
 
     const publicClient = await getPublicClient();
+    const packedAvailabilities = `0x${epochs_vals
+        .map((availability) => availability.toString(16).padStart(2, '0'))
+        .join('')}` as `0x${string}`;
 
     let result: ReadContractReturnType<typeof MNDContractAbi, 'calculateRewards'> | undefined;
 
@@ -627,8 +638,9 @@ const getMndOrGndLicenseRewardsBreakdown = async (
                     {
                         licenseId,
                         nodeAddress: license.nodeAddress,
-                        epochs: epochs.map((epoch) => BigInt(epoch)),
-                        availabilies: epochs_vals,
+                        fromEpoch: BigInt(firstEpochToClaim),
+                        toEpoch: BigInt(currentEpoch - 1),
+                        packedAvailabilities,
                     },
                 ],
             ],

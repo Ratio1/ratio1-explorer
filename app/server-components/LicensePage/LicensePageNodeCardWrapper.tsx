@@ -6,11 +6,10 @@ import { Alert } from '../shared/Alert';
 export default async function LicensePageNodeCardWrapper({
     cachedGetNodeAvailability,
 }: {
-    cachedGetNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;
+    cachedGetNodeAvailability: () => Promise<types.OraclesAvailabilityResult | undefined>;
 }) {
     try {
-        const nodeResponse: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined =
-            await cachedGetNodeAvailability();
+        const nodeResponse: types.OraclesAvailabilityResult | undefined = await cachedGetNodeAvailability();
 
         if (!nodeResponse) {
             return null;

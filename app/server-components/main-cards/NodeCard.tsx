@@ -20,9 +20,13 @@ export default async function NodeCard({
     nodeResponse,
     hasLink,
 }: {
-    nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult;
+    nodeResponse: types.OraclesAvailabilityResult;
     hasLink?: boolean; // If it has a link to it, it means it's not the main card (displayed on top of the page)
 }) {
+    const nodeVersion = nodeResponse.node_version?.split('|')[0] ?? 'N/A';
+    const fullNodeVersion = nodeResponse.node_version ? nodeResponse.node_version.replace(/\|(?=\S)/g, '| ') : 'N/A';
+    const nodeResources = nodeResponse.resources;
+
     const getTitle = () => <CardTitle hasLink={hasLink}>Node • {nodeResponse.node_alias}</CardTitle>;
 
     // Safe handling for tags - ensure it's an array or empty array
@@ -131,11 +135,15 @@ export default async function NodeCard({
                     <CardHorizontal
                         label="Last Seen"
                         value={
-                            <div>
-                                {formatDistanceToNow(subSeconds(new Date(), nodeResponse.node_last_seen_sec), {
-                                    addSuffix: true,
-                                })}
-                            </div>
+                            typeof nodeResponse.node_last_seen_sec === 'number' ? (
+                                <div>
+                                    {formatDistanceToNow(subSeconds(new Date(), nodeResponse.node_last_seen_sec), {
+                                        addSuffix: true,
+                                    })}
+                                </div>
+                            ) : (
+                                'N/A'
+                            )
                         }
                         isSmall
                         isFlexible
@@ -144,42 +152,46 @@ export default async function NodeCard({
 
                     <CardHorizontal
                         label="Version"
-                        value={nodeResponse.node_version.split('|')[0]}
+                        value={nodeVersion}
                         widthClasses="min-w-[192px]"
                         isFlexible
                         isSmall
                     />
 
-                    <CardHorizontal
-                        label="CPU Cores Available"
-                        value={`${round(nodeResponse.resources.cpu_cores_avail, 1)}/${round(nodeResponse.resources.cpu_cores, 1)}`}
-                        isFlexible
-                        widthClasses="min-w-[300px]"
-                    />
+                    {nodeResources && (
+                        <>
+                            <CardHorizontal
+                                label="CPU Cores Available"
+                                value={`${round(nodeResources.cpu_cores_avail, 1)}/${round(nodeResources.cpu_cores, 1)}`}
+                                isFlexible
+                                widthClasses="min-w-[300px]"
+                            />
 
-                    <CardHorizontal
-                        label="Memory Available"
-                        value={
-                            <div className="leading-tight">
-                                {fN(round(nodeResponse.resources.mem_avail, 2))}/
-                                {fN(round(nodeResponse.resources.mem_total, 2))} <span className="text-slate-500">GB</span>
-                            </div>
-                        }
-                        isFlexible
-                        widthClasses="min-w-[312px]"
-                    />
+                            <CardHorizontal
+                                label="Memory Available"
+                                value={
+                                    <div className="leading-tight">
+                                        {fN(round(nodeResources.mem_avail, 2))}/{fN(round(nodeResources.mem_total, 2))}{' '}
+                                        <span className="text-slate-500">GB</span>
+                                    </div>
+                                }
+                                isFlexible
+                                widthClasses="min-w-[312px]"
+                            />
 
-                    <CardHorizontal
-                        label="Disk Available"
-                        value={
-                            <div className="leading-tight">
-                                {fN(round(nodeResponse.resources.disk_avail, 2))}/
-                                {fN(round(nodeResponse.resources.disk_total, 2))} <span className="text-slate-500">GB</span>
-                            </div>
-                        }
-                        isFlexible
-                        widthClasses="min-w-[320px] md:max-w-[340px]"
-                    />
+                            <CardHorizontal
+                                label="Disk Available"
+                                value={
+                                    <div className="leading-tight">
+                                        {fN(round(nodeResources.disk_avail, 2))}/{fN(round(nodeResources.disk_total, 2))}{' '}
+                                        <span className="text-slate-500">GB</span>
+                                    </div>
+                                }
+                                isFlexible
+                                widthClasses="min-w-[320px] md:max-w-[340px]"
+                            />
+                        </>
+                    )}
 
                     {nodeResponse.node_is_oracle && nodeR1Balance !== undefined && nodeEthBalance !== undefined && (
                         <>
@@ -202,7 +214,7 @@ export default async function NodeCard({
             </div>
 
             <div className="w-full text-right text-sm font-medium text-slate-400 lg:-mt-1">
-                {nodeResponse.node_version.replace(/\|(?=\S)/g, '| ')}
+                {fullNodeVersion}
             </div>
         </BorderedCard>
     );

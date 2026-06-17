@@ -7,6 +7,7 @@ import { SearchResult } from '@/typedefs/general';
 import { headers } from 'next/headers';
 import { getLicense } from './api/blockchain';
 import { getNodeEpochsRange, getNodeLastEpoch } from './api/oracles';
+import { isNoEpochsResult, isOraclesBehind } from './oracles';
 import { cachedGetENSName, internalNodeAddressToEthAddress, isNonZeroInteger, isZeroAddress } from './utils';
 
 const URL_SAFE_PATTERN = /^[a-zA-Z0-9x\s\-_\.]+$/;
@@ -22,14 +23,51 @@ export const getSSURL = async (value: string): Promise<string> => {
 export const getNodeAvailability = async (
     nodeEthAddr: types.EthAddress,
     assignTimestamp: bigint,
-): Promise<types.OraclesAvailabilityResult & types.OraclesDefaultResult> => {
+): Promise<types.OraclesAvailabilityResult> => {
     const currentEpoch: number = getCurrentEpoch();
     const firstCheckEpoch: number = getLicenseFirstCheckEpoch(assignTimestamp);
+    const expectedLastEpoch = currentEpoch - 1;
 
     // If the license was linked in the current or previous epoch
-    return currentEpoch - firstCheckEpoch <= 1
-        ? await getNodeLastEpoch(nodeEthAddr)
-        : await getNodeEpochsRange(nodeEthAddr, firstCheckEpoch, currentEpoch - 1);
+    if (currentEpoch - firstCheckEpoch <= 1) {
+        const lastEpochResponse = await getNodeLastEpoch(nodeEthAddr);
+
+        return {
+            ...lastEpochResponse,
+            availability_status: 'ok',
+        };
+    }
+
+    const epochsRangeResponse = await getNodeEpochsRange(nodeEthAddr, firstCheckEpoch, expectedLastEpoch);
+
+    // Range endpoint can return a partial no-epochs payload, so use last epoch for node metadata.
+    if (isNoEpochsResult(epochsRangeResponse)) {
+        const lastEpochResponse = await getNodeLastEpoch(nodeEthAddr);
+        const availabilityStatus: types.OraclesAvailabilityStatus = isOraclesBehind(epochsRangeResponse, expectedLastEpoch)
+            ? 'syncing'
+            : 'no-data';
+
+        return {
+            ...lastEpochResponse,
+            ...epochsRangeResponse,
+            epochs: [],
+            epochs_vals: [],
+            availability_status: availabilityStatus,
+        };
+    }
+
+    const lastReturnedEpoch = epochsRangeResponse.epochs.at(-1);
+    const availabilityStatus: types.OraclesAvailabilityStatus =
+        lastReturnedEpoch === expectedLastEpoch
+            ? 'ok'
+            : isOraclesBehind(epochsRangeResponse, expectedLastEpoch)
+              ? 'syncing'
+              : 'no-data';
+
+    return {
+        ...epochsRangeResponse,
+        availability_status: availabilityStatus,
+    };
 };
 
 export const search = async (

@@ -465,19 +465,23 @@ export async function getAllLicenseHolders(): Promise<{
     ndHolders: {
         ethAddress: types.EthAddress;
         licenseId: number;
+        licenseType: 'ND';
     }[];
     mndHolders: {
         ethAddress: types.EthAddress;
         licenseId: number;
+        licenseType: 'MND' | 'GND';
     }[];
 }> {
     const ndHolders: {
         ethAddress: types.EthAddress;
         licenseId: number;
+        licenseType: 'ND';
     }[] = [];
     const mndHolders: {
         ethAddress: types.EthAddress;
         licenseId: number;
+        licenseType: 'MND' | 'GND';
     }[] = [];
 
     let offset = 0;
@@ -492,15 +496,18 @@ export async function getAllLicenseHolders(): Promise<{
         }
 
         page.licenses.forEach((license) => {
-            const holder = {
-                ethAddress: license.owner,
-                licenseId: license.licenseId,
-            };
-
             if (license.licenseType === 'ND') {
-                ndHolders.push(holder);
+                ndHolders.push({
+                    ethAddress: license.owner,
+                    licenseId: license.licenseId,
+                    licenseType: license.licenseType,
+                });
             } else {
-                mndHolders.push(holder);
+                mndHolders.push({
+                    ethAddress: license.owner,
+                    licenseId: license.licenseId,
+                    licenseType: license.licenseType,
+                });
             }
         });
 

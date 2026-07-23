@@ -36,10 +36,12 @@ export default async function NodeOperatorsPage(props: {
     let ndHolders: {
             ethAddress: types.EthAddress;
             licenseId: number;
+            licenseType: 'ND';
         }[],
         mndHolders: {
             ethAddress: types.EthAddress;
             licenseId: number;
+            licenseType: 'MND' | 'GND';
         }[];
 
     const holders: {
@@ -58,7 +60,7 @@ export default async function NodeOperatorsPage(props: {
             if (!holders[holder.ethAddress]) {
                 holders[holder.ethAddress] = [];
             }
-            holders[holder.ethAddress].push({ licenseId: holder.licenseId, licenseType: 'ND' });
+            holders[holder.ethAddress].push({ licenseId: holder.licenseId, licenseType: holder.licenseType });
         });
 
         mndHolders.forEach((holder) => {
@@ -67,7 +69,7 @@ export default async function NodeOperatorsPage(props: {
             }
             holders[holder.ethAddress].push({
                 licenseId: holder.licenseId,
-                licenseType: holder.licenseId === 1 ? 'GND' : 'MND',
+                licenseType: holder.licenseType,
             });
         });
 

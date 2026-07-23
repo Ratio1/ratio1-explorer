@@ -10,8 +10,6 @@ import * as types from '@/typedefs/blockchain';
 import { LicenseListItem } from '@/typedefs/general';
 import console from 'console';
 import { differenceInSeconds } from 'date-fns';
-import Moralis from 'moralis';
-import { EvmAddress, EvmChain } from 'moralis/common-evm-utils';
 import { unstable_cache } from 'next/cache';
 import type { ReadContractReturnType } from 'viem';
 import { isZeroAddress } from '../utils';
@@ -23,16 +21,6 @@ export type LicenseRewardsBreakdown = {
     carryoverAmount?: bigint;
     withheldAmount?: bigint;
 };
-
-async function startMoralis() {
-    await Moralis.start({
-        apiKey: process.env.MORALIS_API_KEY,
-    });
-
-    console.log('Moralis started');
-}
-
-startMoralis();
 
 const getMndLicenseExtraData = async (
     publicClient: Awaited<ReturnType<typeof getPublicClient>>,
@@ -471,35 +459,65 @@ export async function getLicensesPage(
     };
 }
 
-export async function getLicenseHolders(licenseType: 'ND' | 'MND' | 'GND'): Promise<
-    {
-        ownerOf: EvmAddress | undefined;
-        tokenId: string | number;
-    }[]
-> {
-    const address = licenseType === 'ND' ? config.ndContractAddress : config.mndContractAddress;
-    const evmChain: EvmChain = config.environment === 'mainnet' ? EvmChain.BASE : EvmChain.BASE_SEPOLIA;
+const LICENSE_HOLDERS_BATCH_SIZE = 50;
 
-    const holders: {
-        ownerOf: EvmAddress | undefined;
-        tokenId: string | number;
+export async function getAllLicenseHolders(): Promise<{
+    ndHolders: {
+        ethAddress: types.EthAddress;
+        licenseId: number;
+        licenseType: 'ND';
+    }[];
+    mndHolders: {
+        ethAddress: types.EthAddress;
+        licenseId: number;
+        licenseType: 'MND' | 'GND';
+    }[];
+}> {
+    const ndHolders: {
+        ethAddress: types.EthAddress;
+        licenseId: number;
+        licenseType: 'ND';
     }[] = [];
-    let cursor: string | undefined = undefined;
+    const mndHolders: {
+        ethAddress: types.EthAddress;
+        licenseId: number;
+        licenseType: 'MND' | 'GND';
+    }[] = [];
+
+    let offset = 0;
+    let totalLicenses = 0;
 
     do {
-        const response = await Moralis.EvmApi.nft.getNFTOwners({
-            chain: evmChain,
-            format: 'decimal',
-            cursor,
-            address,
-            limit: 100,
+        const page = await getLicensesPage(offset, LICENSE_HOLDERS_BATCH_SIZE);
+        totalLicenses = Number(page.mndTotalSupply + page.ndTotalSupply);
+
+        if (page.licenses.length === 0 && offset < totalLicenses) {
+            throw new Error(`Reader returned an empty licenses page at offset ${offset} of ${totalLicenses}`);
+        }
+
+        page.licenses.forEach((license) => {
+            if (license.licenseType === 'ND') {
+                ndHolders.push({
+                    ethAddress: license.owner,
+                    licenseId: license.licenseId,
+                    licenseType: license.licenseType,
+                });
+            } else {
+                mndHolders.push({
+                    ethAddress: license.owner,
+                    licenseId: license.licenseId,
+                    licenseType: license.licenseType,
+                });
+            }
         });
 
-        holders.push(...response.result);
-        cursor = response.pagination.cursor;
-    } while (!!cursor);
+        offset += page.licenses.length;
+    } while (offset < totalLicenses);
 
-    return holders;
+    return {
+        ndHolders,
+        mndHolders,
+    };
 }
 
 export async function fetchR1MintedLastEpoch() {

@@ -4,10 +4,9 @@ import NodePerformanceCard from '../main-cards/NodePerformanceCard';
 export default async function LicensePageNodePerformanceCardWrapper({
     cachedGetNodeAvailability,
 }: {
-    cachedGetNodeAvailability: () => Promise<(types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined>;
+    cachedGetNodeAvailability: () => Promise<types.OraclesAvailabilityResult | undefined>;
 }) {
-    const nodeResponse: (types.OraclesAvailabilityResult & types.OraclesDefaultResult) | undefined =
-        await cachedGetNodeAvailability();
+    const nodeResponse: types.OraclesAvailabilityResult | undefined = await cachedGetNodeAvailability();
 
     if (!nodeResponse) {
         return null;

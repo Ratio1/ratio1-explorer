@@ -1,8 +1,8 @@
 import ErrorComponent from '@/app/server-components/shared/ErrorComponent';
-import config from '@/config';
-import { getSSURL } from '@/lib/actions';
+import { getAllLicenseHolders } from '@/lib/api/blockchain';
 import * as types from '@/typedefs/blockchain';
 import { LicenseItem } from '@/typedefs/general';
+import { unstable_cache } from 'next/cache';
 import List from '../server-components/NodeOperators/List';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
@@ -23,25 +23,7 @@ export async function generateMetadata({ searchParams }: { searchParams?: Promis
     };
 }
 
-const fetchLicenseHolders = async (environment: 'mainnet' | 'testnet' | 'devnet') => {
-    const url = await getSSURL(`license-holders?env=${environment}`);
-
-    const res = await fetch(url, {
-        next: { revalidate: 300 }, // Cache for 5 minutes
-    });
-
-    const data: {
-        ndHolders: {
-            ethAddress: types.EthAddress;
-            licenseId: number;
-        }[];
-        mndHolders: {
-            ethAddress: types.EthAddress;
-            licenseId: number;
-        }[];
-    } = await res.json();
-    return data;
-};
+const getCachedLicenseHolders = unstable_cache(getAllLicenseHolders, ['license-holders'], { revalidate: 300 });
 
 export default async function NodeOperatorsPage(props: {
     searchParams?: Promise<{
@@ -54,10 +36,12 @@ export default async function NodeOperatorsPage(props: {
     let ndHolders: {
             ethAddress: types.EthAddress;
             licenseId: number;
+            licenseType: 'ND';
         }[],
         mndHolders: {
             ethAddress: types.EthAddress;
             licenseId: number;
+            licenseType: 'MND' | 'GND';
         }[];
 
     const holders: {
@@ -70,13 +54,13 @@ export default async function NodeOperatorsPage(props: {
     }[];
 
     try {
-        ({ ndHolders, mndHolders } = await fetchLicenseHolders(config.environment));
+        ({ ndHolders, mndHolders } = await getCachedLicenseHolders());
 
         ndHolders.forEach((holder) => {
             if (!holders[holder.ethAddress]) {
                 holders[holder.ethAddress] = [];
             }
-            holders[holder.ethAddress].push({ licenseId: holder.licenseId, licenseType: 'ND' });
+            holders[holder.ethAddress].push({ licenseId: holder.licenseId, licenseType: holder.licenseType });
         });
 
         mndHolders.forEach((holder) => {
@@ -85,7 +69,7 @@ export default async function NodeOperatorsPage(props: {
             }
             holders[holder.ethAddress].push({
                 licenseId: holder.licenseId,
-                licenseType: holder.licenseId === 1 ? 'GND' : 'MND',
+                licenseType: holder.licenseType,
             });
         });
 

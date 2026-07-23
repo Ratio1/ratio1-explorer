@@ -185,7 +185,7 @@ function Entry({ country }: { country: CountryNodeStats }) {
         <BorderedCard useCustomWrapper useFixedWidthSmall roundedSmall>
             <div className="row items-start justify-between gap-3 py-2 lg:gap-6">
                 <div className="w-[160px] overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium lg:text-[15px]">
-                    {countryCodeToName(country.code)}
+                    {countryCodeToName(country.code) ?? country.code}
                 </div>
 
                 <div className="min-w-[100px]">

@@ -16,7 +16,7 @@ export default async function NodeListGNDCard() {
             Number(licenseId),
         ));
 
-        const nodeResponse: types.OraclesAvailabilityResult & types.OraclesDefaultResult = await getNodeLastEpoch(nodeAddress);
+        const nodeResponse: types.OraclesAvailabilityResult = await getNodeLastEpoch(nodeAddress);
 
         ratio1Addr = nodeResponse.node as types.R1Address;
 

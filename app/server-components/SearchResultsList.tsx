@@ -1,8 +1,11 @@
+import { Tag } from '@/app/server-components/shared/Tag';
 import { CopyableAddress } from '@/components/shared/CopyableValue';
 import Identicon from '@/components/shared/Identicon';
 import { routePath } from '@/lib/routes';
+import { fN, processNodeTag } from '@/lib/utils';
 import { SearchResult } from '@/typedefs/general';
 import clsx from 'clsx';
+import round from 'lodash/round';
 import Link from 'next/link';
 
 interface Props {
@@ -32,48 +35,88 @@ export default function SearchResultsList({ results, variant, getSectionTitle, o
 
                     {results
                         .filter((r): r is Extract<SearchResult, { type: 'node' }> => r.type === 'node')
-                        .map((node, index) => (
-                            <div key={index}>
-                                <Link
-                                    href={`${routePath.node}/${node.nodeAddress}`}
-                                    className={linkClassName}
-                                    onClick={onClose}
-                                >
-                                    <div className="row gap-3">
-                                        <div className="relative h-8 w-8">
-                                            <Identicon value={`node_${node.nodeAddress}`} />
+                        .map((node, index) => {
+                            // Sorted so every card shows the tags in the same order (the oracle emits them unordered)
+                            const nodeTags = [...(node.tags ?? [])].sort();
+                            // Resources are last-heartbeat values, meaningful only while the node is online
+                            const nodeResources = node.isOnline ? node.resources : undefined;
 
-                                            <div
-                                                className={clsx(
-                                                    'absolute right-0 top-0 z-10 -mr-1 -mt-1 h-4 w-4 rounded-full border-2 border-white',
-                                                    {
-                                                        'bg-teal-500': node?.isOnline,
-                                                        'bg-red-500': !node?.isOnline,
-                                                    },
-                                                )}
-                                            ></div>
-                                        </div>
+                            return (
+                                <div key={index}>
+                                    <Link
+                                        href={`${routePath.node}/${node.nodeAddress}`}
+                                        className={linkClassName}
+                                        onClick={onClose}
+                                    >
+                                        <div className="row w-full gap-3">
+                                            <div className="relative h-8 w-8">
+                                                <Identicon value={`node_${node.nodeAddress}`} />
 
-                                        <div className="col">
-                                            <div className="text-sm font-medium">{node.alias}</div>
-                                            <div className="col gap-0.5">
-                                                <div className="row gap-2">
-                                                    <div className={nodeAddressLabelClassName}>ETH</div>
-                                                    <CopyableAddress value={node.nodeAddress} size={8} />
-                                                </div>
+                                                <div
+                                                    className={clsx(
+                                                        'absolute right-0 top-0 z-10 -mr-1 -mt-1 h-4 w-4 rounded-full border-2 border-white',
+                                                        {
+                                                            'bg-teal-500': node?.isOnline,
+                                                            'bg-red-500': !node?.isOnline,
+                                                        },
+                                                    )}
+                                                ></div>
+                                            </div>
 
-                                                {!!node.internalAddress && (
-                                                    <div className="row gap-2">
-                                                        <div className={nodeAddressLabelClassName}>Internal</div>
-                                                        <CopyableAddress value={node.internalAddress} size={8} />
+                                            <div className="col min-w-0 flex-1">
+                                                <div className="text-sm font-medium">{node.alias}</div>
+                                                <div className="col gap-0.5">
+                                                    <div className="row flex-wrap gap-2">
+                                                        <div className={nodeAddressLabelClassName}>ETH</div>
+                                                        <CopyableAddress value={node.nodeAddress} size={8} />
+
+                                                        {!!nodeTags.length && (
+                                                            <div className="row ml-auto flex-wrap gap-1">
+                                                                {nodeTags.map((tag) => (
+                                                                    <Tag key={tag}>{processNodeTag(tag)}</Tag>
+                                                                ))}
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                )}
+
+                                                    {(!!node.internalAddress || !!nodeResources) && (
+                                                        <div className="row flex-wrap gap-2">
+                                                            {!!node.internalAddress && (
+                                                                <>
+                                                                    <div className={nodeAddressLabelClassName}>Internal</div>
+                                                                    <CopyableAddress value={node.internalAddress} size={8} />
+                                                                </>
+                                                            )}
+
+                                                            {!!nodeResources && (
+                                                                <div className="row ml-auto flex-wrap gap-x-3 gap-y-0.5 text-xs text-slate-500">
+                                                                    <div className="whitespace-nowrap">
+                                                                        Avail CPU:{' '}
+                                                                        <span className="font-medium text-slate-700">
+                                                                            {round(nodeResources.cpu_cores_avail, 1)}/
+                                                                            {round(nodeResources.cpu_cores, 1)}
+                                                                        </span>
+                                                                    </div>
+
+                                                                    <div className="whitespace-nowrap">
+                                                                        Avail RAM:{' '}
+                                                                        <span className="font-medium text-slate-700">
+                                                                            {fN(round(nodeResources.mem_avail, 2))}/
+                                                                            {fN(round(nodeResources.mem_total, 2))}
+                                                                        </span>{' '}
+                                                                        GB
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </Link>
-                            </div>
-                        ))}
+                                    </Link>
+                                </div>
+                            );
+                        })}
                 </div>
             )}
 

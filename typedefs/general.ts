@@ -15,6 +15,8 @@ type LicenseListItem = LicenseItem & {
     isBanned: boolean;
 };
 
+type NodeSearchResources = Pick<types.Resources, 'cpu_cores' | 'cpu_cores_avail' | 'mem_avail' | 'mem_total'>;
+
 type SearchResult =
     | {
           type: 'node';
@@ -22,6 +24,8 @@ type SearchResult =
           internalAddress?: types.R1Address;
           alias: string;
           isOnline: boolean;
+          tags?: string[];
+          resources?: NodeSearchResources;
       }
     | { type: 'license'; licenseId: number; licenseType: 'ND' | 'MND' | 'GND'; nodeAddress: types.EthAddress }
     | { type: 'owner'; address: types.EthAddress; ensName?: string };
@@ -70,6 +74,7 @@ type PublicProfileInfo = {
 export type {
     LicenseItem,
     LicenseListItem,
+    NodeSearchResources,
     PublicProfileInfo,
     SearchResult,
     TokenStatsEntry,

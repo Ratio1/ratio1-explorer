@@ -7,6 +7,7 @@ import { SearchResult } from '@/typedefs/general';
 import { headers } from 'next/headers';
 import { getLicense } from './api/blockchain';
 import { getNodeEpochsRange, getNodeLastEpoch } from './api/oracles';
+import { pickNodeSearchResources } from './nodeResources';
 import { isNoEpochsResult, isOraclesBehind } from './oracles';
 import { cachedGetENSName, internalNodeAddressToEthAddress, isNonZeroInteger, isZeroAddress } from './utils';
 
@@ -128,6 +129,8 @@ export const search = async (
                     internalAddress: nodeResponse.node as types.R1Address,
                     alias: nodeResponse.node_alias,
                     isOnline: nodeResponse.node_is_online,
+                    tags: nodeResponse.tags,
+                    resources: pickNodeSearchResources(nodeResponse.resources),
                 });
 
                 return {
@@ -194,6 +197,8 @@ export const search = async (
                             internalAddress: ratio1Addr as types.R1Address,
                             alias: node.alias,
                             isOnline: parseInt(node.last_seen_ago.split(':')[2]) < 60,
+                            tags: node.tags,
+                            resources: pickNodeSearchResources(node.resources),
                         });
                     });
 

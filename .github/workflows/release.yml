@@ -39,7 +39,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22.23.4
           cache: "npm"
 
       - name: Install dependencies
@@ -49,8 +49,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: npm-${{ runner.os }}-
+          key: npm-${{ runner.os }}-node-22.23.4-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-${{ runner.os }}-node-22.23.4-
 
   build:
     name: Build Next.js App
@@ -63,12 +63,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.4
+
       - name: Restore node_modules cache
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: npm-${{ runner.os }}-
+          key: npm-${{ runner.os }}-node-22.23.4-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-${{ runner.os }}-node-22.23.4-
 
       - name: Build Next.js App app for ${{ matrix.network }}
         run: npm run build:${{ matrix.network }}

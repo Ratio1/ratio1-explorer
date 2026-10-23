@@ -11,6 +11,7 @@ import { fN } from '@/lib/utils';
 import { License } from '@/typedefs/blockchain';
 import { TokenSupplyResponse } from '@/typedefs/general';
 import Link from 'next/link';
+import { connection } from 'next/server';
 import TreasuryWallets from '../server-components/Licenses/TreasuryWallets';
 import { BorderedCard } from '../server-components/shared/cards/BorderedCard';
 import { CardHorizontal } from '../server-components/shared/cards/CardHorizontal';
@@ -62,6 +63,8 @@ export async function generateMetadata() {
 }
 
 export default async function StatsPage() {
+    await connection();
+
     let tokenSupply: TokenSupplyResponse;
     let gndLicense: License | undefined;
 

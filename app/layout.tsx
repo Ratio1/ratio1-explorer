@@ -6,6 +6,7 @@ import '@/styles/globals.css';
 import { Skeleton } from '@heroui/skeleton';
 import { HeroUIProvider } from '@heroui/system';
 import { Metadata, Viewport } from 'next';
+import { connection } from 'next/server';
 import { lazy, Suspense } from 'react';
 import Footer from './server-components/Footer';
 import Header from './server-components/Header';
@@ -31,6 +32,9 @@ export default async function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    // Shared network data must be loaded for a request, not while building the app.
+    await connection();
+
     return (
         <html lang="en">
             <head>

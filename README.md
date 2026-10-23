@@ -2,6 +2,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+Use Node.js 22.23.4 or a newer patched LTS release and npm. Docker and CI pin Node.js 22.23.4.
+
 First, run the development server:
 
 ```bash

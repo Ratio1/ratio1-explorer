@@ -130,6 +130,7 @@ type NodeState = {
     };
     ver: string;
     tags?: string[];
+    resources?: Partial<Resources>;
 };
 
 type ServerInfo = {

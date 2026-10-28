@@ -7,6 +7,7 @@ import { cache, JSX } from 'react';
 import { bytesToHex, formatUnits, getAddress, hexToBytes, keccak256 } from 'viem';
 import { getLicense } from './api/blockchain';
 import { getNodeLastEpoch } from './api/oracles';
+import { pickNodeSearchResources } from './nodeResources';
 
 const URL_SAFE_PATTERN = /^[a-zA-Z0-9x\s\-_\.]+$/;
 export const ETH_EMPTY_ADDR = '0x0000000000000000000000000000000000000000';
@@ -259,6 +260,8 @@ export const clientSearch = async (
                     internalAddress: nodeResponse.node as types.R1Address,
                     alias: nodeResponse.node_alias,
                     isOnline: nodeResponse.node_is_online,
+                    tags: nodeResponse.tags,
+                    resources: pickNodeSearchResources(nodeResponse.resources),
                 });
 
                 return {
@@ -325,6 +328,8 @@ export const clientSearch = async (
                             internalAddress: ratio1Addr as types.R1Address,
                             alias: node.alias,
                             isOnline: parseInt(node.last_seen_ago.split(':')[2]) < 60,
+                            tags: node.tags,
+                            resources: pickNodeSearchResources(node.resources),
                         });
                     });
 
